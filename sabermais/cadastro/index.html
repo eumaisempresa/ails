@@ -62,16 +62,26 @@
                 senha: pass
             };
 
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            }).then(() => {
-                document.getElementById('formCadastro').style.display = 'none';
-                document.getElementById('successBox').style.display = 'block';
-                document.getElementById('resId').innerText = randomId;
-                document.getElementById('resSenha').innerText = pass;
-            });
-        };
-    </script>
-</body>
-</html>
+// No cadastro/index.html, substitua o bloco do fetch por este:
+fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+})
+.then(response => response.json())
+.then(res => {
+    if(res.success) {
+        document.getElementById('formCadastro').style.display = 'none';
+        document.getElementById('successBox').style.display = 'block';
+        document.getElementById('resId').innerText = randomId;
+        document.getElementById('resSenha').innerText = pass;
+    } else {
+        alert("Erro ao salvar: " + res.error);
+        btn.disabled = false;
+        btn.innerText = "Criar meu Ambiente Inteligente";
+    }
+})
+.catch(err => {
+    console.error(err);
+    alert("Erro na comunicação com o servidor.");
+    btn.disabled = false;
+});
