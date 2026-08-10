@@ -61,8 +61,6 @@
                 empresa: document.getElementById('empresa').value,
                 senha: pass
             };
-
-// No cadastro/index.html, substitua o bloco do fetch por este:
 fetch(SCRIPT_URL, {
     method: "POST",
     body: JSON.stringify(payload)
