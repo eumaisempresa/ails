@@ -16,7 +16,8 @@
         input, select { width: 100%; padding: 12px; margin-bottom: 20px; background: #0E1E30; border: 1px solid var(--bordas); color: #fff; border-radius: 4px; box-sizing: border-box; }
         button { width: 100%; padding: 15px; background: var(--dourado); border: none; color: #000; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: 0.3s; }
         button:hover { background: #D4AA62; transform: translateY(-2px); }
-        .success-box { display: none; text-align: center; border: 1px solid var(--dourado); padding: 20px; background: rgba(196, 151, 74, 0.1); }
+        button:disabled { background: #555; cursor: not-allowed; }
+        .success-box { display: none; text-align: center; border: 1px solid var(--dourado); padding: 20px; background: rgba(196, 151, 74, 0.1); border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -35,17 +36,22 @@
         </form>
         <div id="successBox" class="success-box">
             <h2 style="color: var(--dourado);">Ambiente Criado!</h2>
-            <p>Seu ID de acesso: <strong id="resId" style="color:#fff;"></strong></p>
-            <p>Sua senha provisória: <strong id="resSenha" style="color:#fff;"></strong></p>
-            <a href="../painel/" style="color: var(--dourado); text-decoration: none; font-weight: bold; display: block; margin-top: 20px;">ACESSAR PAINEL AGORA →</a>
+            <p style="margin: 10px 0;">Seu ID de acesso: <strong id="resId" style="color:#fff;"></strong></p>
+            <p style="margin: 10px 0;">Sua senha provisória: <strong id="resSenha" style="color:#fff;"></strong></p>
+            <div style="margin-top: 20px; border-top: 1px solid var(--bordas); padding-top: 15px;">
+                <a href="../painel/" style="color: var(--dourado); text-decoration: none; font-weight: bold; display: block;">ACESSAR PAINEL AGORA →</a>
+            </div>
         </div>
     </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
-        document.getElementById('formCadastro').onsubmit = function(e) {
+        
+        document.getElementById('formCadastro' ).onsubmit = function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
+            const originalText = btn.innerText;
+            
             btn.innerText = "Configurando AILS...";
             btn.disabled = true;
 
@@ -61,25 +67,29 @@
                 empresa: document.getElementById('empresa').value,
                 senha: pass
             };
-fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-})
-.then(response => response.json())
-.then(res => {
-    if(res.success) {
-        document.getElementById('formCadastro').style.display = 'none';
-        document.getElementById('successBox').style.display = 'block';
-        document.getElementById('resId').innerText = randomId;
-        document.getElementById('resSenha').innerText = pass;
-    } else {
-        alert("Erro ao salvar: " + res.error);
-        btn.disabled = false;
-        btn.innerText = "Criar meu Ambiente Inteligente";
-    }
-})
-.catch(err => {
-    console.error(err);
-    alert("Erro na comunicação com o servidor.");
-    btn.disabled = false;
-});
+
+            // Usando text/plain para evitar problemas de CORS preflight com o Apps Script
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "text/plain" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                // Como usamos no-cors, o navegador não nos deixa ler a resposta JSON, 
+                // mas se o fetch completou, assumimos sucesso no cadastro básico.
+                document.getElementById('formCadastro').style.display = 'none';
+                document.getElementById('successBox').style.display = 'block';
+                document.getElementById('resId').innerText = randomId;
+                document.getElementById('resSenha').innerText = pass;
+            })
+            .catch(err => {
+                console.error("Erro no cadastro:", err);
+                alert("Erro na comunicação com o servidor. Tente novamente.");
+                btn.disabled = false;
+                btn.innerText = originalText;
+            });
+        };
+    </script>
+</body>
+</html>
