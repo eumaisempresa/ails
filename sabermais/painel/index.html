@@ -115,57 +115,72 @@
                 });
         }
 
-        function renderizarLobby() {
-            const grid = document.getElementById('gridCursos');
-            grid.innerHTML = "";
-            
-            // Pega cursos únicos
-            const cursosUnicos = [...new Set(dbCursos.map(c => c.idCurso))];
-            
-            cursosUnicos.forEach(id => {
-                const info = dbCursos.find(c => c.idCurso === id);
-                const jaComprou = currentUser.cursosComprados.includes(id);
-                
-                const card = document.createElement('div');
-                card.className = "course-card";
-                card.innerHTML = `
-                    <h3 style="color: var(--dourado-principal);">${info.nomeCurso}</h3>
-                    <p style="color: var(--texto-secundario); font-size: 13px;">${info.descricao || 'Sem descrição'}</p>
-                    <div style="display:flex; justify-content: space-between; align-items:center; margin-top:20px;">
-                        <span style="color: var(--dourado-secundario); font-weight:bold;">${jaComprou ? 'ADQUIRIDO' : 'R$ ' + info.preco}</span>
-                        <button onclick="abrirCurso('${id}')" style="padding: 8px 15px; background: ${jaComprou ? 'var(--dourado-principal)' : 'transparent'}; border: 1px solid var(--dourado-principal); color: ${jaComprou ? '#000' : '#C4974A'}; cursor:pointer;">
-                            ${jaComprou ? 'ESTUDAR AGORA' : 'VER CAPÍTULO 1'}
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+function renderizarLobby() {
+    const grid = document.getElementById('gridCursos');
+    grid.innerHTML = "";
+    const idsUnicos = [...new Set(dbCursos.map(c => c.idCurso))];
+    
+    // Formatador de Moeda Brasileira
+    const formatter = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    });
+    
+    idsUnicos.forEach(id => {
+        const curso = dbCursos.find(c => c.idCurso === id);
+        const jaComprou = (currentUser.cursosComprados || []).includes(id);
+        
+        // Converte o preço para número antes de formatar
+        const precoFormatado = formatter.format(parseFloat(curso.preco.toString().replace(',', '.')));
+        
+        const div = document.createElement('div');
+        div.className = "course-card";
+        div.innerHTML = `
+            <h3>${curso.nomeCurso}</h3>
+            <p>${curso.descricao || 'Explore este novo módulo de conhecimento estratégico.'}</p>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--dourado-secundario); font-weight:bold;">${jaComprou ? '✓ ADQUIRIDO' : precoFormatado}</span>
+                <button onclick="abrirCurso('${id}')" style="padding:8px 12px; background:${jaComprou ? 'var(--dourado-principal)' : 'transparent'}; border:1px solid var(--dourado-principal); color:${jaComprou ? '#000' : '#C4974A'}; cursor:pointer; font-weight:bold; border-radius:4px;">
+                    ${jaComprou ? 'ESTUDAR' : 'DEGUSTAÇÃO'}
+                </button>
+            </div>
+        `;
+        grid.appendChild(div);
+    });
+}
 
-        function abrirCurso(idCurso) {
-            document.getElementById('lobbyView').style.display = 'none';
-            document.getElementById('readView').style.display = 'grid';
-            
-            const aulas = dbCursos.filter(c => c.idCurso === idCurso);
-            const jaComprou = currentUser.cursosComprados.includes(idCurso);
-            
-            const lista = document.getElementById('listaAulas');
-            lista.innerHTML = `<h4 style="color:#fff;">${aulas[0].nomeCurso}</h4>`;
-            
-            aulas.forEach((aula, idx) => {
-                const bloqueada = !jaComprou && idx > 0;
-                const item = document.createElement('div');
-                item.style = `padding: 10px; margin: 5px 0; cursor: ${bloqueada ? 'not-allowed' : 'pointer'}; color: ${bloqueada ? '#555' : '#ccc'}; border-bottom: 1px solid #222;`;
-                item.innerHTML = `${aula.tituloAula} ${bloqueada ? '🔒' : ''}`;
-                
-                if(!bloqueada) {
-                    item.onclick = () => carregarConteudo(aula);
-                } else {
-                    item.onclick = () => alert("Adquira o curso completo para desbloquear este capítulo!");
+function abrirCurso(idCurso) {
+    document.getElementById('lobbyView').style.display = 'none';
+    document.getElementById('readView').style.display = 'grid';
+    
+    const aulas = dbCursos.filter(c => c.idCurso === idCurso);
+    const jaComprou = (currentUser.cursosComprados || []).includes(idCurso);
+    const lista = document.getElementById('listaAulas');
+    lista.innerHTML = `<h3 style="color:#fff; font-size:16px; margin-bottom:15px;">${aulas[0].nomeCurso}</h3>`;
+    
+    aulas.forEach((aula, idx) => {
+        const bloqueada = !jaComprou && idx > 0;
+        const div = document.createElement('div');
+        div.style = `padding:12px; margin-bottom:8px; background:var(--fundo-terciario); border-radius:4px; cursor:${bloqueada ? 'pointer' : 'pointer'}; opacity:${bloqueada ? 0.6 : 1}; color:${bloqueada ? '#d4aa62' : '#eee'}; font-size:14px; position:relative;`;
+        div.innerHTML = `${aula.tituloAula} ${bloqueada ? '<span style="float:right;">🔒</span>' : ''}`;
+        
+        if(!bloqueada) {
+            div.onclick = () => carregarConteudo(aula);
+        } else {
+            // REDIRECIONAMENTO DE PAGAMENTO
+            div.onclick = () => {
+                if(confirm("Este capítulo faz parte do curso completo. Deseja ir para a página de pagamento agora?")) {
+                    // Substitua pela sua URL de pagamento/checkout
+                    const checkoutUrl = `https://ails.eumaisempresa.com.br/pagamento/?curso=${idCurso}&ambiente=${currentUser.idAmbiente}`;
+                    window.open(checkoutUrl, '_blank' );
                 }
-                lista.appendChild(item);
-            });
+            };
         }
+        lista.appendChild(div);
+    });
+    
+    if(aulas.length > 0) carregarConteudo(aulas[0]);
+}
 
         function carregarConteudo(aula) {
             document.getElementById('conteudoAula').innerHTML = "Carregando conteúdo premium...";
