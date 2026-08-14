@@ -3,29 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saber⁺ - Ambiente Executivo AILS</title>
+    <title>Saber⁺ - Ecossistema Executivo</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500;700&family=Lora:wght@400;500;700&display=swap' );
         :root { --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --texto: #EEF0F2; --bordas: rgba(196, 151, 74, 0.15); }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html { background: var(--fundo); color: var(--texto); font-family: 'DM Sans', sans-serif; height: 100vh; overflow: hidden; }
         header { height: 70px; background: var(--card); border-bottom: 1px solid var(--bordas); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; z-index: 100; }
+        
         .painel-wrapper { display: flex; height: calc(100vh - 70px); width: 100%; }
         .sidebar { width: 300px; min-width: 300px; background: var(--card); border-right: 1px solid var(--bordas); padding: 20px; overflow-y: auto; transition: 0.3s; }
         .content-body { flex: 1; background: #EAEFF4; overflow-y: auto; padding: 40px 20px; }
-        .folha { background: #fff; max-width: 850px; margin: 0 auto; min-height: 100%; padding: 60px 50px; border-radius: 4px; color: #1a1a1a; }
+        .folha { background: #fff; max-width: 850px; margin: 0 auto; min-height: 100%; padding: 60px 50px; border-radius: 4px; color: #1a1a1a; position: relative; }
         .notes-panel { width: 350px; min-width: 350px; background: var(--card); border-left: 1px solid var(--bordas); padding: 20px; display: flex; flex-direction: column; transition: 0.3s; }
+        
+        /* CATEGORIAS NO LOBBY */
+        .categoria-titulo { color: var(--dourado); font-family: 'Cormorant Garamond', serif; font-size: 28px; margin: 40px 0 20px; border-bottom: 1px solid var(--bordas); padding-bottom: 10px; }
+        .grid-cursos { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; margin-bottom: 50px; }
+        .course-card { background: var(--card); padding: 25px; border-radius: 12px; border: 1px solid var(--bordas); transition: 0.3s; }
+        .course-card:hover { border-color: var(--dourado); transform: translateY(-5px); }
+
+        /* PROGRESSO E ESTIMATIVA */
+        .meta-aula { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 12px; color: #7A8FA3; border-bottom: 1px dashed #ccc; padding-bottom: 10px; }
+        .btn-concluir { padding: 6px 12px; border-radius: 20px; border: 1px solid #2ECC71; color: #2ECC71; background: transparent; cursor: pointer; font-size: 11px; font-weight: bold; }
+        .btn-concluir.active { background: #2ECC71; color: #fff; }
+
         textarea { width: 100%; flex: 1; background: #FEF5B1; border: none; padding: 20px; font-family: 'Lora', serif; font-size: 16px; color: #333; margin-bottom: 20px; }
         .google-doc-render, .google-doc-render * { color: #1a1a1a !important; background: transparent !important; font-family: 'Lora', serif !important; font-size: 18px; line-height: 1.8; }
+        
         @media (max-width: 900px) {
             .sidebar { position: fixed; left: -300px; top: 70px; bottom: 0; z-index: 99; }
             .sidebar.open { left: 0; }
             .notes-panel { position: fixed; right: -350px; top: 70px; bottom: 0; z-index: 99; }
             .notes-panel.open { right: 0; }
-            .folha { padding: 30px 20px; }
         }
         .fab { position: fixed; bottom: 20px; width: 50px; height: 50px; background: var(--dourado); border-radius: 50%; display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
         @media (max-width: 900px) { .fab.menu { display: flex; left: 20px; } .fab.notes { display: flex; right: 20px; } }
+        
         #loginOverlay { position: fixed; inset: 0; background: var(--fundo); display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .card-l { background: var(--card); padding: 40px; width: 90%; max-width: 400px; border-radius: 8px; text-align: center; border: 1px solid var(--bordas); }
         input { width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: 1px solid var(--bordas); color: #fff; border-radius: 4px; }
@@ -35,33 +49,42 @@
 <body>
     <div id="loginOverlay">
         <div class="card-l" id="boxLogin">
-            <h2 style="color:var(--dourado); margin-bottom:20px;">Saber⁺</h2>
+            <h2 style="color:var(--dourado); margin-bottom:20px; font-family:'Cormorant Garamond';">Saber⁺</h2>
             <input type="email" id="lEmail" placeholder="E-mail">
             <input type="password" id="lSenha" placeholder="Senha">
-            <button class="btn-g" onclick="fazerLogin()">ACESSAR</button>
+            <button class="btn-g" onclick="fazerLogin()">ACESSAR AMBIENTE</button>
             <p onclick="irEsqueci()" style="color:var(--dourado); font-size:12px; margin-top:15px; cursor:pointer;">Esqueci minha senha</p>
         </div>
         <div class="card-l" id="boxEsqueci" style="display:none;">
             <h2 style="color:var(--dourado); margin-bottom:20px;">Recuperar Senha</h2>
             <input type="email" id="eEmail" placeholder="Seu e-mail cadastrado">
-            <button class="btn-g" onclick="esqueciSenha()">ENVIAR SENHA POR E-MAIL</button>
+            <button class="btn-g" onclick="esqueciSenha()">ENVIAR SENHA</button>
             <p onclick="irLogin()" style="color:var(--texto); font-size:12px; margin-top:15px; cursor:pointer;">Voltar ao Login</p>
         </div>
     </div>
 
-    <header><div style="font-family:'Cormorant Garamond'; color:var(--dourado); font-size:24px; font-weight:bold;">EU⁺ Saber</div><div id="uInfo"></div></header>
+    <header><div style="font-family:'Cormorant Garamond'; color:var(--dourado); font-size:24px; font-weight:bold;">EU⁺ Saber</div><div id="uInfo" style="font-size:13px; color:var(--dourado);"></div></header>
 
     <div class="painel-wrapper">
-        <div class="sidebar" id="side"><h4 style="color:var(--dourado); margin-bottom:15px;">CRONOGRAMA</h4><div id="lAulas"></div></div>
-        <div class="content-body"><div class="folha"><h1 id="aTit" style="margin-bottom:20px; font-family:'Cormorant Garamond';">Selecione uma aula</h1><div id="aCont" class="google-doc-render">Escolha um módulo no menu lateral.</div></div></div>
-        <div class="notes-panel" id="nPan"><h3 style="color:var(--dourado); margin-bottom:10px;">Insights</h3><textarea id="tAnot"></textarea><button class="btn-g" onclick="salvarNota()">SALVAR INSIGHT</button></div>
+        <div class="sidebar" id="side"><h4 style="color:var(--dourado); margin-bottom:15px; letter-spacing:1px;">CONTEÚDO</h4><div id="lAulas"></div></div>
+        <div class="content-body">
+            <div class="folha">
+                <div class="meta-aula" id="metaAula" style="display:none;">
+                    <span id="tempoLeitura">⏱️ Estimativa: -- min</span>
+                    <button class="btn-concluir" id="btnCheck" onclick="marcarConcluida()">✓ MARCAR CONCLUÍDA</button>
+                </div>
+                <h1 id="aTit" style="margin-bottom:20px; font-family:'Cormorant Garamond'; color:#0A3663;">Selecione um curso</h1>
+                <div id="aCont" class="google-doc-render">Explore o catálogo no menu lateral.</div>
+            </div>
+        </div>
+        <div class="notes-panel" id="nPan"><h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-bottom:10px;">Insights</h3><textarea id="tAnot"></textarea><button class="btn-g" onclick="salvarNota()">SALVAR INSIGHT</button></div>
     </div>
 
     <div class="fab menu" onclick="tSide()">📚</div><div class="fab notes" onclick="tNotes()">✍️</div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
-        let currentUser = null; let dbCursos = []; let aulaAtiva = null;
+        let currentUser = null; let dbCursos = []; let aulaAtiva = null; let isConcluida = false;
 
         function tSide( ) { document.getElementById('side').classList.toggle('open'); }
         function tNotes() { document.getElementById('nPan').classList.toggle('open'); }
@@ -74,17 +97,10 @@
             fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`)
                 .then(r => r.json()).then(res => {
                     if(res.autorizado) {
-                        currentUser = res; document.getElementById('uInfo').innerText = `Olá, ${res.nome}`;
+                        currentUser = res; document.getElementById('uInfo').innerText = `EXECUTIVO: ${res.nome}`;
                         document.getElementById('loginOverlay').style.display = 'none'; carregarMenu();
                     } else { alert(res.error); }
                 });
-        }
-
-        function esqueciSenha() {
-            const email = document.getElementById('eEmail').value;
-            if(!email) return alert("Digite seu e-mail.");
-            fetch(`${SCRIPT_URL}?action=esqueciSenha&email=${encodeURIComponent(email)}`)
-                .then(r => r.json()).then(res => { if(res.success) { alert("Senha enviada para seu e-mail!"); irLogin(); } else { alert(res.error); } });
         }
 
         function carregarMenu() {
@@ -93,16 +109,26 @@
 
         function renderizarLobby() {
             const grid = document.getElementById('lAulas'); grid.innerHTML = "";
-            const idsUnicos = [...new Set(dbCursos.map(c => c.idCurso))];
-            idsUnicos.forEach(id => {
-                const curso = dbCursos.find(c => c.idCurso === id);
-                // VERIFICAÇÃO RIGOROSA DE COMPRA
-                const jaComprou = (currentUser.cursosComprados || []).map(String).includes(id.toString());
-                const div = document.createElement('div');
-                div.style.cssText = "padding:15px; margin-bottom:20px; border:1px solid var(--bordas); border-radius:8px; background:rgba(255,255,255,0.02);";
-                div.innerHTML = `<h3 style="color:var(--dourado); font-size:18px;">${curso.nomeCurso}</h3>
-                    <button class="btn-g" style="margin-top:10px; padding:8px; font-size:12px;" onclick="abrirCurso('${id}')">${jaComprou ? 'ESTUDAR' : 'DEGUSTAÇÃO'}</button>`;
-                grid.appendChild(div);
+            const categorias = [...new Set(dbCursos.map(c => c.categoria))];
+            
+            categorias.forEach(cat => {
+                const cursosDaCat = dbCursos.filter(c => c.categoria === cat);
+                const idsUnicos = [...new Set(cursosDaCat.map(c => c.idCurso))];
+                
+                const section = document.createElement('div');
+                section.innerHTML = `<div class="categoria-titulo">${cat.toUpperCase()}</div><div class="grid-v" id="cat-${cat.replace(/\s/g,'')}"></div>`;
+                grid.appendChild(section);
+                
+                const subGrid = section.querySelector('.grid-v');
+                idsUnicos.forEach(id => {
+                    const curso = dbCursos.find(c => c.idCurso === id);
+                    const jaComprou = (currentUser.cursosComprados || []).map(String).includes(id.toString());
+                    const div = document.createElement('div');
+                    div.style.cssText = "padding:15px; margin-bottom:15px; border:1px solid var(--bordas); border-radius:8px; background:rgba(255,255,255,0.02);";
+                    div.innerHTML = `<h3 style="color:var(--dourado); font-size:16px;">${curso.nomeCurso}</h3>
+                        <button class="btn-g" style="margin-top:10px; padding:8px; font-size:11px;" onclick="abrirCurso('${id}')">${jaComprou ? 'CURSO ADQUIRIDO' : 'DEGUSTAÇÃO'}</button>`;
+                    subGrid.appendChild(div);
+                });
             });
         }
 
@@ -110,20 +136,14 @@
             const aulas = dbCursos.filter(c => c.idCurso === idCurso);
             const jaComprou = (currentUser.cursosComprados || []).map(String).includes(idCurso.toString());
             const lista = document.getElementById('lAulas');
-            lista.innerHTML = `<div onclick="renderizarLobby()" style="color:var(--dourado); cursor:pointer; margin-bottom:20px;">← Voltar aos Cursos</div>`;
+            lista.innerHTML = `<div onclick="renderizarLobby()" style="color:var(--dourado); cursor:pointer; margin-bottom:20px; font-size:13px; font-weight:bold;">← VOLTAR AO CATÁLOGO</div>`;
             
             aulas.forEach((aula, index) => {
-                // BLOQUEIA TUDO QUE NÃO FOR A PRIMEIRA AULA SE NÃO COMPROU
                 const bloqueada = !jaComprou && index > 0;
                 const div = document.createElement('div');
                 div.style.cssText = `padding:12px; margin-bottom:8px; background:rgba(255,255,255,0.05); border-radius:4px; cursor:pointer; font-size:13px; opacity:${bloqueada ? '0.4' : '1'};`;
                 div.innerHTML = `${index + 1}. ${aula.tituloAula} ${bloqueada ? '🔒' : ''}`;
-                
-                if(!bloqueada) { 
-                    div.onclick = () => { carregarAula(aula); if(window.innerWidth<=900) tSide(); }; 
-                } else { 
-                    div.onclick = () => alert("Este capítulo faz parte do curso completo. Adquira para desbloquear!"); 
-                }
+                if(!bloqueada) { div.onclick = () => { carregarAula(aula); if(window.innerWidth<=900) tSide(); }; }
                 lista.appendChild(div);
             });
             carregarAula(aulas[0]);
@@ -131,15 +151,52 @@
 
         function carregarAula(aula) {
             aulaAtiva = aula; document.getElementById('aTit').innerText = aula.tituloAula;
-            const area = document.getElementById('aCont'); area.innerHTML = "Sincronizando...";
+            const area = document.getElementById('aCont'); area.innerHTML = "Sincronizando conteúdo...";
+            document.getElementById('metaAula').style.display = 'none';
+
             fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${currentUser.idAmbiente}&idCurso=${aula.idCurso}&idAula=${aula.idAula}&idDoc=${aula.idDoc}`)
-                .then(r => r.json()).then(res => { area.innerHTML = res.conteudo; document.getElementById('tAnot').value = res.anotacao || ""; });
+                .then(r => r.json()).then(res => { 
+                    area.innerHTML = res.conteudo; 
+                    document.getElementById('tAnot').value = res.anotacao || "";
+                    document.getElementById('metaAula').style.display = 'flex';
+                    
+                    // CALCULA TEMPO DE LEITURA (200 palavras por minuto)
+                    const palavras = area.innerText.split(/\s+/).length;
+                    const min = Math.ceil(palavras / 200);
+                    document.getElementById('tempoLeitura').innerText = `⏱️ Leitura: ${min} min`;
+                    
+                    // STATUS DE CONCLUÍDA
+                    isConcluida = res.concluida;
+                    const btn = document.getElementById('btnCheck');
+                    btn.className = isConcluida ? "btn-concluir active" : "btn-concluir";
+                    btn.innerText = isConcluida ? "✓ CONCLUÍDA" : "✓ MARCAR CONCLUÍDA";
+                });
+        }
+
+        function marcarConcluida() {
+            if(!aulaAtiva) return;
+            isConcluida = !isConcluida;
+            const btn = document.getElementById('btnCheck');
+            btn.innerText = "SALVANDO...";
+            
+            fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "concluirAula", idAmbiente: currentUser.idAmbiente, idCurso: aulaAtiva.idCurso, idAula: aulaAtiva.idAula, status: isConcluida }) })
+            .then(() => {
+                btn.className = isConcluida ? "btn-concluir active" : "btn-concluir";
+                btn.innerText = isConcluida ? "✓ CONCLUÍDA" : "✓ MARCAR CONCLUÍDA";
+            });
         }
 
         function salvarNota() {
             if(!aulaAtiva) return;
             fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify({ action: "salvarAnotacao", idAmbiente: currentUser.idAmbiente, idCurso: aulaAtiva.idCurso, idAula: aulaAtiva.idAula, texto: document.getElementById('tAnot').value }) })
             .then(() => alert("Insight salvo!"));
+        }
+        
+        function esqueciSenha() {
+            const email = document.getElementById('eEmail').value;
+            if(!email) return alert("Digite seu e-mail.");
+            fetch(`${SCRIPT_URL}?action=esqueciSenha&email=${encodeURIComponent(email)}`)
+                .then(r => r.json()).then(res => { if(res.success) { alert("Senha enviada!"); irLogin(); } else { alert(res.error); } });
         }
     </script>
 </body>
