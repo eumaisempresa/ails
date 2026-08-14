@@ -3,93 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Saber⁺</title>
+    <title>Cadastro Executivo - Saber⁺</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;700&display=swap' );
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500;700&display=swap' );
+        
         :root {
-            --fundo-principal: #060E18; --fundo-secundario: #0A1624; --fundo-terciario: #0E1E30;
-            --dourado-principal: #C4974A; --dourado-secundario: #D4AA62; --texto-principal: #EEF0F2;
-            --texto-secundario: #7A8FA3; --bordas: rgba(196, 151, 74, 0.18);
+            --fundo: #060E18;
+            --card: #0A1624;
+            --dourado: #C4974A;
+            --texto: #EEF0F2;
+            --texto-sec: #7A8FA3;
+            --bordas: rgba(196, 151, 74, 0.18);
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background-color: var(--fundo-principal); color: var(--texto-principal); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.6; }
-        h2, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dourado-principal); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .form-container { max-width: 550px; margin: 20px auto; background-color: var(--fundo-secundario); border: 1px solid var(--bordas); padding: 32px; border-radius: 4px; }
-        input, select { background-color: var(--fundo-terciario); border: 1px solid var(--bordas); color: var(--texto-principal); padding: 12px 16px; border-radius: 4px; width: 100%; margin-bottom: 16px; }
-        button { background-color: var(--dourado-principal); color: var(--fundo-principal); border: none; padding: 14px; width: 100%; cursor: pointer; font-weight: bold; text-transform: uppercase; border-radius: 4px; }
-        .btn-wa { background-color: #25D366; color: #fff; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 4px; font-weight: bold; margin-top: 20px; }
+        body { background: var(--fundo); color: var(--texto); font-family: 'DM Sans', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+
+        .form-container {
+            background: var(--card); border: 1px solid var(--bordas); padding: 40px;
+            width: 100%; max-width: 500px; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        h2 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 32px; text-align: center; margin-bottom: 10px; }
+        p.subtitle { text-align: center; color: var(--texto-sec); font-size: 14px; margin-bottom: 30px; }
+
+        label { display: block; font-size: 12px; color: var(--dourado); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: bold; }
+        input { width: 100%; padding: 14px; margin-bottom: 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--bordas); color: #fff; border-radius: 4px; font-size: 15px; outline: none; }
+        input:focus { border-color: var(--dourado); }
+
+        button { width: 100%; padding: 16px; background: var(--dourado); color: #000; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.3s; }
+        button:hover { filter: brightness(1.2); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .success-box { display: none; text-align: center; animation: fadeIn 0.5s ease; }
+        .credencial { background: rgba(196, 151, 74, 0.1); border: 1px dashed var(--dourado); padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .btn-wa { background: #25D366; color: #fff; text-decoration: none; display: block; padding: 14px; border-radius: 4px; font-weight: bold; margin-top: 20px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h2 style="font-size: 32px;">Saber⁺</h2>
-                <p style="color: var(--texto-secundario);">Criação de Ambiente Inteligente</p>
-            </div>
+
+    <div class="form-container">
+        <div id="boxForm">
+            <h2>Saber⁺</h2>
+            <p class="subtitle">Ambiente Inteligente de Negócios</p>
             
             <form id="formCadastro">
-                <input type="text" id="nome" placeholder="Nome Completo" required>
-                <input type="email" id="email" placeholder="E-mail (Seu Usuário)" required>
-                <input type="tel" id="whatsapp" placeholder="WhatsApp (Ex: 27999999999)" required>
-                <input type="text" id="empresa" placeholder="Sua Empresa" required>
-                <button type="submit" id="btnCadastrar">Gerar Acesso Executivo</button>
+                <label>Nome Completo</label>
+                <input type="text" id="nome" placeholder="Seu nome" required>
+                
+                <label>E-mail Corporativo</label>
+                <input type="email" id="email" placeholder="nome@empresa.com" required>
+                
+                <label>WhatsApp</label>
+                <input type="tel" id="whatsapp" placeholder="27999999999" required>
+                
+                <label>Sua Empresa</label>
+                <input type="text" id="empresa" placeholder="Nome da empresa" required>
+                
+                <button type="submit" id="btnSubmit">CRIAR MEU AMBIENTE</button>
             </form>
+        </div>
 
-            <div id="resultadoCadastro" style="display: none; margin-top: 30px; padding: 20px; border: 1px solid var(--dourado-principal); background: rgba(196,151,74,0.05);">
-                <h4 style="margin-bottom: 15px;">✨ Acesso Gerado com Sucesso!</h4>
-                <p><strong>ID Ambiente:</strong> <span id="resAmbiente" style="color:var(--dourado-secundario);"></span></p>
-                <p><strong>Senha Provisória:</strong> <span id="resSenha" style="color:var(--dourado-secundario);"></span></p>
-                <a id="btnWhatsAppLink" href="#" target="_blank" class="btn-wa">Enviar Acesso via WhatsApp</a>
+        <div id="boxSuccess" class="success-box">
+            <h2 style="font-size: 24px;">✨ Ambiente Criado!</h2>
+            <p style="margin-top:10px; color:var(--texto-sec);">As credenciais foram enviadas para o seu e-mail.</p>
+            
+            <div class="credencial">
+                <p style="font-size: 14px;">ID: <strong id="resId" style="color:var(--dourado);"></strong></p>
+                <p style="font-size: 14px;">Senha: <strong id="resSenha" style="color:var(--dourado);"></strong></p>
             </div>
+
+            <p style="font-size: 12px; color: var(--texto-sec);">Importante: Guarde sua senha provisória.</p>
+            
+            <a id="btnWa" href="#" target="_blank" class="btn-wa">ENVIAR PARA O WHATSAPP</a>
+            <button onclick="window.location.href='../painel/'" style="background:transparent; color:var(--dourado); border:1px solid var(--dourado); margin-top:15px;">ACESSAR PAINEL AGORA</button>
         </div>
     </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
 
-        // FUNÇÃO DE GERAÇÃO DE SENHA SEM CARACTERES CONFUSOS
-        function gerarSenhaLimpa(tamanho ) {
-            const caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Exclui 0, O, 1, I, l
-            let resultado = "";
-            for (let i = 0; i < tamanho; i++) {
-                resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-            }
-            return resultado;
-        }
-
-        document.getElementById('formCadastro').addEventListener('submit', function(e) {
+        document.getElementById('formCadastro' ).addEventListener('submit', function(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnCadastrar');
-            btn.innerText = "Sincronizando com a Nuvem AILS...";
-            btn.disabled = true;
-
-            const randomId = "EXEC" + Math.floor(1000 + Math.random() * 9000);
-            const pass = gerarSenhaLimpa(8); // Gera senha amigável de 8 dígitos
-
+            const btn = document.getElementById('btnSubmit');
             const payload = {
                 action: "cadastrarAluno",
-                idAmbiente: randomId,
+                idAmbiente: "EXEC" + Math.floor(1000 + Math.random() * 9000),
                 nome: document.getElementById('nome').value,
                 email: document.getElementById('email').value,
                 whatsapp: document.getElementById('whatsapp').value,
-                empresa: document.getElementById('empresa').value,
-                senha: pass
+                empresa: document.getElementById('empresa').value
             };
+
+            btn.innerText = "SINCRONIZANDO...";
+            btn.disabled = true;
 
             fetch(SCRIPT_URL, {
                 method: "POST",
-                mode: "no-cors",
                 body: JSON.stringify(payload)
-            }).then(() => {
-                document.getElementById('formCadastro').style.display = 'none';
-                document.getElementById('resultadoCadastro').style.display = 'block';
-                document.getElementById('resAmbiente').innerText = randomId;
-                document.getElementById('resSenha').innerText = pass;
+            })
+            .then(r => r.json())
+            .then(res => {
+                if(res.success) {
+                    document.getElementById('boxForm').style.display = 'none';
+                    document.getElementById('boxSuccess').style.display = 'block';
+                    document.getElementById('resId').innerText = payload.idAmbiente;
+                    document.getElementById('resSenha').innerText = res.senhaGerada;
 
-                const msg = `Olá! Seu acesso ao Saber⁺ foi gerado.\n\nUsuário: ${payload.email}\nSenha: ${pass}\nID: ${randomId}\n\nAcesse: https://ails.eumaisempresa.com.br/sabermais/painel/`;
-                document.getElementById('btnWhatsAppLink' ).href = `https://wa.me/${payload.whatsapp}?text=${encodeURIComponent(msg )}`;
+                    const msg = `Olá! Seu acesso ao Saber⁺ foi gerado.\n\nUsuário: ${payload.email}\nSenha: ${res.senhaGerada}\nID: ${payload.idAmbiente}\n\nAcesse: https://ails.eumaisempresa.com.br/sabermais/painel/`;
+                    document.getElementById('btnWa' ).href = `https://wa.me/${payload.whatsapp}?text=${encodeURIComponent(msg )}`;
+                } else {
+                    alert("⚠️ " + res.error);
+                    btn.innerText = "CRIAR MEU AMBIENTE";
+                    btn.disabled = false;
+                }
+            })
+            .catch(err => {
+                alert("Falha na conexão com o servidor AILS.");
+                btn.innerText = "CRIAR MEU AMBIENTE";
+                btn.disabled = false;
             });
         });
     </script>
