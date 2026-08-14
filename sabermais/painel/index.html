@@ -5,86 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saber⁺ - Ambiente Executivo AILS</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500;700&family=Lora:wght@400;500&display=swap' );
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500;700&family=Lora:wght@400;500;700&display=swap' );
         
         :root {
             --fundo: #060E18;
             --card: #0A1624;
             --dourado: #C4974A;
+            --dourado-sec: #D4AA62;
             --texto: #EEF0F2;
             --texto-sec: #7A8FA3;
             --bordas: rgba(196, 151, 74, 0.15);
         }
 
-        body { 
+        body, html { 
             background: var(--fundo); 
             color: var(--texto); 
             font-family: 'DM Sans', sans-serif; 
             margin: 0; 
-            overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
         }
 
         /* LOGIN VIEW */
-        #loginView {
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-        }
+        #loginView { display: flex; justify-content: center; align-items: center; height: 100vh; }
         .login-card {
             background: var(--card); border: 1px solid var(--bordas); padding: 40px;
             width: 100%; max-width: 400px; border-radius: 8px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
         input {
-            width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05);
+            width: 100%; padding: 14px; margin: 12px 0; background: rgba(255,255,255,0.05);
             border: 1px solid var(--bordas); color: #fff; border-radius: 4px; box-sizing: border-box;
+            font-size: 16px; outline: none;
         }
         button.btn-primary {
-            width: 100%; padding: 14px; background: var(--dourado); color: #000;
-            border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px;
+            width: 100%; padding: 16px; background: var(--dourado); color: #000;
+            border: none; border-radius: 4px; font-weight: bold; cursor: pointer; 
+            margin-top: 15px; font-size: 16px; letter-spacing: 1px;
         }
 
         /* LOBBY VIEW */
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .header h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 32px; }
+        #lobbyView { height: 100vh; overflow-y: auto; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; border-bottom: 1px solid var(--bordas); padding-bottom: 20px; }
+        .header h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 36px; margin: 0; }
         
-        .grid-cursos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .grid-cursos { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
         .course-card { 
-            background: var(--card); border: 1px solid var(--bordas); padding: 25px; 
-            border-radius: 12px; transition: transform 0.3s;
+            background: var(--card); border: 1px solid var(--bordas); padding: 30px; 
+            border-radius: 12px; transition: all 0.3s; display: flex; flex-direction: column; justify-content: space-between;
         }
-        .course-card:hover { transform: translateY(-5px); border-color: var(--dourado); }
-        .course-card h3 { color: var(--dourado); margin-top: 0; font-family: 'Cormorant Garamond', serif; font-size: 24px; }
-        .course-card p { color: var(--texto-sec); font-size: 14px; line-height: 1.6; }
+        .course-card:hover { transform: translateY(-8px); border-color: var(--dourado); }
+        .course-card h3 { color: var(--dourado); margin: 0 0 15px 0; font-family: 'Cormorant Garamond', serif; font-size: 26px; }
+        .course-card p { color: var(--texto-sec); font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
 
-        /* READ VIEW */
-        #readView { display: none; height: 100vh; grid-template-columns: 300px 1fr 350px; }
-        .sidebar { background: var(--card); border-right: 1px solid var(--bordas); padding: 20px; overflow-y: auto; }
-        .content-area { background: #fff; color: #1a1a1a; overflow-y: auto; position: relative; }
-        .notes-area { background: var(--card); border-left: 1px solid var(--bordas); padding: 20px; }
+        /* READ VIEW - LAYOUT FLEXBOX INQUEBRÁVEL */
+        #readView { display: none; height: 100vh; width: 100%; flex-direction: row; align-items: stretch; }
+        
+        .sidebar { width: 320px; min-width: 320px; background: var(--card); border-right: 1px solid var(--bordas); padding: 25px; overflow-y: auto; box-sizing: border-box; }
+        
+        .content-area { flex-grow: 1; background: #ffffff; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        
+        .notes-area { width: 380px; min-width: 380px; background: var(--card); border-left: 1px solid var(--bordas); padding: 25px; display: flex; flex-direction: column; box-sizing: border-box; }
 
         .aula-item { 
-            padding: 12px; margin-bottom: 8px; border-radius: 6px; cursor: pointer; 
-            border: 1px solid transparent; transition: 0.2s; font-size: 14px;
+            padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; 
+            border: 1px solid transparent; transition: 0.2s; font-size: 14px; color: var(--texto-sec);
         }
-        .aula-item:hover { background: rgba(196, 151, 74, 0.1); border-color: var(--bordas); }
+        .aula-item:hover { background: rgba(196, 151, 74, 0.1); color: var(--texto); }
         .aula-item.active { background: var(--dourado); color: #000; font-weight: bold; }
 
-        /* RENDERIZADOR DE CONTEUDO (ALTO CONTRASTE) */
-        .google-doc-render {
-            max-width: 800px; margin: 0 auto; padding: 60px 40px;
-            font-family: 'Lora', serif; font-size: 19px; line-height: 1.8; color: #1a1a1a;
+        /* RENDERIZADOR DE CONTEUDO (MÁXIMO CONTRASTE) */
+        .google-doc-render, .google-doc-render * { 
+            color: #000000 !important; 
+            background-color: transparent !important; 
+            font-family: 'Lora', serif !important;
         }
-        .google-doc-render p { margin-bottom: 25px; }
-        .google-doc-render h1, .google-doc-render h2 { color: #000; font-family: 'Cormorant Garamond', serif; }
-        .google-doc-render table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        .google-doc-render td { border: 1px solid #ddd; padding: 10px; }
+        .google-doc-render {
+            width: 100%; max-width: 800px; margin: 0 auto; padding: 80px 40px;
+            font-size: 20px; line-height: 1.8; box-sizing: border-box;
+        }
+        .google-doc-render p { margin-bottom: 20px; color: #000000 !important; }
+        .google-doc-render b, .google-doc-render strong { font-weight: 700 !important; color: #000 !important; }
+        .google-doc-render table { width: 100%; border-collapse: collapse; margin: 25px 0; border: 1px solid #000 !important; }
+        .google-doc-render td { border: 1px solid #000 !important; padding: 10px; color: #000 !important; }
 
         textarea { 
-            width: 100%; height: 300px; background: #fff9c4; border: none; 
-            padding: 15px; border-radius: 4px; font-family: 'DM Sans', sans-serif; resize: none;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); color: #333;
+            width: 100%; flex-grow: 1; background: #fff9c4; border: none; 
+            padding: 20px; border-radius: 4px; font-family: 'DM Sans', sans-serif; resize: none;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1); color: #333; font-size: 16px; margin-bottom: 20px;
+            box-sizing: border-box;
         }
 
-        .btn-voltar { color: var(--dourado); cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .btn-voltar { color: var(--dourado); cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 30px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -92,61 +106,58 @@
     <!-- TELA DE LOGIN -->
     <div id="loginView">
         <div class="login-card">
-            <h1>Saber⁺ Login</h1>
-            <input type="email" id="loginEmail" placeholder="Seu e-mail cadastrado">
+            <h1 style="color:var(--dourado); font-size:32px; margin-bottom:10px; font-family:'Cormorant Garamond';">Saber⁺</h1>
+            <p style="color:var(--texto-sec); margin-bottom:30px;">Ambiente de Inteligência Leve</p>
+            <input type="email" id="loginEmail" placeholder="Seu e-mail">
             <input type="password" id="loginSenha" placeholder="Sua senha">
             <button class="btn-primary" onclick="fazerLogin()">ACESSAR AMBIENTE</button>
         </div>
     </div>
 
-    <!-- TELA DE LOBBY (CURSOS) -->
+    <!-- TELA DE LOBBY -->
     <div id="lobbyView" style="display:none;">
         <div class="container">
             <div class="header">
-                <h1>Bem-vindo, <span id="userName">...</span></h1>
-                <button onclick="location.reload()" style="background:none; border:none; color:var(--texto-sec); cursor:pointer;">Sair</button>
+                <h1>Olá, <span id="userName">...</span></h1>
+                <button onclick="location.reload()" style="background:none; border:1px solid var(--texto-sec); color:var(--texto-sec); cursor:pointer; padding:8px 15px; border-radius:4px;">SAIR</button>
             </div>
-            <div class="grid-cursos" id="gridCursos">
-                <!-- Cards carregados via JS -->
-            </div>
+            <div class="grid-cursos" id="gridCursos"></div>
         </div>
     </div>
 
-    <!-- TELA DE LEITURA -->
+    <!-- TELA DE LEITURA (PLAYER FLEXBOX) -->
     <div id="readView">
         <div class="sidebar">
             <div class="btn-voltar" onclick="voltarLobby()">← Voltar ao Lobby</div>
-            <h2 id="tituloCursoSidebar" style="color:var(--dourado); font-family:'Cormorant Garamond';">Curso</h2>
+            <h2 id="tituloCursoSidebar" style="color:var(--dourado); font-family:'Cormorant Garamond'; font-size:24px; margin-bottom:30px;">Curso</h2>
             <div id="listaAulas"></div>
         </div>
         <div class="content-area" id="conteudoAula">
-            <!-- Conteúdo do Google Doc -->
+            <!-- Conteúdo injetado aqui -->
         </div>
         <div class="notes-area">
-            <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0;">Suas Anotações</h3>
-            <textarea id="campoNota" placeholder="Escreva aqui seus insights sobre esta aula..."></textarea>
-            <button class="btn-primary" onclick="salvarNota()">Salvar Insight</button>
+            <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0;">Seus Insights</h3>
+            <textarea id="campoNota" placeholder="O que você aprendeu com esta aula?"></textarea>
+            <button class="btn-primary" id="btnSalvarNota" onclick="salvarNota()">SALVAR INSIGHT</button>
         </div>
     </div>
 
     <script>
-        // SUBSTITUA PELA SUA URL DO APPS SCRIPT
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         
         let currentUser = null;
         let dbCursos = [];
+        let aulaAtiva = null;
 
         function fazerLogin( ) {
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginSenha').value;
             const btn = document.querySelector('.btn-primary');
-            
-            if(!email || !senha) return alert("Preencha todos os campos.");
-            
-            btn.innerText = "Autenticando...";
+            if(!email || !senha) return alert("Preencha os campos.");
+            btn.innerText = "CONECTANDO...";
             btn.disabled = true;
 
-            fetch(`${SCRIPT_URL}?action=validarAcesso&email=${email}&senha=${senha}`)
+            fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`)
                 .then(r => r.json())
                 .then(res => {
                     if(res.autorizado) {
@@ -156,14 +167,15 @@
                         document.getElementById('lobbyView').style.display = 'block';
                         carregarCursos();
                     } else {
-                        alert("Erro: " + res.error);
+                        alert(res.error || "Acesso negado.");
                         btn.innerText = "ACESSAR AMBIENTE";
                         btn.disabled = false;
                     }
                 })
                 .catch(err => {
-                    alert("Erro na conexão com o servidor.");
+                    alert("Falha na conexao com o servidor AILS.");
                     btn.disabled = false;
+                    btn.innerText = "ACESSAR AMBIENTE";
                 });
         }
 
@@ -186,21 +198,19 @@
             idsUnicos.forEach(id => {
                 const curso = dbCursos.find(c => c.idCurso === id);
                 const jaComprou = (currentUser.cursosComprados || []).includes(id.toString());
-                
-                // FORMATADOR DE MOEDA BRASILEIRA (Corrige 29.9 para R$ 29,90)
-                let valorNumerico = parseFloat(curso.preco.toString().replace(',', '.')) || 0;
-                let precoFormatado = valorNumerico.toLocaleString('pt-BR', { 
-                    style: 'currency', currency: 'BRL', minimumFractionDigits: 2 
-                });
+                let precoNumerico = parseFloat(curso.preco.toString().replace(',', '.')) || 0;
+                let precoFormatado = precoNumerico.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                 
                 const div = document.createElement('div');
                 div.className = "course-card";
                 div.innerHTML = `
-                    <h3>${curso.nomeCurso}</h3>
-                    <p>${curso.descricao || 'Explore este novo módulo de conhecimento estratégico.'}</p>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span style="color:var(--dourado-secundario); font-weight:bold;">${jaComprou ? '✓ ADQUIRIDO' : precoFormatado}</span>
-                        <button onclick="abrirCurso('${id}')" style="padding:10px 15px; background:${jaComprou ? 'var(--dourado)' : 'transparent'}; border:1px solid var(--dourado); color:${jaComprou ? '#000' : '#C4974A'}; cursor:pointer; font-weight:bold; border-radius:4px;">
+                    <div>
+                        <h3>${curso.nomeCurso}</h3>
+                        <p>${curso.descricao || 'Módulo estratégico focado em resultados.'}</p>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--bordas); padding-top:20px;">
+                        <span style="color:var(--dourado-sec); font-weight:bold;">${jaComprou ? 'ADQUIRIDO' : precoFormatado}</span>
+                        <button onclick="abrirCurso('${id}')" style="padding:10px 18px; background:${jaComprou ? 'var(--dourado)' : 'transparent'}; border:1px solid var(--dourado); color:${jaComprou ? '#000' : '#C4974A'}; cursor:pointer; font-weight:bold; border-radius:4px;">
                             ${jaComprou ? 'ESTUDAR' : 'DEGUSTAÇÃO'}
                         </button>
                     </div>
@@ -212,21 +222,17 @@
         function abrirCurso(idCurso) {
             const aulas = dbCursos.filter(c => c.idCurso === idCurso);
             const jaComprou = (currentUser.cursosComprados || []).includes(idCurso.toString());
-            
             document.getElementById('lobbyView').style.display = 'none';
-            document.getElementById('readView').style.display = 'grid';
+            document.getElementById('readView').style.display = 'flex'; // USANDO FLEX AQUI
             document.getElementById('tituloCursoSidebar').innerText = aulas[0].nomeCurso;
-            
             const lista = document.getElementById('listaAulas');
             lista.innerHTML = "";
-            
             aulas.forEach((aula, index) => {
-                const bloqueada = !jaComprou && index > 0; // Só libera a primeira aula se não comprou
+                const bloqueada = !jaComprou && index > 0;
                 const div = document.createElement('div');
-                div.className = `aula-item ${bloqueada ? 'bloqueada' : ''}`;
-                div.style.opacity = bloqueada ? '0.5' : '1';
-                div.innerHTML = `${aula.tituloAula} ${bloqueada ? '<span style="float:right">🔒</span>' : ''}`;
-                
+                div.className = `aula-item`;
+                if(bloqueada) div.style.opacity = '0.3';
+                div.innerHTML = `${index + 1}. ${aula.tituloAula} ${bloqueada ? '🔒' : ''}`;
                 if(!bloqueada) {
                     div.onclick = () => {
                         document.querySelectorAll('.aula-item').forEach(i => i.classList.remove('active'));
@@ -234,40 +240,51 @@
                         carregarConteudo(aula);
                     };
                 } else {
-                    div.onclick = () => {
-                        if(confirm("Este capítulo é exclusivo. Deseja adquirir o curso completo?")) {
-                            window.open(`https://ails.eumaisempresa.com.br/pagamento/?curso=${idCurso}&ambiente=${currentUser.idAmbiente}`, '_blank' );
-                        }
-                    };
+                    div.onclick = () => alert("Adquira o curso para liberar esta aula.");
                 }
                 lista.appendChild(div);
             });
-
-            // Carrega a primeira aula automaticamente
             carregarConteudo(aulas[0]);
         }
 
         function carregarConteudo(aula) {
+            aulaAtiva = aula;
             const area = document.getElementById('conteudoAula');
-            area.innerHTML = "<div style='padding:40px; text-align:center;'>Carregando conteúdo estratégico...</div>";
-            
+            area.innerHTML = "<div style='padding:100px; text-align:center; color:#333; font-family:Lora;'>Sincronizando conteúdo estratégico AILS...</div>";
+            area.scrollTop = 0;
             fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${currentUser.idAmbiente}&idCurso=${aula.idCurso}&idAula=${aula.idAula}&idDoc=${aula.idDoc}`)
                 .then(r => r.json())
                 .then(res => {
-                    area.innerHTML = res.conteudo;
+                    area.innerHTML = res.success ? res.conteudo : `<div style='padding:50px; color:red;'>${res.error}</div>`;
                     document.getElementById('campoNota').value = res.anotacao || "";
+                })
+                .catch(err => {
+                    area.innerHTML = "<div style='padding:50px; color:red;'>Erro ao conectar com o Drive.</div>";
                 });
         }
 
         function salvarNota() {
+            if(!aulaAtiva) return;
             const texto = document.getElementById('campoNota').value;
-            // Pegar aula ativa para salvar (pode ser implementado via POST)
-            alert("Sua anotação foi salva na nuvem AILS.");
+            const btn = document.getElementById('btnSalvarNota');
+            btn.innerText = "SALVANDO...";
+            btn.disabled = true;
+            fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "salvarAnotacao", idAmbiente: currentUser.idAmbiente, idCurso: aulaAtiva.idCurso, idAula: aulaAtiva.idAula, texto: texto })
+            })
+            .then(r => r.json())
+            .then(res => {
+                btn.innerText = "SALVO!";
+                setTimeout(() => { btn.innerText = "SALVAR INSIGHT"; btn.disabled = false; }, 2000);
+            })
+            .catch(err => { alert("Erro ao salvar."); btn.innerText = "SALVAR INSIGHT"; btn.disabled = false; });
         }
 
         function voltarLobby() {
             document.getElementById('lobbyView').style.display = 'block';
             document.getElementById('readView').style.display = 'none';
+            aulaAtiva = null;
         }
     </script>
 </body>
