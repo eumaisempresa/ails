@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saber⁺ - Ambiente Executivo AILS</title>
+    <title>Saber⁺ - Ambiente Inteligente AILS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500;700&family=Lora:wght@400;500;700&display=swap' );
         
@@ -11,279 +11,216 @@
             --fundo: #060E18;
             --card: #0A1624;
             --dourado: #C4974A;
-            --dourado-sec: #D4AA62;
             --texto: #EEF0F2;
             --texto-sec: #7A8FA3;
             --bordas: rgba(196, 151, 74, 0.15);
         }
 
-        body, html { 
-            background: var(--fundo); 
-            color: var(--texto); 
-            font-family: 'DM Sans', sans-serif; 
-            margin: 0; 
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body, html { background: var(--fundo); color: var(--texto); font-family: 'DM Sans', sans-serif; height: 100vh; overflow: hidden; }
+
+        /* HEADER */
+        header {
+            height: 70px; background: var(--card); border-bottom: 1px solid var(--bordas);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 20px;
+            z-index: 100; position: relative;
+        }
+        .brand { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 24px; font-weight: bold; }
+
+        /* LAYOUT PRINCIPAL */
+        .painel-wrapper { display: flex; height: calc(100vh - 70px); width: 100%; position: relative; }
+
+        /* SIDEBAR (MENU AULAS) */
+        .sidebar {
+            width: 300px; min-width: 300px; background: var(--card); border-right: 1px solid var(--bordas);
+            padding: 20px; overflow-y: auto; transition: transform 0.3s ease;
         }
 
-        /* LOGIN VIEW */
-        #loginView { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        /* ÁREA DE CONTEÚDO */
+        .content-body { flex: 1; background: #EAEFF4; overflow-y: auto; padding: 40px 20px; position: relative; }
+        .folha-caderno {
+            background: #fff; max-width: 850px; margin: 0 auto; min-height: 100%;
+            padding: 60px 50px; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        /* TEXTO DO GOOGLE DRIVE */
+        .google-doc-render {
+            font-family: 'Lora', serif; font-size: 18px; line-height: 1.8; color: #1a1a1a !important;
+            text-align: justify;
+        }
+        .google-doc-render * { color: #1a1a1a !important; background: transparent !important; }
+        .google-doc-render h1, .google-doc-render h2 { font-family: 'Cormorant Garamond', serif; color: #0A3663 !important; margin: 30px 0 15px; }
+
+        /* PAINEL DE NOTAS */
+        .notes-panel {
+            width: 350px; min-width: 350px; background: var(--card); border-left: 1px solid var(--bordas);
+            padding: 20px; display: flex; flex-direction: column; transition: transform 0.3s ease;
+        }
+        .post-it {
+            background: #FEF5B1; flex: 1; padding: 20px; border-radius: 2px;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.2); position: relative; margin-bottom: 20px;
+        }
+        .post-it textarea {
+            width: 100%; height: 100%; background: transparent; border: none; outline: none;
+            font-family: 'Lora', serif; font-size: 16px; color: #333; resize: none;
+        }
+
+        /* RESPONSIVIDADE (MOBILE) */
+        @media (max-width: 900px) {
+            .sidebar { position: fixed; left: 0; top: 70px; bottom: 0; z-index: 99; transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            
+            .notes-panel { position: fixed; right: 0; top: 70px; bottom: 0; z-index: 99; transform: translateX(100%); }
+            .notes-panel.open { transform: translateX(0); }
+
+            .folha-caderno { padding: 40px 20px; }
+            .google-doc-render { font-size: 16px; }
+        }
+
+        /* BOTÕES FLUTUANTES MOBILE */
+        .mobile-btn {
+            display: none; position: fixed; bottom: 20px; width: 50px; height: 50px;
+            background: var(--dourado); color: #000; border-radius: 50%;
+            justify-content: center; align-items: center; font-size: 20px; z-index: 1000; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        @media (max-width: 900px) {
+            .mobile-btn.menu { display: flex; left: 20px; }
+            .mobile-btn.notes { display: flex; right: 20px; }
+        }
+
+        /* LOGIN OVERLAY */
+        #loginOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--fundo); display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
         .login-card {
             background: var(--card); border: 1px solid var(--bordas); padding: 40px;
-            width: 100%; max-width: 400px; border-radius: 8px; text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 90%; max-width: 400px; border-radius: 8px; text-align: center;
         }
-        input {
-            width: 100%; padding: 14px; margin: 12px 0; background: rgba(255,255,255,0.05);
-            border: 1px solid var(--bordas); color: #fff; border-radius: 4px; box-sizing: border-box;
-            font-size: 16px; outline: none;
+        .login-card input {
+            width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--bordas); color: #fff; border-radius: 4px;
         }
-        button.btn-primary {
-            width: 100%; padding: 16px; background: var(--dourado); color: #000;
-            border: none; border-radius: 4px; font-weight: bold; cursor: pointer; 
-            margin-top: 15px; font-size: 16px; letter-spacing: 1px;
+        .btn-gold {
+            width: 100%; padding: 14px; background: var(--dourado); color: #000;
+            border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
-
-        /* LOBBY VIEW */
-        #lobbyView { height: 100vh; overflow-y: auto; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; border-bottom: 1px solid var(--bordas); padding-bottom: 20px; }
-        .header h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 36px; margin: 0; }
-        
-        .grid-cursos { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; }
-        .course-card { 
-            background: var(--card); border: 1px solid var(--bordas); padding: 30px; 
-            border-radius: 12px; transition: all 0.3s; display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .course-card:hover { transform: translateY(-8px); border-color: var(--dourado); }
-        .course-card h3 { color: var(--dourado); margin: 0 0 15px 0; font-family: 'Cormorant Garamond', serif; font-size: 26px; }
-        .course-card p { color: var(--texto-sec); font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
-
-        /* READ VIEW - LAYOUT FLEXBOX REFORÇADO */
-        #readView { display: none; height: 100vh; width: 100%; flex-direction: row; align-items: stretch; }
-        
-        .sidebar { width: 320px; min-width: 320px; background: var(--card); border-right: 1px solid var(--bordas); padding: 25px; overflow-y: auto; box-sizing: border-box; }
-        
-        .content-area { flex-grow: 1; background: #ffffff; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
-        
-        .notes-area { width: 380px; min-width: 380px; background: var(--card); border-left: 1px solid var(--bordas); padding: 25px; display: flex; flex-direction: column; box-sizing: border-box; }
-
-        .aula-item { 
-            padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; 
-            border: 1px solid transparent; transition: 0.2s; font-size: 14px; color: var(--texto-sec);
-        }
-        .aula-item:hover { background: rgba(196, 151, 74, 0.1); color: var(--texto); }
-        .aula-item.active { background: var(--dourado); color: #000; font-weight: bold; }
-
-        /* RENDERIZADOR DE CONTEUDO (MÁXIMO CONTRASTE) */
-        .google-doc-render {
-            width: 100%; max-width: 800px; margin: 0 auto; padding: 80px 40px;
-            font-family: 'Lora', serif; font-size: 20px; line-height: 1.8; box-sizing: border-box;
-            color: #1a1a1a !important;
-        }
-        .google-doc-render * { 
-            color: #1a1a1a !important; 
-            background-color: transparent !important; 
-        }
-        .google-doc-render p { margin-bottom: 25px; }
-        .google-doc-render b, .google-doc-render strong { font-weight: 700 !important; color: #000 !important; }
-        .google-doc-render table { width: 100%; border-collapse: collapse; margin: 25px 0; border: 1px solid #000 !important; }
-        .google-doc-render td { border: 1px solid #000 !important; padding: 10px; }
-
-        textarea { 
-            width: 100%; flex-grow: 1; background: #fff9c4; border: none; 
-            padding: 20px; border-radius: 4px; font-family: 'DM Sans', sans-serif; resize: none;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.1); color: #333; font-size: 16px; margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
-        .btn-voltar { color: var(--dourado); cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 30px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
-    <div id="loginView">
+    <div id="loginOverlay">
         <div class="login-card">
-            <h1 style="color:var(--dourado); font-size:32px; margin-bottom:10px; font-family:'Cormorant Garamond';">Saber⁺</h1>
-            <p style="color:var(--texto-sec); margin-bottom:30px;">Ambiente de Inteligência Leve</p>
-            <input type="email" id="loginEmail" placeholder="Seu e-mail">
-            <input type="password" id="loginSenha" placeholder="Sua senha">
-            <button class="btn-primary" onclick="fazerLogin()">ACESSAR AMBIENTE</button>
+            <h2 style="color:var(--dourado); margin-bottom:10px;">AILS Saber⁺</h2>
+            <p style="color:var(--texto-sec); font-size:14px; margin-bottom:20px;">Ambiente Inteligente de Negócios</p>
+            <input type="email" id="loginEmail" placeholder="E-mail">
+            <input type="password" id="loginSenha" placeholder="Senha">
+            <button class="btn-gold" onclick="fazerLogin()">AUTENTICAR</button>
         </div>
     </div>
 
-    <!-- TELA DE LOBBY -->
-    <div id="lobbyView" style="display:none;">
-        <div class="container">
-            <div class="header">
-                <h1>Olá, <span id="userName">...</span></h1>
-                <button onclick="location.reload()" style="background:none; border:1px solid var(--texto-sec); color:var(--texto-sec); cursor:pointer; padding:8px 15px; border-radius:4px;">SAIR</button>
-            </div>
-            <div class="grid-cursos" id="gridCursos"></div>
-        </div>
-    </div>
+    <header>
+        <div class="brand">EU⁺ Saber</div>
+        <div id="userInfo" style="font-size: 14px; color: var(--dourado);"></div>
+    </header>
 
-    <!-- TELA DE LEITURA -->
-    <div id="readView">
-        <div class="sidebar">
-            <div class="btn-voltar" onclick="voltarLobby()">← Voltar ao Lobby</div>
-            <h2 id="tituloCursoSidebar" style="color:var(--dourado); font-family:'Cormorant Garamond'; font-size:24px; margin-bottom:30px;">Curso</h2>
+    <div class="painel-wrapper">
+        <div class="sidebar" id="sidebar">
+            <h4 style="color:var(--texto-sec); font-size:12px; text-transform:uppercase; margin-bottom:15px;">Cronograma</h4>
             <div id="listaAulas"></div>
         </div>
-        <div class="content-area" id="conteudoAula"></div>
-        <div class="notes-area">
-            <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0;">Seus Insights</h3>
-            <textarea id="campoNota" placeholder="O que você aprendeu com esta aula?"></textarea>
-            <button class="btn-primary" id="btnSalvarNota" onclick="salvarNota()">SALVAR INSIGHT</button>
+
+        <div class="content-body">
+            <div class="folha-caderno">
+                <h1 id="aulaTitulo" style="margin-bottom: 20px; font-family:'Cormorant Garamond'; color:#0A3663;">Selecione uma aula</h1>
+                <div id="aulaConteudo" class="google-doc-render">
+                    O conteúdo da aula aparecerá aqui após a seleção no menu.
+                </div>
+            </div>
+        </div>
+
+        <div class="notes-panel" id="notesPanel">
+            <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-bottom:10px;">Insights</h3>
+            <div class="post-it">
+                <textarea id="txtAnotacoes" placeholder="Escreva aqui suas reflexões..."></textarea>
+            </div>
+            <button class="btn-gold" onclick="salvarNota()">SALVAR INSIGHT</button>
         </div>
     </div>
 
+    <!-- BOTÕES MOBILE -->
+    <div class="mobile-btn menu" onclick="toggleSidebar()">📚</div>
+    <div class="mobile-btn notes" onclick="toggleNotes()">✍️</div>
+
     <script>
-        // SUBSTITUA PELA SUA URL DO APPS SCRIPT
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         
         let currentUser = null;
         let dbCursos = [];
         let aulaAtiva = null;
 
-        function fazerLogin( ) {
+        function toggleSidebar( ) { document.getElementById('sidebar').classList.toggle('open'); }
+        function toggleNotes() { document.getElementById('notesPanel').classList.toggle('open'); }
+
+        function fazerLogin() {
             const email = document.getElementById('loginEmail').value;
             const senha = document.getElementById('loginSenha').value;
-            const btn = document.querySelector('.btn-primary');
-            if(!email || !senha) return alert("Preencha os campos.");
-            btn.innerText = "CONECTANDO...";
-            btn.disabled = true;
-
             fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`)
-                .then(r => r.json())
-                .then(res => {
+                .then(r => r.json()).then(res => {
                     if(res.autorizado) {
                         currentUser = res;
-                        document.getElementById('userName').innerText = res.nome;
-                        document.getElementById('loginView').style.display = 'none';
-                        document.getElementById('lobbyView').style.display = 'block';
-                        carregarCursos();
-                    } else {
-                        alert(res.error || "Acesso negado.");
-                        btn.innerText = "ACESSAR AMBIENTE";
-                        btn.disabled = false;
-                    }
-                })
-                .catch(err => {
-                    alert("Falha na conexao com o servidor AILS.");
-                    btn.disabled = false;
-                    btn.innerText = "ACESSAR AMBIENTE";
+                        document.getElementById('userInfo').innerText = `Olá, ${res.nome}`;
+                        document.getElementById('loginOverlay').style.display = 'none';
+                        carregarMenu();
+                    } else { alert("Acesso negado."); }
                 });
         }
 
-        function carregarCursos() {
-            fetch(`${SCRIPT_URL}?action=carregarMenu`)
-                .then(r => r.json())
-                .then(res => {
-                    if(res.success) {
-                        dbCursos = res.dados;
-                        renderizarLobby();
-                    }
-                });
-        }
-
-        function renderizarLobby() {
-            const grid = document.getElementById('gridCursos');
-            grid.innerHTML = "";
-            const idsUnicos = [...new Set(dbCursos.map(c => c.idCurso))];
-            
-            idsUnicos.forEach(id => {
-                const curso = dbCursos.find(c => c.idCurso === id);
-                const jaComprou = (currentUser.cursosComprados || []).includes(id.toString());
-                let precoNumerico = parseFloat(curso.preco.toString().replace(',', '.')) || 0;
-                let precoFormatado = precoNumerico.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                
-                const div = document.createElement('div');
-                div.className = "course-card";
-                div.innerHTML = `
-                    <div>
-                        <h3>${curso.nomeCurso}</h3>
-                        <p>${curso.descricao || 'Módulo estratégico focado em resultados.'}</p>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--bordas); padding-top:20px;">
-                        <span style="color:var(--dourado-sec); font-weight:bold;">${jaComprou ? 'ADQUIRIDO' : precoFormatado}</span>
-                        <button onclick="abrirCurso('${id}')" style="padding:10px 18px; background:${jaComprou ? 'var(--dourado)' : 'transparent'}; border:1px solid var(--dourado); color:${jaComprou ? '#000' : '#C4974A'}; cursor:pointer; font-weight:bold; border-radius:4px;">
-                            ${jaComprou ? 'ESTUDAR' : 'DEGUSTAÇÃO'}
-                        </button>
-                    </div>
-                `;
-                grid.appendChild(div);
+        function carregarMenu() {
+            fetch(`${SCRIPT_URL}?action=carregarMenu`).then(r => r.json()).then(res => {
+                if(res.success) {
+                    dbCursos = res.dados;
+                    renderizarMenu();
+                }
             });
         }
 
-        function abrirCurso(idCurso) {
-            const aulas = dbCursos.filter(c => c.idCurso === idCurso);
-            const jaComprou = (currentUser.cursosComprados || []).includes(idCurso.toString());
-            document.getElementById('lobbyView').style.display = 'none';
-            document.getElementById('readView').style.display = 'flex';
-            document.getElementById('tituloCursoSidebar').innerText = aulas[0].nomeCurso;
+        function renderizarMenu() {
             const lista = document.getElementById('listaAulas');
             lista.innerHTML = "";
-            aulas.forEach((aula, index) => {
-                const bloqueada = !jaComprou && index > 0;
-                const div = document.createElement('div');
-                div.className = `aula-item`;
-                if(bloqueada) div.style.opacity = '0.3';
-                div.innerHTML = `${index + 1}. ${aula.tituloAula} ${bloqueada ? '🔒' : ''}`;
-                if(!bloqueada) {
-                    div.onclick = () => {
-                        document.querySelectorAll('.aula-item').forEach(i => i.classList.remove('active'));
-                        div.classList.add('active');
-                        carregarConteudo(aula);
-                    };
-                } else {
-                    div.onclick = () => alert("Adquira o curso para liberar esta aula.");
-                }
-                lista.appendChild(div);
+            dbCursos.forEach((aula, index) => {
+                const item = document.createElement('div');
+                item.style.cssText = "padding:12px; margin-bottom:8px; background:rgba(255,255,255,0.05); border-radius:4px; cursor:pointer; font-size:14px;";
+                item.innerText = `${index + 1}. ${aula.tituloAula}`;
+                item.onclick = () => {
+                    document.getElementById('aulaTitulo').innerText = aula.tituloAula;
+                    carregarAula(aula);
+                    if(window.innerWidth <= 900) toggleSidebar();
+                };
+                lista.appendChild(item);
             });
-            carregarConteudo(aulas[0]);
         }
 
-        function carregarConteudo(aula) {
+        function carregarAula(aula) {
             aulaAtiva = aula;
-            const area = document.getElementById('conteudoAula');
-            area.innerHTML = "<div style='padding:100px; text-align:center; color:#333; font-family:Lora;'>Sincronizando conteúdo estratégico AILS...</div>";
-            area.scrollTop = 0;
+            const area = document.getElementById('aulaConteudo');
+            area.innerHTML = "Sincronizando conteúdo...";
             fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${currentUser.idAmbiente}&idCurso=${aula.idCurso}&idAula=${aula.idAula}&idDoc=${aula.idDoc}`)
-                .then(r => r.json())
-                .then(res => {
-                    area.innerHTML = res.success ? res.conteudo : `<div style='padding:50px; color:red;'>${res.error}</div>`;
-                    document.getElementById('campoNota').value = res.anotacao || "";
-                })
-                .catch(err => {
-                    area.innerHTML = "<div style='padding:50px; color:red;'>Erro ao conectar com o Drive.</div>";
+                .then(r => r.json()).then(res => {
+                    area.innerHTML = res.conteudo;
+                    document.getElementById('txtAnotacoes').value = res.anotacao || "";
                 });
         }
 
         function salvarNota() {
             if(!aulaAtiva) return;
-            const texto = document.getElementById('campoNota').value;
-            const btn = document.getElementById('btnSalvarNota');
-            btn.innerText = "SALVANDO...";
-            btn.disabled = true;
+            const texto = document.getElementById('txtAnotacoes').value;
             fetch(SCRIPT_URL, {
                 method: "POST",
                 body: JSON.stringify({ action: "salvarAnotacao", idAmbiente: currentUser.idAmbiente, idCurso: aulaAtiva.idCurso, idAula: aulaAtiva.idAula, texto: texto })
-            })
-            .then(r => r.json())
-            .then(res => {
-                btn.innerText = "SALVO!";
-                setTimeout(() => { btn.innerText = "SALVAR INSIGHT"; btn.disabled = false; }, 2000);
-            })
-            .catch(err => { alert("Erro ao salvar."); btn.innerText = "SALVAR INSIGHT"; btn.disabled = false; });
-        }
-
-        function voltarLobby() {
-            document.getElementById('lobbyView').style.display = 'block';
-            document.getElementById('readView').style.display = 'none';
-            aulaAtiva = null;
+            }).then(() => alert("Insight salvo!"));
         }
     </script>
 </body>
