@@ -60,7 +60,7 @@
         .course-card h3 { color: var(--dourado); margin: 0 0 15px 0; font-family: 'Cormorant Garamond', serif; font-size: 26px; }
         .course-card p { color: var(--texto-sec); font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
 
-        /* READ VIEW - LAYOUT FLEXBOX INQUEBRÁVEL */
+        /* READ VIEW - LAYOUT FLEXBOX REFORÇADO */
         #readView { display: none; height: 100vh; width: 100%; flex-direction: row; align-items: stretch; }
         
         .sidebar { width: 320px; min-width: 320px; background: var(--card); border-right: 1px solid var(--bordas); padding: 25px; overflow-y: auto; box-sizing: border-box; }
@@ -77,19 +77,19 @@
         .aula-item.active { background: var(--dourado); color: #000; font-weight: bold; }
 
         /* RENDERIZADOR DE CONTEUDO (MÁXIMO CONTRASTE) */
-        .google-doc-render, .google-doc-render * { 
-            color: #000000 !important; 
-            background-color: transparent !important; 
-            font-family: 'Lora', serif !important;
-        }
         .google-doc-render {
             width: 100%; max-width: 800px; margin: 0 auto; padding: 80px 40px;
-            font-size: 20px; line-height: 1.8; box-sizing: border-box;
+            font-family: 'Lora', serif; font-size: 20px; line-height: 1.8; box-sizing: border-box;
+            color: #1a1a1a !important;
         }
-        .google-doc-render p { margin-bottom: 20px; color: #000000 !important; }
+        .google-doc-render * { 
+            color: #1a1a1a !important; 
+            background-color: transparent !important; 
+        }
+        .google-doc-render p { margin-bottom: 25px; }
         .google-doc-render b, .google-doc-render strong { font-weight: 700 !important; color: #000 !important; }
         .google-doc-render table { width: 100%; border-collapse: collapse; margin: 25px 0; border: 1px solid #000 !important; }
-        .google-doc-render td { border: 1px solid #000 !important; padding: 10px; color: #000 !important; }
+        .google-doc-render td { border: 1px solid #000 !important; padding: 10px; }
 
         textarea { 
             width: 100%; flex-grow: 1; background: #fff9c4; border: none; 
@@ -125,16 +125,14 @@
         </div>
     </div>
 
-    <!-- TELA DE LEITURA (PLAYER FLEXBOX) -->
+    <!-- TELA DE LEITURA -->
     <div id="readView">
         <div class="sidebar">
             <div class="btn-voltar" onclick="voltarLobby()">← Voltar ao Lobby</div>
             <h2 id="tituloCursoSidebar" style="color:var(--dourado); font-family:'Cormorant Garamond'; font-size:24px; margin-bottom:30px;">Curso</h2>
             <div id="listaAulas"></div>
         </div>
-        <div class="content-area" id="conteudoAula">
-            <!-- Conteúdo injetado aqui -->
-        </div>
+        <div class="content-area" id="conteudoAula"></div>
         <div class="notes-area">
             <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0;">Seus Insights</h3>
             <textarea id="campoNota" placeholder="O que você aprendeu com esta aula?"></textarea>
@@ -143,6 +141,7 @@
     </div>
 
     <script>
+        // SUBSTITUA PELA SUA URL DO APPS SCRIPT
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         
         let currentUser = null;
@@ -223,7 +222,7 @@
             const aulas = dbCursos.filter(c => c.idCurso === idCurso);
             const jaComprou = (currentUser.cursosComprados || []).includes(idCurso.toString());
             document.getElementById('lobbyView').style.display = 'none';
-            document.getElementById('readView').style.display = 'flex'; // USANDO FLEX AQUI
+            document.getElementById('readView').style.display = 'flex';
             document.getElementById('tituloCursoSidebar').innerText = aulas[0].nomeCurso;
             const lista = document.getElementById('listaAulas');
             lista.innerHTML = "";
