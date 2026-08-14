@@ -7,19 +7,30 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&display=swap'  );
         :root { --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --bordas: rgba(196, 151, 74, 0.2); }
-        body { background: var(--fundo); color: #EEF0F2; font-family: 'DM Sans', sans-serif; padding: 40px; margin: 0; }
+        body { background: var(--fundo); color: #EEF0F2; font-family: 'DM Sans', sans-serif; padding: 0; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        .main-content { flex: 1; padding: 40px; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--bordas); padding-bottom: 20px; }
         .card { background: var(--card); border: 1px solid var(--bordas); padding: 25px; border-radius: 8px; margin-bottom: 20px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
         th, td { text-align: left; padding: 15px; border-bottom: 1px solid var(--bordas); font-size: 13px; }
         th { color: var(--dourado); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
         .btn-acao { padding: 8px 12px; background: transparent; border: 1px solid var(--dourado); color: var(--dourado); cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 10px; margin-bottom: 5px; display: block; width: 100%; text-align: center; text-decoration: none; }
         .btn-acao:hover { background: var(--dourado); color: #000; }
         .btn-wa { border-color: #25D366; color: #25D366; }
         .btn-wa:hover { background: #25D366; color: #fff; }
-        .tag-curso { display: inline-block; padding: 2px 8px; background: rgba(196, 151, 74, 0.1); border: 1px solid var(--dourado); border-radius: 10px; font-size: 10px; margin: 2px; color: #fff; }
+        .tag-curso { display: inline-block; padding: 2px 8px; background: rgba(196, 151, 74, 0.05); border: 1px solid var(--bordas); border-radius: 4px; font-size: 10px; margin: 2px; color: #fff; }
+        .tag-cat { color: var(--dourado); font-weight: bold; margin-right: 5px; }
+        
+        /* FOOTER */
+        footer { background: var(--card); border-top: 1px solid var(--bordas); padding: 40px; text-align: center; margin-top: 50px; }
+        .footer-logo { font-family: 'Cormorant Garamond'; color: var(--dourado); font-size: 28px; font-weight: bold; margin-bottom: 20px; }
+        .footer-links { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
+        .footer-links a { color: #7A8FA3; text-decoration: none; font-size: 13px; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .footer-links a:hover { color: var(--dourado); }
+
         #authOverlay { position: fixed; inset: 0; background: var(--fundo); display: flex; justify-content: center; align-items: center; z-index: 999; }
         input, select { background: #0E1E30; border: 1px solid var(--bordas); color: #fff; padding: 10px; border-radius: 4px; outline: none; width: 100%; font-size: 12px; }
+        .btn-refresh { background: var(--dourado); color: #000; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -31,25 +42,41 @@
         </div>
     </div>
 
-    <div class="header">
-        <h1 style="font-family: 'Cormorant Garamond'; color: var(--dourado);">Console Central AILS⁺</h1>
-        <div id="stats">Ambientes Ativos: <span id="countAmbientes" style="color: var(--dourado); font-weight: bold;">0</span></div>
+    <div class="main-content">
+        <div class="header">
+            <h1 style="font-family: 'Cormorant Garamond'; color: var(--dourado);">Console Central AILS⁺</h1>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div id="stats">Ambientes Ativos: <span id="countAmbientes" style="color: var(--dourado); font-weight: bold;">0</span></div>
+                <button class="btn-refresh" onclick="carregarDados()">🔄 ATUALIZAR DADOS</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <table id="tabelaAlunos">
+                <thead>
+                    <tr>
+                        <th width="18%">Aluno / Empresa</th>
+                        <th width="14%">Contato</th>
+                        <th width="28%">Cursos Adquiridos</th>
+                        <th width="22%">Sugestão de Oferta</th>
+                        <th width="18%">Ações de CRM</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="card">
-        <table id="tabelaAlunos">
-            <thead>
-                <tr>
-                    <th width="20%">Aluno / Empresa</th>
-                    <th width="15%">Contato</th>
-                    <th width="25%">Cursos Adquiridos</th>
-                    <th width="20%">Sugestão de Oferta</th>
-                    <th width="20%">Ações de CRM</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <footer>
+        <div class="footer-logo">EU⁺ Empresa</div>
+        <div class="footer-links">
+            <a href="https://wa.me/5527998131806" target="_blank">📱 WhatsApp: (27 ) 99813-1806</a>
+            <a href="https://www.linkedin.com/company/133754181/" target="_blank">🔗 LinkedIn</a>
+            <a href="https://instagram.com/eumaisempresa" target="_blank">📸 Instagram</a>
+            <a href="mailto:eumaisempresa@gmail.com">✉️ eumaisempresa@gmail.com</a>
+        </div>
+        <p style="color: #444; font-size: 11px; margin-top: 30px;">© 2026 EU⁺ Empresa - Ambientes Inteligentes Leves (AILS )</p>
+    </footer>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
@@ -65,6 +92,9 @@
         }
 
         function carregarDados() {
+            const btn = document.querySelector('.btn-refresh');
+            btn.innerText = "⏳ ATUALIZANDO...";
+            
             fetch(`${SCRIPT_URL}?action=carregarPainelGestor`)
                 .then(r => r.json()).then(res => {
                     if(res.success) {
@@ -75,16 +105,16 @@
                         
                         dbAlunos.forEach((aluno, index) => {
                             const tr = document.createElement('tr');
-                            const tagsComprados = aluno.cursosNomes.map(n => `<span class="tag-curso">${n}</span>`).join('');
+                            const tagsComprados = aluno.cursos.map(c => `<span class="tag-curso"><small class="tag-cat">${c.categoria}</small>${c.nome}</span>`).join('');
                             
                             let selectOferta = `<select id="oferta-${index}" onchange="atualizarLinks(${index})">
                                 <option value="">Selecione para oferecer...</option>
-                                ${aluno.ofertas.map(o => `<option value="${o.id}">${o.nome}</option>`).join('')}
+                                ${aluno.ofertas.map(o => `<option value="${o.id}">[${o.categoria}] ${o.nome}</option>`).join('')}
                             </select>`;
 
                             tr.innerHTML = `
                                 <td><b>${aluno.nome}</b>  
-<small style="color:#7A8FA3">${aluno.empresa}</small></td>
+<small style="color:#7A8FA3">${aluno.empresa} (${aluno.idAmbiente})</small></td>
                                 <td><small>${aluno.whatsapp}  
 ${aluno.email}</small></td>
                                 <td>${tagsComprados || '<small style="color:#7A8FA3">Apenas Degustação</small>'}</td>
@@ -99,7 +129,8 @@ ${aluno.email}</small></td>
                             atualizarLinks(index);
                         });
                     }
-                });
+                    btn.innerText = "🔄 ATUALIZAR DADOS";
+                }).catch(() => { btn.innerText = "🔄 ATUALIZAR DADOS"; });
         }
 
         function atualizarLinks(idx) {
@@ -107,12 +138,10 @@ ${aluno.email}</small></td>
             const select = document.getElementById(`oferta-${idx}`);
             const cursoNome = select && select.selectedIndex > 0 ? select.options[select.selectedIndex].text : "um novo módulo";
             
-            // WHATSAPP
             const msgWA = `Olá ${aluno.nome}! Notamos seu progresso no Saber⁺. Preparamos uma condição especial para o curso *${cursoNome}*.\n\nLink para inscrição: [COLE O LINK AQUI]\n\nAssim que concluir, seu acesso será liberado!`;
             document.getElementById(`wa-${idx}`).href = `https://wa.me/55${aluno.whatsapp.replace(/\D/g,'' )}?text=${encodeURIComponent(msgWA)}`;
 
-            // EMAIL (CORRIGIDO)
-            const assunto = encodeURIComponent(`Oportunidade: Curso ${cursoNome} no Saber+`);
+            const assunto = encodeURIComponent(`Oportunidade: ${cursoNome} no Saber+`);
             const corpo = encodeURIComponent(`Olá ${aluno.nome},\n\nParabéns pela sua jornada no Saber+!\n\nVi que você ainda não explorou o módulo "${cursoNome}". Gostaria de oferecer uma condição exclusiva para você continuar evoluindo.\n\nLink de acesso: [COLE O LINK AQUI]\n\nAtenciosamente,\nGestão Saber+`);
             document.getElementById(`mail-${idx}`).href = `mailto:${aluno.email}?subject=${assunto}&body=${corpo}`;
         }
