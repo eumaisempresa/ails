@@ -9,12 +9,15 @@
         :root { --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --bordas: rgba(196, 151, 74, 0.2); }
         body { background: var(--fundo); color: #EEF0F2; font-family: 'DM Sans', sans-serif; padding: 40px; margin: 0; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--bordas); padding-bottom: 20px; }
-        .card { background: var(--card); border: 1px solid var(--bordas); padding: 25px; border-radius: 4px; margin-bottom: 20px; }
+        .card { background: var(--card); border: 1px solid var(--bordas); padding: 25px; border-radius: 8px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--bordas); font-size: 14px; }
-        th { color: var(--dourado); text-transform: uppercase; font-size: 12px; }
-        .btn-acao { padding: 8px 15px; background: transparent; border: 1px solid var(--dourado); color: var(--dourado); cursor: pointer; border-radius: 4px; font-weight: bold; }
+        th, td { text-align: left; padding: 15px; border-bottom: 1px solid var(--bordas); font-size: 13px; }
+        th { color: var(--dourado); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        .btn-acao { padding: 6px 12px; background: transparent; border: 1px solid var(--dourado); color: var(--dourado); cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 10px; margin-right: 5px; }
         .btn-acao:hover { background: var(--dourado); color: #000; }
+        .btn-wa { border-color: #25D366; color: #25D366; }
+        .btn-wa:hover { background: #25D366; color: #fff; }
+        .tag-curso { display: inline-block; padding: 2px 8px; background: rgba(196, 151, 74, 0.1); border: 1px solid var(--dourado); border-radius: 10px; font-size: 10px; margin: 2px; }
         #authOverlay { position: fixed; inset: 0; background: var(--fundo); display: flex; justify-content: center; align-items: center; z-index: 999; }
         input { background: #0E1E30; border: 1px solid var(--bordas); color: #fff; padding: 12px; border-radius: 4px; outline: none; }
     </style>
@@ -34,15 +37,14 @@
     </div>
 
     <div class="card">
-        <h3>Ambientes e Alunos</h3>
+        <h3>Gestão de Ambientes Inteligentes</h3>
         <table id="tabelaAlunos">
             <thead>
                 <tr>
-                    <th>ID Ambiente</th>
-                    <th>Nome</th>
-                    <th>Empresa</th>
-                    <th>WhatsApp</th>
-                    <th>Ações</th>
+                    <th>Aluno / Empresa</th>
+                    <th>WhatsApp / E-mail</th>
+                    <th>Cursos Adquiridos</th>
+                    <th>Ações Estratégicas</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -52,37 +54,40 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         let masterKey = "";
+        let catalogoGlobal = [];
 
         function autenticarGestor( ) {
             const pass = document.getElementById('masterPass').value;
             fetch(`${SCRIPT_URL}?action=validarAdmin&senha=${encodeURIComponent(pass)}`)
-                .then(r => r.json())
-                .then(res => {
-                    if(res.autorizado) {
-                        masterKey = pass;
-                        document.getElementById('authOverlay').style.display = 'none';
-                        carregarDados();
-                    } else { alert("Senha mestra incorreta!"); }
-                })
-                .catch(() => alert("Erro na conexão com o servidor AILS."));
+                .then(r => r.json()).then(res => {
+                    if(res.autorizado) { masterKey = pass; document.getElementById('authOverlay').style.display = 'none'; carregarDados(); } 
+                    else { alert("Senha incorreta!"); }
+                });
         }
 
         function carregarDados() {
             fetch(`${SCRIPT_URL}?action=carregarPainelGestor`)
-                .then(r => r.json())
-                .then(res => {
+                .then(r => r.json()).then(res => {
                     if(res.success) {
+                        catalogoGlobal = res.data.catalogo;
                         const tbody = document.querySelector('#tabelaAlunos tbody');
                         tbody.innerHTML = "";
                         document.getElementById('countAmbientes').innerText = res.data.alunos.length;
                         res.data.alunos.forEach(aluno => {
                             const tr = document.createElement('tr');
+                            const tagsCursos = aluno.cursos.map(c => `<span class="tag-curso">${c}</span>`).join('');
+                            
                             tr.innerHTML = `
-                                <td>${aluno.idAmbiente}</td>
-                                <td>${aluno.nome}</td>
-                                <td>${aluno.empresa}</td>
-                                <td>${aluno.whatsapp}</td>
-                                <td><button class="btn-acao" onclick="liberarCursoManual('${aluno.idAmbiente}')">Liberar Curso</button></td>
+                                <td><b>${aluno.nome}</b>  
+<small style="color:#7A8FA3">${aluno.empresa} (${aluno.idAmbiente})</small></td>
+                                <td>${aluno.whatsapp}  
+<small style="color:#7A8FA3">${aluno.email}</small></td>
+                                <td>${tagsCursos || '<small>Apenas Degustação</small>'}</td>
+                                <td>
+                                    <button class="btn-acao btn-wa" onclick="enviarWA('${aluno.whatsapp}', '${aluno.nome}')">WhatsApp</button>
+                                    <button class="btn-acao" onclick="enviarEmail('${aluno.email}', '${aluno.nome}')">E-mail</button>
+                                    <button class="btn-acao" onclick="abrirModalLiberar('${aluno.idAmbiente}')" style="border-color:#fff; color:#fff;">+ Liberar</button>
+                                </td>
                             `;
                             tbody.appendChild(tr);
                         });
@@ -90,11 +95,22 @@
                 });
         }
 
-        function liberarCursoManual(idAmbiente) {
-            const idCurso = prompt("Digite o ID do Curso para liberar (Ex: CURSO_IA):");
+        function enviarWA(num, nome) {
+            const msg = `Olá ${nome}! Vi que você está explorando o Saber⁺. Temos uma condição especial para o seu próximo módulo. Vamos conversar?`;
+            window.open(`https://wa.me/${num.replace(/\D/g,'' )}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function enviarEmail(email, nome) {
+            const assunto = "Oportunidade Estratégica - Saber+";
+            const corpo = `Olá ${nome}, tudo bem?\n\nNotamos seu progresso no Saber+ e gostaríamos de oferecer uma mentoria exclusiva...`;
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
+        }
+
+        function abrirModalLiberar(idAmbiente) {
+            const idCurso = prompt("Digite o ID do curso para liberar (IDs disponíveis: " + catalogoGlobal.map(c=>c.id).join(', ') + "):");
             if(!idCurso) return;
-            // Aqui poderíamos chamar uma função 'liberarCurso' no script
-            alert("Função em desenvolvimento. Por enquanto, adicione na aba 'Historico_Vendas' manualmente.");
+            fetch(`${SCRIPT_URL}?action=liberarCurso&idAmbiente=${idAmbiente}&idCurso=${idCurso}`)
+                .then(r => r.json()).then(res => { if(res.success) { alert("Curso liberado!"); carregarDados(); } });
         }
     </script>
 </body>
