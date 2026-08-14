@@ -17,16 +17,18 @@
             --bordas: rgba(196, 151, 74, 0.15);
         }
 
-        body { 
+        body, html { 
             background: var(--fundo); 
             color: var(--texto); 
             font-family: 'DM Sans', sans-serif; 
             margin: 0; 
-            overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
         }
 
         /* LOGIN VIEW */
-        #loginView { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        #loginView { display: flex; justify-content: center; align-items: center; height: 100vh; }
         .login-card {
             background: var(--card); border: 1px solid var(--bordas); padding: 40px;
             width: 100%; max-width: 400px; border-radius: 8px; text-align: center;
@@ -44,6 +46,7 @@
         }
 
         /* LOBBY VIEW */
+        #lobbyView { height: 100vh; overflow-y: auto; }
         .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 50px; border-bottom: 1px solid var(--bordas); padding-bottom: 20px; }
         .header h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 36px; margin: 0; }
@@ -57,11 +60,14 @@
         .course-card h3 { color: var(--dourado); margin: 0 0 15px 0; font-family: 'Cormorant Garamond', serif; font-size: 26px; }
         .course-card p { color: var(--texto-sec); font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
 
-        /* READ VIEW */
-        #readView { display: none; height: 100vh; grid-template-columns: 320px 1fr 380px; }
-        .sidebar { background: var(--card); border-right: 1px solid var(--bordas); padding: 25px; overflow-y: auto; }
-        .content-area { background: #ffffff; overflow-y: auto; position: relative; }
-        .notes-area { background: var(--card); border-left: 1px solid var(--bordas); padding: 25px; display: flex; flex-direction: column; }
+        /* READ VIEW - LAYOUT FLEXBOX INQUEBRÁVEL */
+        #readView { display: none; height: 100vh; width: 100%; flex-direction: row; align-items: stretch; }
+        
+        .sidebar { width: 320px; min-width: 320px; background: var(--card); border-right: 1px solid var(--bordas); padding: 25px; overflow-y: auto; box-sizing: border-box; }
+        
+        .content-area { flex-grow: 1; background: #ffffff; overflow-y: auto; position: relative; display: flex; flex-direction: column; }
+        
+        .notes-area { width: 380px; min-width: 380px; background: var(--card); border-left: 1px solid var(--bordas); padding: 25px; display: flex; flex-direction: column; box-sizing: border-box; }
 
         .aula-item { 
             padding: 15px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; 
@@ -72,13 +78,13 @@
 
         /* RENDERIZADOR DE CONTEUDO (MÁXIMO CONTRASTE) */
         .google-doc-render, .google-doc-render * { 
-            color: #000000 !important; /* PRETO ABSOLUTO */
+            color: #000000 !important; 
             background-color: transparent !important; 
             font-family: 'Lora', serif !important;
         }
         .google-doc-render {
-            max-width: 800px; margin: 0 auto; padding: 60px 40px;
-            font-size: 19px; line-height: 1.8;
+            width: 100%; max-width: 800px; margin: 0 auto; padding: 80px 40px;
+            font-size: 20px; line-height: 1.8; box-sizing: border-box;
         }
         .google-doc-render p { margin-bottom: 20px; color: #000000 !important; }
         .google-doc-render b, .google-doc-render strong { font-weight: 700 !important; color: #000 !important; }
@@ -89,6 +95,7 @@
             width: 100%; flex-grow: 1; background: #fff9c4; border: none; 
             padding: 20px; border-radius: 4px; font-family: 'DM Sans', sans-serif; resize: none;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.1); color: #333; font-size: 16px; margin-bottom: 20px;
+            box-sizing: border-box;
         }
 
         .btn-voltar { color: var(--dourado); cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 30px; font-weight: bold; }
@@ -96,9 +103,10 @@
 </head>
 <body>
 
+    <!-- TELA DE LOGIN -->
     <div id="loginView">
         <div class="login-card">
-            <h1 style="color:var(--dourado); font-size:32px; margin-bottom:10px;">Saber⁺</h1>
+            <h1 style="color:var(--dourado); font-size:32px; margin-bottom:10px; font-family:'Cormorant Garamond';">Saber⁺</h1>
             <p style="color:var(--texto-sec); margin-bottom:30px;">Ambiente de Inteligência Leve</p>
             <input type="email" id="loginEmail" placeholder="Seu e-mail">
             <input type="password" id="loginSenha" placeholder="Sua senha">
@@ -106,6 +114,7 @@
         </div>
     </div>
 
+    <!-- TELA DE LOBBY -->
     <div id="lobbyView" style="display:none;">
         <div class="container">
             <div class="header">
@@ -116,13 +125,16 @@
         </div>
     </div>
 
+    <!-- TELA DE LEITURA (PLAYER FLEXBOX) -->
     <div id="readView">
         <div class="sidebar">
             <div class="btn-voltar" onclick="voltarLobby()">← Voltar ao Lobby</div>
             <h2 id="tituloCursoSidebar" style="color:var(--dourado); font-family:'Cormorant Garamond'; font-size:24px; margin-bottom:30px;">Curso</h2>
             <div id="listaAulas"></div>
         </div>
-        <div class="content-area" id="conteudoAula"></div>
+        <div class="content-area" id="conteudoAula">
+            <!-- Conteúdo injetado aqui -->
+        </div>
         <div class="notes-area">
             <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0;">Seus Insights</h3>
             <textarea id="campoNota" placeholder="O que você aprendeu com esta aula?"></textarea>
@@ -131,7 +143,6 @@
     </div>
 
     <script>
-        // CERTIFIQUE-SE DE QUE ESTA URL É A DO SEU PROJETO ATUAL
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         
         let currentUser = null;
@@ -212,7 +223,7 @@
             const aulas = dbCursos.filter(c => c.idCurso === idCurso);
             const jaComprou = (currentUser.cursosComprados || []).includes(idCurso.toString());
             document.getElementById('lobbyView').style.display = 'none';
-            document.getElementById('readView').style.display = 'grid';
+            document.getElementById('readView').style.display = 'flex'; // USANDO FLEX AQUI
             document.getElementById('tituloCursoSidebar').innerText = aulas[0].nomeCurso;
             const lista = document.getElementById('listaAulas');
             lista.innerHTML = "";
@@ -239,13 +250,16 @@
         function carregarConteudo(aula) {
             aulaAtiva = aula;
             const area = document.getElementById('conteudoAula');
-            area.innerHTML = "<div style='padding:100px; text-align:center; color:#333;'>Sincronizando conteúdo...</div>";
+            area.innerHTML = "<div style='padding:100px; text-align:center; color:#333; font-family:Lora;'>Sincronizando conteúdo estratégico AILS...</div>";
             area.scrollTop = 0;
             fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${currentUser.idAmbiente}&idCurso=${aula.idCurso}&idAula=${aula.idAula}&idDoc=${aula.idDoc}`)
                 .then(r => r.json())
                 .then(res => {
                     area.innerHTML = res.success ? res.conteudo : `<div style='padding:50px; color:red;'>${res.error}</div>`;
                     document.getElementById('campoNota').value = res.anotacao || "";
+                })
+                .catch(err => {
+                    area.innerHTML = "<div style='padding:50px; color:red;'>Erro ao conectar com o Drive.</div>";
                 });
         }
 
