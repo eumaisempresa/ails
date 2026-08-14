@@ -3,60 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro AILS - Saber⁺</title>
+    <title>Cadastro - Saber⁺</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500;700&display=swap' );
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;700&display=swap' );
         :root {
-            --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --texto: #EEF0F2; --bordas: rgba(196, 151, 74, 0.2);
+            --fundo-principal: #060E18; --fundo-secundario: #0A1624; --fundo-terciario: #0E1E30;
+            --dourado-principal: #C4974A; --dourado-secundario: #D4AA62; --texto-principal: #EEF0F2;
+            --texto-secundario: #7A8FA3; --bordas: rgba(196, 151, 74, 0.18);
         }
-        body { background: var(--fundo); color: var(--texto); font-family: 'DM Sans', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card-cadastro { background: var(--card); border: 1px solid var(--bordas); padding: 40px; width: 100%; max-width: 450px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); text-align: center; margin-bottom: 30px; }
-        label { display: block; font-size: 12px; color: var(--dourado); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 20px; background: #0E1E30; border: 1px solid var(--bordas); color: #fff; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: var(--dourado); border: none; color: #000; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: 0.3s; }
-        button:hover { background: #D4AA62; transform: translateY(-2px); }
-        button:disabled { background: #555; cursor: not-allowed; }
-        .success-box { display: none; text-align: center; border: 1px solid var(--dourado); padding: 20px; background: rgba(196, 151, 74, 0.1); border-radius: 4px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: var(--fundo-principal); color: var(--texto-principal); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.6; }
+        h2, h4 { font-family: 'Cormorant Garamond', serif; color: var(--dourado-principal); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .form-container { max-width: 550px; margin: 20px auto; background-color: var(--fundo-secundario); border: 1px solid var(--bordas); padding: 32px; border-radius: 4px; }
+        input, select { background-color: var(--fundo-terciario); border: 1px solid var(--bordas); color: var(--texto-principal); padding: 12px 16px; border-radius: 4px; width: 100%; margin-bottom: 16px; }
+        button { background-color: var(--dourado-principal); color: var(--fundo-principal); border: none; padding: 14px; width: 100%; cursor: pointer; font-weight: bold; text-transform: uppercase; border-radius: 4px; }
+        .btn-wa { background-color: #25D366; color: #fff; text-decoration: none; display: block; text-align: center; padding: 14px; border-radius: 4px; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="card-cadastro" id="boxMain">
-        <h1>Inicie sua Jornada AILS⁺</h1>
-        <form id="formCadastro">
-            <label>Nome Completo</label>
-            <input type="text" id="nome" required placeholder="Seu nome">
-            <label>E-mail Corporativo</label>
-            <input type="email" id="email" required placeholder="seu@email.com">
-            <label>WhatsApp</label>
-            <input type="tel" id="whatsapp" required placeholder="27 99999-9999">
-            <label>Empresa</label>
-            <input type="text" id="empresa" required placeholder="Nome da sua empresa">
-            <button type="submit" id="btnSubmit">Criar meu Ambiente Inteligente</button>
-        </form>
-        <div id="successBox" class="success-box">
-            <h2 style="color: var(--dourado);">Ambiente Criado!</h2>
-            <p style="margin: 10px 0;">Seu ID de acesso: <strong id="resId" style="color:#fff;"></strong></p>
-            <p style="margin: 10px 0;">Sua senha provisória: <strong id="resSenha" style="color:#fff;"></strong></p>
-            <div style="margin-top: 20px; border-top: 1px solid var(--bordas); padding-top: 15px;">
-                <a href="../painel/" style="color: var(--dourado); text-decoration: none; font-weight: bold; display: block;">ACESSAR PAINEL AGORA →</a>
+    <div class="container">
+        <div class="form-container">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2 style="font-size: 32px;">Saber⁺</h2>
+                <p style="color: var(--texto-secundario);">Criação de Ambiente Inteligente</p>
+            </div>
+            
+            <form id="formCadastro">
+                <input type="text" id="nome" placeholder="Nome Completo" required>
+                <input type="email" id="email" placeholder="E-mail (Seu Usuário)" required>
+                <input type="tel" id="whatsapp" placeholder="WhatsApp (Ex: 27999999999)" required>
+                <input type="text" id="empresa" placeholder="Sua Empresa" required>
+                <button type="submit" id="btnCadastrar">Gerar Acesso Executivo</button>
+            </form>
+
+            <div id="resultadoCadastro" style="display: none; margin-top: 30px; padding: 20px; border: 1px solid var(--dourado-principal); background: rgba(196,151,74,0.05);">
+                <h4 style="margin-bottom: 15px;">✨ Acesso Gerado com Sucesso!</h4>
+                <p><strong>ID Ambiente:</strong> <span id="resAmbiente" style="color:var(--dourado-secundario);"></span></p>
+                <p><strong>Senha Provisória:</strong> <span id="resSenha" style="color:var(--dourado-secundario);"></span></p>
+                <a id="btnWhatsAppLink" href="#" target="_blank" class="btn-wa">Enviar Acesso via WhatsApp</a>
             </div>
         </div>
     </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
-        
-        document.getElementById('formCadastro' ).onsubmit = function(e) {
+
+        // FUNÇÃO DE GERAÇÃO DE SENHA SEM CARACTERES CONFUSOS
+        function gerarSenhaLimpa(tamanho ) {
+            const caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Exclui 0, O, 1, I, l
+            let resultado = "";
+            for (let i = 0; i < tamanho; i++) {
+                resultado += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+            return resultado;
+        }
+
+        document.getElementById('formCadastro').addEventListener('submit', function(e) {
             e.preventDefault();
-            const btn = document.getElementById('btnSubmit');
-            const originalText = btn.innerText;
-            
-            btn.innerText = "Configurando AILS...";
+            const btn = document.getElementById('btnCadastrar');
+            btn.innerText = "Sincronizando com a Nuvem AILS...";
             btn.disabled = true;
 
-            const randomId = "AILS" + Math.floor(1000 + Math.random() * 9000);
-            const pass = Math.random().toString(36).slice(-6).toUpperCase();
+            const randomId = "EXEC" + Math.floor(1000 + Math.random() * 9000);
+            const pass = gerarSenhaLimpa(8); // Gera senha amigável de 8 dígitos
 
             const payload = {
                 action: "cadastrarAluno",
@@ -68,28 +78,20 @@
                 senha: pass
             };
 
-            // Usando text/plain para evitar problemas de CORS preflight com o Apps Script
             fetch(SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
-                headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify(payload)
-            })
-            .then(() => {
-                // Como usamos no-cors, o navegador não nos deixa ler a resposta JSON, 
-                // mas se o fetch completou, assumimos sucesso no cadastro básico.
+            }).then(() => {
                 document.getElementById('formCadastro').style.display = 'none';
-                document.getElementById('successBox').style.display = 'block';
-                document.getElementById('resId').innerText = randomId;
+                document.getElementById('resultadoCadastro').style.display = 'block';
+                document.getElementById('resAmbiente').innerText = randomId;
                 document.getElementById('resSenha').innerText = pass;
-            })
-            .catch(err => {
-                console.error("Erro no cadastro:", err);
-                alert("Erro na comunicação com o servidor. Tente novamente.");
-                btn.disabled = false;
-                btn.innerText = originalText;
+
+                const msg = `Olá! Seu acesso ao Saber⁺ foi gerado.\n\nUsuário: ${payload.email}\nSenha: ${pass}\nID: ${randomId}\n\nAcesse: https://ails.eumaisempresa.com.br/sabermais/painel/`;
+                document.getElementById('btnWhatsAppLink' ).href = `https://wa.me/${payload.whatsapp}?text=${encodeURIComponent(msg )}`;
             });
-        };
+        });
     </script>
 </body>
 </html>
