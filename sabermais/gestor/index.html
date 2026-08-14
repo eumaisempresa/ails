@@ -5,25 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Console Gestor AILS⁺</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&display=swap' );
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&display=swap'  );
         :root { --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --bordas: rgba(196, 151, 74, 0.2); }
-        body { background: var(--fundo); color: #EEF0F2; font-family: 'DM Sans', sans-serif; padding: 40px; }
+        body { background: var(--fundo); color: #EEF0F2; font-family: 'DM Sans', sans-serif; padding: 40px; margin: 0; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--bordas); padding-bottom: 20px; }
         .card { background: var(--card); border: 1px solid var(--bordas); padding: 25px; border-radius: 4px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--bordas); font-size: 14px; }
         th { color: var(--dourado); text-transform: uppercase; font-size: 12px; }
-        .btn-acao { padding: 5px 10px; background: transparent; border: 1px solid var(--dourado); color: var(--dourado); cursor: pointer; border-radius: 3px; font-size: 11px; }
+        .btn-acao { padding: 8px 15px; background: transparent; border: 1px solid var(--dourado); color: var(--dourado); cursor: pointer; border-radius: 4px; font-weight: bold; }
         .btn-acao:hover { background: var(--dourado); color: #000; }
-        #authOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background: var(--fundo); display: flex; justify-content: center; align-items: center; z-index: 999; }
+        #authOverlay { position: fixed; inset: 0; background: var(--fundo); display: flex; justify-content: center; align-items: center; z-index: 999; }
+        input { background: #0E1E30; border: 1px solid var(--bordas); color: #fff; padding: 12px; border-radius: 4px; outline: none; }
     </style>
 </head>
 <body>
     <div id="authOverlay">
-        <div class="card" style="width: 300px; text-align: center;">
-            <h2 style="color: var(--dourado); font-family: 'Cormorant Garamond';">Acesso Gestor</h2>
-            <input type="password" id="masterPass" placeholder="Senha Master" style="width:100%; padding:10px; margin: 15px 0; background:#0E1E30; border:1px solid var(--bordas); color:#fff;">
-            <button onclick="autenticarGestor()" class="btn-acao" style="width:100%; padding:10px;">Entrar no Console</button>
+        <div class="card" style="width: 350px; text-align: center;">
+            <h2 style="color: var(--dourado); font-family: 'Cormorant Garamond'; margin-bottom: 20px;">Acesso Console AILS⁺</h2>
+            <input type="password" id="masterPass" placeholder="Senha Master" style="width:100%; margin-bottom: 20px;">
+            <button onclick="autenticarGestor()" class="btn-acao" style="width:100%;">Entrar no Console</button>
         </div>
     </div>
 
@@ -41,54 +42,59 @@
                     <th>Nome</th>
                     <th>Empresa</th>
                     <th>WhatsApp</th>
-                    <th>Cursos Liberados</th>
                     <th>Ações</th>
                 </tr>
             </thead>
-            <tbody>
-                <!-- Injetado via JS -->
-            </tbody>
+            <tbody></tbody>
         </table>
     </div>
 
     <script>
-        const SCRIPT_URL = "SUA_URL_DO_APPS_SCRIPT";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         let masterKey = "";
 
-        function autenticarGestor() {
+        function autenticarGestor( ) {
             const pass = document.getElementById('masterPass').value;
-            // No Apps Script, criaremos uma função 'validarAdmin' que usa a Propriedade do Script
-            fetch(`${SCRIPT_URL}?action=validarAdmin&senha=${pass}`)
+            fetch(`${SCRIPT_URL}?action=validarAdmin&senha=${encodeURIComponent(pass)}`)
                 .then(r => r.json())
                 .then(res => {
                     if(res.autorizado) {
                         masterKey = pass;
                         document.getElementById('authOverlay').style.display = 'none';
                         carregarDados();
-                    } else { alert("Senha incorreta!"); }
-                });
+                    } else { alert("Senha mestra incorreta!"); }
+                })
+                .catch(() => alert("Erro na conexão com o servidor AILS."));
         }
 
         function carregarDados() {
             fetch(`${SCRIPT_URL}?action=carregarPainelGestor`)
                 .then(r => r.json())
                 .then(res => {
-                    const tbody = document.querySelector('#tabelaAlunos tbody');
-                    tbody.innerHTML = "";
-                    document.getElementById('countAmbientes').innerText = res.data.alunos.length;
-                    res.data.alunos.forEach(aluno => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td>${aluno.idAmbiente}</td>
-                            <td>${aluno.nome}</td>
-                            <td>${aluno.empresa}</td>
-                            <td>${aluno.whatsapp}</td>
-                            <td>${aluno.cursos || 'Nenhum'}</td>
-                            <td><button class="btn-acao" onclick="liberarCurso('${aluno.idAmbiente}')">+ Liberar Curso</button></td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
+                    if(res.success) {
+                        const tbody = document.querySelector('#tabelaAlunos tbody');
+                        tbody.innerHTML = "";
+                        document.getElementById('countAmbientes').innerText = res.data.alunos.length;
+                        res.data.alunos.forEach(aluno => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${aluno.idAmbiente}</td>
+                                <td>${aluno.nome}</td>
+                                <td>${aluno.empresa}</td>
+                                <td>${aluno.whatsapp}</td>
+                                <td><button class="btn-acao" onclick="liberarCursoManual('${aluno.idAmbiente}')">Liberar Curso</button></td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
                 });
+        }
+
+        function liberarCursoManual(idAmbiente) {
+            const idCurso = prompt("Digite o ID do Curso para liberar (Ex: CURSO_IA):");
+            if(!idCurso) return;
+            // Aqui poderíamos chamar uma função 'liberarCurso' no script
+            alert("Função em desenvolvimento. Por enquanto, adicione na aba 'Historico_Vendas' manualmente.");
         }
     </script>
 </body>
