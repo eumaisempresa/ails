@@ -3,42 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro Executivo - Saber⁺</title>
+    <title>Onboarding Executivo - Saber⁺</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@300;400;500;700&display=swap' );
-        
-        :root {
-            --fundo: #060E18;
-            --card: #0A1624;
-            --dourado: #C4974A;
-            --texto: #EEF0F2;
-            --texto-sec: #7A8FA3;
-            --bordas: rgba(196, 151, 74, 0.18);
-        }
-
+        :root { --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --texto: #EEF0F2; --bordas: rgba(196, 151, 74, 0.18); }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: var(--fundo); color: var(--texto); font-family: 'DM Sans', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-
-        .form-container {
-            background: var(--card); border: 1px solid var(--bordas); padding: 40px;
-            width: 100%; max-width: 500px; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        h2 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 32px; text-align: center; margin-bottom: 10px; }
-        p.subtitle { text-align: center; color: var(--texto-sec); font-size: 14px; margin-bottom: 30px; }
-
+        .form-container { background: var(--card); border: 1px solid var(--bordas); padding: 40px; width: 100%; max-width: 500px; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        h2 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 32px; text-align: center; margin-bottom: 30px; }
         label { display: block; font-size: 12px; color: var(--dourado); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: bold; }
         input { width: 100%; padding: 14px; margin-bottom: 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--bordas); color: #fff; border-radius: 4px; font-size: 15px; outline: none; }
-        input:focus { border-color: var(--dourado); }
-
         button { width: 100%; padding: 16px; background: var(--dourado); color: #000; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.3s; }
-        button:hover { filter: brightness(1.2); }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .success-box { display: none; text-align: center; animation: fadeIn 0.5s ease; }
-        .credencial { background: rgba(196, 151, 74, 0.1); border: 1px dashed var(--dourado); padding: 15px; margin: 20px 0; border-radius: 4px; }
-        .btn-wa { background: #25D366; color: #fff; text-decoration: none; display: block; padding: 14px; border-radius: 4px; font-weight: bold; margin-top: 20px; }
-
+        .btn-wa { background: #25D366; color: #fff; text-decoration: none; display: flex; justify-content: center; align-items: center; padding: 18px; border-radius: 4px; font-weight: bold; margin-top: 20px; font-size: 16px; }
+        .btn-wa:hover { filter: brightness(1.1); }
+        .success-step { display: none; text-align: center; animation: fadeIn 0.5s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -47,82 +25,79 @@
     <div class="form-container">
         <div id="boxForm">
             <h2>Saber⁺</h2>
-            <p class="subtitle">Ambiente Inteligente de Negócios</p>
-            
             <form id="formCadastro">
                 <label>Nome Completo</label>
                 <input type="text" id="nome" placeholder="Seu nome" required>
-                
                 <label>E-mail Corporativo</label>
                 <input type="email" id="email" placeholder="nome@empresa.com" required>
-                
-                <label>WhatsApp</label>
-                <input type="tel" id="whatsapp" placeholder="27999999999" required>
-                
+                <label>WhatsApp (com DDD)</label>
+                <input type="tel" id="whatsapp" placeholder="Ex: 27999999999" required>
                 <label>Sua Empresa</label>
                 <input type="text" id="empresa" placeholder="Nome da empresa" required>
-                
-                <button type="submit" id="btnSubmit">CRIAR MEU AMBIENTE</button>
+                <button type="submit" id="btnSubmit">FINALIZAR ARQUITETURA</button>
             </form>
         </div>
 
-        <div id="boxSuccess" class="success-box">
-            <h2 style="font-size: 24px;">✨ Ambiente Criado!</h2>
-            <p style="margin-top:10px; color:var(--texto-sec);">As credenciais foram enviadas para o seu e-mail.</p>
+        <div id="boxSuccess" class="success-step">
+            <h2 style="font-size: 24px;">✨ Quase lá!</h2>
+            <p style="margin: 15px 0; color:#7A8FA3; font-size: 14px;">Para sua segurança, você deve disparar suas credenciais para o seu próprio WhatsApp antes de acessar o painel.</p>
             
-            <div class="credencial">
-                <p style="font-size: 14px;">ID: <strong id="resId" style="color:var(--dourado);"></strong></p>
-                <p style="font-size: 14px;">Senha: <strong id="resSenha" style="color:var(--dourado);"></strong></p>
-            </div>
+            <a id="linkWa" href="#" target="_blank" class="btn-wa" onclick="liberarBotaoFinal()">
+                OBTER ACESSO VIA WHATSAPP
+            </a>
 
-            <p style="font-size: 12px; color: var(--texto-sec);">Importante: Guarde sua senha provisória.</p>
-            
-            <a id="btnWa" href="#" target="_blank" class="btn-wa">ENVIAR PARA O WHATSAPP</a>
-            <button onclick="window.location.href='../painel/'" style="background:transparent; color:var(--dourado); border:1px solid var(--dourado); margin-top:15px;">ACESSAR PAINEL AGORA</button>
+            <div id="finalStep" style="display: none; margin-top: 30px; border-top: 1px solid var(--bordas); padding-top: 20px;">
+                <p style="font-size: 12px; color: var(--dourado); margin-bottom: 15px;">✅ Credenciais enviadas! Agora você pode entrar.</p>
+                <button onclick="window.location.href='../painel/'" style="background:transparent; color:var(--dourado); border:1px solid var(--dourado);">ENTRAR NO PAINEL SABER⁺</button>
+            </div>
         </div>
     </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
 
-        document.getElementById('formCadastro' ).addEventListener('submit', function(e) {
+        function liberarBotaoFinal( ) {
+            setTimeout(() => {
+                document.getElementById('finalStep').style.display = 'block';
+                document.getElementById('linkWa').style.opacity = '0.6';
+                document.getElementById('linkWa').innerText = "REENVIAR PARA WHATSAPP";
+            }, 1000);
+        }
+
+        document.getElementById('formCadastro').addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmit');
+            const rawWa = document.getElementById('whatsapp').value.replace(/\D/g, ''); // Limpa o número
             const payload = {
                 action: "cadastrarAluno",
                 idAmbiente: "EXEC" + Math.floor(1000 + Math.random() * 9000),
                 nome: document.getElementById('nome').value,
                 email: document.getElementById('email').value,
-                whatsapp: document.getElementById('whatsapp').value,
+                whatsapp: rawWa,
                 empresa: document.getElementById('empresa').value
             };
 
-            btn.innerText = "SINCRONIZANDO...";
+            btn.innerText = "CONFIGURANDO AMBIENTE...";
             btn.disabled = true;
 
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            })
+            fetch(SCRIPT_URL, { method: "POST", body: JSON.stringify(payload) })
             .then(r => r.json())
             .then(res => {
                 if(res.success) {
                     document.getElementById('boxForm').style.display = 'none';
                     document.getElementById('boxSuccess').style.display = 'block';
-                    document.getElementById('resId').innerText = payload.idAmbiente;
-                    document.getElementById('resSenha').innerText = res.senhaGerada;
 
-                    const msg = `Olá! Seu acesso ao Saber⁺ foi gerado.\n\nUsuário: ${payload.email}\nSenha: ${res.senhaGerada}\nID: ${payload.idAmbiente}\n\nAcesse: https://ails.eumaisempresa.com.br/sabermais/painel/`;
-                    document.getElementById('btnWa' ).href = `https://wa.me/${payload.whatsapp}?text=${encodeURIComponent(msg )}`;
+                    const msg = `✨ *SEU ACESSO SABER⁺ CHEGOU!*\n\nOlá, ${payload.nome}! Suas credenciais de alta liderança estão prontas:\n\n👤 *Usuário:* ${payload.email}\n🔑 *Senha:* ${res.senhaGerada}\n🆔 *ID:* ${payload.idAmbiente}\n\n🚀 *Acesse agora:* https://ails.eumaisempresa.com.br/sabermais/painel/`;
+                    
+                    document.getElementById('linkWa' ).href = `https://wa.me/55${rawWa}?text=${encodeURIComponent(msg )}`;
                 } else {
                     alert("⚠️ " + res.error);
-                    btn.innerText = "CRIAR MEU AMBIENTE";
+                    btn.innerText = "FINALIZAR ARQUITETURA";
                     btn.disabled = false;
                 }
             })
-            .catch(err => {
-                alert("Falha na conexão com o servidor AILS.");
-                btn.innerText = "CRIAR MEU AMBIENTE";
+            .catch(() => {
+                alert("Falha na conexão. Tente novamente.");
                 btn.disabled = false;
             });
         });
