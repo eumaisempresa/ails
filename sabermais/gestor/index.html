@@ -9,25 +9,26 @@
         :root { --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --bordas: rgba(196, 151, 74, 0.2); }
         body { background: var(--fundo); color: #EEF0F2; font-family: 'DM Sans', sans-serif; padding: 40px; margin: 0; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 1px solid var(--bordas); padding-bottom: 20px; }
-        .card { background: var(--card); border: 1px solid var(--bordas); padding: 25px; border-radius: 8px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .card { background: var(--card); border: 1px solid var(--bordas); padding: 25px; border-radius: 8px; margin-bottom: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
         th, td { text-align: left; padding: 15px; border-bottom: 1px solid var(--bordas); font-size: 13px; }
         th { color: var(--dourado); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
-        .btn-acao { padding: 6px 12px; background: transparent; border: 1px solid var(--dourado); color: var(--dourado); cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 10px; margin-right: 5px; }
+        .btn-acao { padding: 6px 12px; background: transparent; border: 1px solid var(--dourado); color: var(--dourado); cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 10px; margin-bottom: 5px; display: block; width: 100%; text-align: center; text-decoration: none; }
         .btn-acao:hover { background: var(--dourado); color: #000; }
         .btn-wa { border-color: #25D366; color: #25D366; }
         .btn-wa:hover { background: #25D366; color: #fff; }
-        .tag-curso { display: inline-block; padding: 2px 8px; background: rgba(196, 151, 74, 0.1); border: 1px solid var(--dourado); border-radius: 10px; font-size: 10px; margin: 2px; }
+        .tag-curso { display: inline-block; padding: 2px 8px; background: rgba(196, 151, 74, 0.1); border: 1px solid var(--dourado); border-radius: 10px; font-size: 10px; margin: 2px; color: #fff; }
+        .tag-oferta { border-color: #7A8FA3; color: #7A8FA3; opacity: 0.7; }
         #authOverlay { position: fixed; inset: 0; background: var(--fundo); display: flex; justify-content: center; align-items: center; z-index: 999; }
-        input { background: #0E1E30; border: 1px solid var(--bordas); color: #fff; padding: 12px; border-radius: 4px; outline: none; }
+        input, select { background: #0E1E30; border: 1px solid var(--bordas); color: #fff; padding: 10px; border-radius: 4px; outline: none; width: 100%; }
     </style>
 </head>
 <body>
     <div id="authOverlay">
         <div class="card" style="width: 350px; text-align: center;">
             <h2 style="color: var(--dourado); font-family: 'Cormorant Garamond'; margin-bottom: 20px;">Acesso Console AILS⁺</h2>
-            <input type="password" id="masterPass" placeholder="Senha Master" style="width:100%; margin-bottom: 20px;">
-            <button onclick="autenticarGestor()" class="btn-acao" style="width:100%;">Entrar no Console</button>
+            <input type="password" id="masterPass" placeholder="Senha Master" style="margin-bottom: 20px;">
+            <button onclick="autenticarGestor()" class="btn-acao" style="padding: 15px; font-size: 14px;">Entrar no Console</button>
         </div>
     </div>
 
@@ -37,14 +38,15 @@
     </div>
 
     <div class="card">
-        <h3>Gestão de Ambientes Inteligentes</h3>
+        <h3>Gestão de Clientes e Ofertas</h3>
         <table id="tabelaAlunos">
             <thead>
                 <tr>
-                    <th>Aluno / Empresa</th>
-                    <th>WhatsApp / E-mail</th>
-                    <th>Cursos Adquiridos</th>
-                    <th>Ações Estratégicas</th>
+                    <th width="20%">Aluno / Empresa</th>
+                    <th width="15%">Contato</th>
+                    <th width="25%">Cursos Adquiridos</th>
+                    <th width="20%">Sugestão de Oferta</th>
+                    <th width="20%">Ações de CRM</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -53,14 +55,13 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
-        let masterKey = "";
-        let catalogoGlobal = [];
+        let dbAlunos = [];
 
         function autenticarGestor( ) {
             const pass = document.getElementById('masterPass').value;
             fetch(`${SCRIPT_URL}?action=validarAdmin&senha=${encodeURIComponent(pass)}`)
                 .then(r => r.json()).then(res => {
-                    if(res.autorizado) { masterKey = pass; document.getElementById('authOverlay').style.display = 'none'; carregarDados(); } 
+                    if(res.autorizado) { document.getElementById('authOverlay').style.display = 'none'; carregarDados(); } 
                     else { alert("Senha incorreta!"); }
                 });
         }
@@ -69,48 +70,72 @@
             fetch(`${SCRIPT_URL}?action=carregarPainelGestor`)
                 .then(r => r.json()).then(res => {
                     if(res.success) {
-                        catalogoGlobal = res.data.catalogo;
+                        dbAlunos = res.data.alunos;
                         const tbody = document.querySelector('#tabelaAlunos tbody');
                         tbody.innerHTML = "";
-                        document.getElementById('countAmbientes').innerText = res.data.alunos.length;
-                        res.data.alunos.forEach(aluno => {
+                        document.getElementById('countAmbientes').innerText = dbAlunos.length;
+                        
+                        dbAlunos.forEach((aluno, index) => {
                             const tr = document.createElement('tr');
-                            const tagsCursos = aluno.cursos.map(c => `<span class="tag-curso">${c}</span>`).join('');
+                            const tagsComprados = aluno.cursosNomes.map(n => `<span class="tag-curso">${n}</span>`).join('');
                             
+                            // Monta seletor de ofertas
+                            let selectOferta = `<select id="oferta-${index}" onchange="atualizarLinks(${index})">
+                                <option value="">Selecione para oferecer...</option>
+                                ${aluno.ofertas.map(o => `<option value="${o.id}" data-nome="${o.nome}">${o.nome}</option>`).join('')}
+                            </select>`;
+
                             tr.innerHTML = `
                                 <td><b>${aluno.nome}</b>  
-<small style="color:#7A8FA3">${aluno.empresa} (${aluno.idAmbiente})</small></td>
-                                <td>${aluno.whatsapp}  
-<small style="color:#7A8FA3">${aluno.email}</small></td>
-                                <td>${tagsCursos || '<small>Apenas Degustação</small>'}</td>
+<small style="color:#7A8FA3">${aluno.empresa}</small></td>
+                                <td><small>${aluno.whatsapp}  
+${aluno.email}</small></td>
+                                <td>${tagsComprados || '<small style="color:#7A8FA3">Apenas Degustação</small>'}</td>
+                                <td>${aluno.ofertas.length > 0 ? selectOferta : '<small>Já possui todos os cursos</small>'}</td>
                                 <td>
-                                    <button class="btn-acao btn-wa" onclick="enviarWA('${aluno.whatsapp}', '${aluno.nome}')">WhatsApp</button>
-                                    <button class="btn-acao" onclick="enviarEmail('${aluno.email}', '${aluno.nome}')">E-mail</button>
-                                    <button class="btn-acao" onclick="abrirModalLiberar('${aluno.idAmbiente}')" style="border-color:#fff; color:#fff;">+ Liberar</button>
+                                    <a id="wa-${index}" class="btn-acao btn-wa" href="#" target="_blank">WhatsApp</a>
+                                    <a id="mail-${index}" class="btn-acao" href="#">E-mail</a>
+                                    <button class="btn-acao" onclick="liberarManual('${aluno.idAmbiente}', ${index})" style="border-color:#fff; color:#fff;">+ Liberar Manual</button>
                                 </td>
                             `;
                             tbody.appendChild(tr);
+                            atualizarLinks(index);
                         });
                     }
                 });
         }
 
-        function enviarWA(num, nome) {
-            const msg = `Olá ${nome}! Vi que você está explorando o Saber⁺. Temos uma condição especial para o seu próximo módulo. Vamos conversar?`;
-            window.open(`https://wa.me/${num.replace(/\D/g,'' )}?text=${encodeURIComponent(msg)}`, '_blank');
+        function atualizarLinks(idx) {
+            const aluno = dbAlunos[idx];
+            const select = document.getElementById(`oferta-${idx}`);
+            const cursoId = select ? select.value : "";
+            const cursoNome = select && select.selectedIndex > 0 ? select.options[select.selectedIndex].text : "um novo módulo";
+            
+            const linkPagamento = "COLE_AQUI_O_LINK_ASAAS"; // Você pode automatizar isso vindo da planilha também
+            
+            // WHATSAPP
+            const msgWA = `Olá ${aluno.nome}! Notamos seu progresso no Saber⁺. Preparamos uma condição especial para o curso *${cursoNome}*.\n\nLink para inscrição: ${linkPagamento}\n\nAssim que concluir, seu acesso será liberado na hora!`;
+            document.getElementById(`wa-${idx}`).href = `https://wa.me/55${aluno.whatsapp.replace(/\D/g,'' )}?text=${encodeURIComponent(msgWA)}`;
+
+            // EMAIL
+            const assunto = `Oportunidade: Curso ${cursoNome} no Saber+`;
+            const corpo = `Olá ${aluno.nome},\n\nParabéns pela sua jornada no Saber+!\n\nVi que você ainda não explorou o módulo "${cursoNome}". Gostaria de oferecer uma condição exclusiva para você continuar evoluindo.\n\nLink de acesso: ${linkPagamento}\n\nAtenciosamente,\nGestão Saber+`;
+            document.getElementById(`mail-${idx}`).href = `mailto:${aluno.email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
         }
 
-        function enviarEmail(email, nome) {
-            const assunto = "Oportunidade Estratégica - Saber+";
-            const corpo = `Olá ${nome}, tudo bem?\n\nNotamos seu progresso no Saber+ e gostaríamos de oferecer uma mentoria exclusiva...`;
-            window.location.href = `mailto:${email}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
-        }
+        function liberarManual(idAmb, idx) {
+            const select = document.getElementById(`oferta-${idx}`);
+            if(!select || select.value === "") return alert("Selecione um curso na coluna 'Sugestão de Oferta' primeiro.");
+            
+            const cursoId = select.value;
+            const cursoNome = select.options[select.selectedIndex].text;
 
-        function abrirModalLiberar(idAmbiente) {
-            const idCurso = prompt("Digite o ID do curso para liberar (IDs disponíveis: " + catalogoGlobal.map(c=>c.id).join(', ') + "):");
-            if(!idCurso) return;
-            fetch(`${SCRIPT_URL}?action=liberarCurso&idAmbiente=${idAmbiente}&idCurso=${idCurso}`)
-                .then(r => r.json()).then(res => { if(res.success) { alert("Curso liberado!"); carregarDados(); } });
+            if(confirm(`Deseja liberar manualmente o curso "${cursoNome}" para o ambiente ${idAmb}?`)) {
+                fetch(`${SCRIPT_URL}?action=liberarCurso&idAmbiente=${idAmb}&idCurso=${cursoId}`)
+                    .then(r => r.json()).then(res => {
+                        if(res.success) { alert("Curso liberado com sucesso!"); carregarDados(); }
+                    });
+            }
         }
     </script>
 </body>
