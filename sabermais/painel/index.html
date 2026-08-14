@@ -37,16 +37,13 @@
         input {
             width: 100%; padding: 14px; margin: 12px 0; background: rgba(255,255,255,0.05);
             border: 1px solid var(--bordas); color: #fff; border-radius: 4px; box-sizing: border-box;
-            font-size: 16px; outline: none; transition: 0.3s;
+            font-size: 16px; outline: none;
         }
-        input:focus { border-color: var(--dourado); background: rgba(255,255,255,0.08); }
-        
         button.btn-primary {
             width: 100%; padding: 16px; background: var(--dourado); color: #000;
             border: none; border-radius: 4px; font-weight: bold; cursor: pointer; 
-            margin-top: 15px; font-size: 16px; letter-spacing: 1px; transition: 0.3s;
+            margin-top: 15px; font-size: 16px; letter-spacing: 1px;
         }
-        button.btn-primary:hover { background: var(--dourado-sec); transform: translateY(-2px); }
 
         /* LOBBY VIEW */
         .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
@@ -58,14 +55,14 @@
             background: var(--card); border: 1px solid var(--bordas); padding: 30px; 
             border-radius: 12px; transition: all 0.3s; display: flex; flex-direction: column; justify-content: space-between;
         }
-        .course-card:hover { transform: translateY(-8px); border-color: var(--dourado); box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        .course-card:hover { transform: translateY(-8px); border-color: var(--dourado); }
         .course-card h3 { color: var(--dourado); margin: 0 0 15px 0; font-family: 'Cormorant Garamond', serif; font-size: 26px; }
-        .course-card p { color: var(--texto-sec); font-size: 15px; line-height: 1.6; flex-grow: 1; margin-bottom: 25px; }
+        .course-card p { color: var(--texto-sec); font-size: 15px; line-height: 1.6; margin-bottom: 25px; }
 
         /* READ VIEW */
         #readView { display: none; height: 100vh; grid-template-columns: 320px 1fr 380px; }
         .sidebar { background: var(--card); border-right: 1px solid var(--bordas); padding: 25px; overflow-y: auto; }
-        .content-area { background: #fff; overflow-y: auto; position: relative; scroll-behavior: smooth; }
+        .content-area { background: #fff; overflow-y: auto; position: relative; }
         .notes-area { background: var(--card); border-left: 1px solid var(--bordas); padding: 25px; display: flex; flex-direction: column; }
 
         .aula-item { 
@@ -73,7 +70,7 @@
             border: 1px solid transparent; transition: 0.2s; font-size: 15px; color: var(--texto-sec);
         }
         .aula-item:hover { background: rgba(196, 151, 74, 0.1); color: var(--texto); }
-        .aula-item.active { background: var(--dourado); color: #000; font-weight: bold; border-color: var(--dourado); }
+        .aula-item.active { background: var(--dourado); color: #000; font-weight: bold; }
 
         /* RENDERIZADOR DE CONTEUDO (MÁXIMO CONTRASTE) */
         .google-doc-render, .google-doc-render * { 
@@ -86,21 +83,19 @@
         }
         .google-doc-render p { margin-bottom: 25px; }
         .google-doc-render h1, .google-doc-render h2, .google-doc-render h3 { 
-            color: #000 !important; font-family: 'Cormorant Garamond', serif; margin-top: 40px; 
+            color: #000 !important; font-family: 'Cormorant Garamond', serif; 
         }
         .google-doc-render b, .google-doc-render strong { color: #000 !important; font-weight: 700 !important; }
         .google-doc-render table { width: 100%; border-collapse: collapse; margin: 30px 0; border: 1px solid #ccc !important; }
-        .google-doc-render td { border: 1px solid #ccc !important; padding: 12px; vertical-align: top; }
+        .google-doc-render td { border: 1px solid #ccc !important; padding: 12px; }
 
         textarea { 
             width: 100%; flex-grow: 1; background: #fff9c4; border: none; 
             padding: 20px; border-radius: 4px; font-family: 'DM Sans', sans-serif; resize: none;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.15); color: #333; font-size: 16px; line-height: 1.5;
-            margin-bottom: 20px;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.15); color: #333; font-size: 16px; margin-bottom: 20px;
         }
 
-        .btn-voltar { color: var(--dourado); cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 30px; font-weight: 500; transition: 0.3s; }
-        .btn-voltar:hover { color: var(--dourado-sec); transform: translateX(-5px); }
+        .btn-voltar { color: var(--dourado); cursor: pointer; display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
     </style>
 </head>
 <body>
@@ -141,14 +136,13 @@
         </div>
         <div class="notes-area">
             <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0; font-size:22px;">Seus Insights</h3>
-            <p style="color:var(--texto-sec); font-size:13px; margin-bottom:15px;">Suas anotações são salvas automaticamente em seu ambiente exclusivo.</p>
             <textarea id="campoNota" placeholder="O que você aprendeu com esta aula?"></textarea>
             <button class="btn-primary" id="btnSalvarNota" onclick="salvarNota()">SALVAR INSIGHT</button>
         </div>
     </div>
 
     <script>
-        // CONFIGURAÇÃO DO BACKEND
+        // SUBSTITUA PELA SUA URL DO APPS SCRIPT (GARANTA QUE TERMINE EM /exec)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         
         let currentUser = null;
@@ -165,7 +159,10 @@
             btn.innerText = "AUTENTICANDO...";
             btn.disabled = true;
 
-            fetch(`${SCRIPT_URL}?action=validarAcesso&email=${email}&senha=${senha}`)
+            // Chamada simplificada para evitar erros de rede
+            const urlFinal = SCRIPT_URL + "?action=validarAcesso&email=" + encodeURIComponent(email) + "&senha=" + encodeURIComponent(senha);
+
+            fetch(urlFinal)
                 .then(r => r.json())
                 .then(res => {
                     if(res.autorizado) {
@@ -175,20 +172,21 @@
                         document.getElementById('lobbyView').style.display = 'block';
                         carregarCursos();
                     } else {
-                        alert("Erro: " + (res.error || "Credenciais inválidas"));
+                        alert("Acesso Negado: " + (res.error || "Verifique e-mail e senha."));
                         btn.innerText = "ACESSAR AMBIENTE";
                         btn.disabled = false;
                     }
                 })
                 .catch(err => {
-                    alert("Falha na conexão com o servidor AILS.");
+                    console.error("Erro detalhado:", err);
+                    alert("Falha na conexao. Verifique se o Script foi implantado como 'Qualquer pessoa'.");
                     btn.disabled = false;
                     btn.innerText = "ACESSAR AMBIENTE";
                 });
         }
 
         function carregarCursos() {
-            fetch(`${SCRIPT_URL}?action=carregarMenu`)
+            fetch(SCRIPT_URL + "?action=carregarMenu")
                 .then(r => r.json())
                 .then(res => {
                     if(res.success) {
@@ -218,11 +216,11 @@
                 div.innerHTML = `
                     <div>
                         <h3>${curso.nomeCurso}</h3>
-                        <p>${curso.descricao || 'Módulo estratégico focado em alta performance e resultados práticos.'}</p>
+                        <p>${curso.descricao || 'Módulo estratégico focado em alta performance.'}</p>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--bordas); padding-top:20px;">
                         <span style="color:var(--dourado-sec); font-weight:bold; font-size:18px;">${jaComprou ? 'ADQUIRIDO' : precoFormatado}</span>
-                        <button onclick="abrirCurso('${id}')" style="padding:10px 20px; background:${jaComprou ? 'var(--dourado)' : 'transparent'}; border:1px solid var(--dourado); color:${jaComprou ? '#000' : '#C4974A'}; cursor:pointer; font-weight:bold; border-radius:4px; transition:0.3s;">
+                        <button onclick="abrirCurso('${id}')" style="padding:10px 20px; background:${jaComprou ? 'var(--dourado)' : 'transparent'}; border:1px solid var(--dourado); color:${jaComprou ? '#000' : '#C4974A'}; cursor:pointer; font-weight:bold; border-radius:4px;">
                             ${jaComprou ? 'ESTUDAR' : 'DEGUSTAÇÃO'}
                         </button>
                     </div>
@@ -248,12 +246,7 @@
                 div.className = `aula-item`;
                 if(bloqueada) div.style.opacity = '0.4';
                 
-                div.innerHTML = `
-                    <span style="display:flex; justify-content:space-between; align-items:center;">
-                        ${index + 1}. ${aula.tituloAula}
-                        ${bloqueada ? '<span>🔒</span>' : ''}
-                    </span>
-                `;
+                div.innerHTML = `${index + 1}. ${aula.tituloAula} ${bloqueada ? '<span>🔒</span>' : ''}`;
                 
                 if(!bloqueada) {
                     div.onclick = () => {
@@ -263,7 +256,7 @@
                     };
                 } else {
                     div.onclick = () => {
-                        if(confirm("Este capítulo é exclusivo. Deseja adquirir o curso completo para destravar seu progresso?")) {
+                        if(confirm("Este capítulo é exclusivo. Deseja adquirir o curso completo?")) {
                             window.open(`https://ails.eumaisempresa.com.br/pagamento/?curso=${idCurso}&ambiente=${currentUser.idAmbiente}`, '_blank' );
                         }
                     };
@@ -271,14 +264,13 @@
                 lista.appendChild(div);
             });
 
-            // Carrega a primeira aula (Degustação) automaticamente
             carregarConteudo(aulas[0]);
         }
 
         function carregarConteudo(aula) {
             aulaAtiva = aula;
             const area = document.getElementById('conteudoAula');
-            area.innerHTML = "<div style='padding:100px; text-align:center; font-family:Lora; font-style:italic; color:#777;'>Sincronizando conteúdo estratégico...</div>";
+            area.innerHTML = "<div style='padding:100px; text-align:center; font-family:Lora; font-style:italic;'>Sincronizando conteúdo estratégico...</div>";
             area.scrollTop = 0;
             
             fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${currentUser.idAmbiente}&idCurso=${aula.idCurso}&idAula=${aula.idAula}&idDoc=${aula.idDoc}`)
@@ -286,9 +278,6 @@
                 .then(res => {
                     area.innerHTML = res.success ? res.conteudo : `<div style='padding:50px; color:red;'>${res.error}</div>`;
                     document.getElementById('campoNota').value = res.anotacao || "";
-                })
-                .catch(err => {
-                    area.innerHTML = "<div style='padding:50px; color:red;'>Erro ao carregar conteúdo do Drive.</div>";
                 });
         }
 
@@ -296,7 +285,6 @@
             if(!aulaAtiva) return;
             const texto = document.getElementById('campoNota').value;
             const btn = document.getElementById('btnSalvarNota');
-            
             btn.innerText = "SALVANDO...";
             btn.disabled = true;
 
@@ -313,16 +301,9 @@
             .then(r => r.json())
             .then(res => {
                 btn.innerText = "INSIGHT SALVO!";
-                setTimeout(() => {
-                    btn.innerText = "SALVAR INSIGHT";
-                    btn.disabled = false;
-                }, 2000);
+                setTimeout(() => { btn.innerText = "SALVAR INSIGHT"; btn.disabled = false; }, 2000);
             })
-            .catch(err => {
-                alert("Erro ao salvar nota.");
-                btn.innerText = "SALVAR INSIGHT";
-                btn.disabled = false;
-            });
+            .catch(err => { alert("Erro ao salvar nota."); btn.innerText = "SALVAR INSIGHT"; btn.disabled = false; });
         }
 
         function voltarLobby() {
