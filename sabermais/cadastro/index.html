@@ -116,7 +116,7 @@
     .success-step > p { color: var(--texto-suave); font-size: 14px; margin: 15px auto 0; max-width: 380px; }
     .credential-summary { display: grid; gap: 7px; margin: 22px 0 3px; padding: 15px; background: rgba(255,255,255,0.035); border: 1px solid var(--borda); border-radius: 6px; color: var(--texto-suave); font-size: 12px; text-align: left; }
     .credential-summary strong { color: var(--texto); font-weight: 600; word-break: break-word; }
-    .final-step { display: none; margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--borda); }
+    .final-step { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--borda); }
     .final-step p { color: var(--dourado-claro); font-size: 12px; margin-bottom: 14px; }
     .feedback { display: none; margin: 15px 0 0; padding: 10px 12px; border: 1px solid rgba(255,139,139,0.5); border-radius: 5px; color: #FFD2D2; background: rgba(255,139,139,0.08); font-size: 12px; }
 
@@ -213,15 +213,15 @@
         <div id="boxSuccess" class="success-step" aria-live="polite">
           <div class="success-icon"><i class="fa-solid fa-check" aria-hidden="true"></i></div>
           <h2>Seu ambiente foi criado.</h2>
-          <p>Suas credenciais foram geradas. Clique abaixo para recebê-las no WhatsApp informado e, em seguida, entre no seu ambiente.</p>
+          <p>Suas credenciais foram geradas. Receba uma cópia no WhatsApp informado e entre no seu ambiente quando desejar.</p>
           <div class="credential-summary">
             <span>Usuário: <strong id="resEmail">—</strong></span>
             <span>ID do ambiente: <strong id="resAmbiente">—</strong></span>
           </div>
-          <a id="linkWa" href="#" target="_blank" rel="noopener" class="button-link btn-whatsapp" onclick="liberarBotaoFinal()"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Receber credenciais no WhatsApp</a>
-          <div id="finalStep" class="final-step">
-            <p><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Credenciais prontas para uso.</p>
-            <button type="button" class="btn-login" onclick="window.location.href='../login/'">Entrar no ambiente Saber+</button>
+          <a id="linkWa" href="#" target="_blank" rel="noopener" class="button-link btn-whatsapp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i> Receber credenciais no WhatsApp</a>
+          <div class="final-step">
+            <p><i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i> Já recebeu suas credenciais? Acesse o seu ambiente.</p>
+            <a class="button-link btn-login" href="https://ails.eumaisempresa.com.br/sabermais/login/" target="_blank" rel="noopener">Entrar no ambiente Saber+ <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
           </div>
         </div>
       </section>
@@ -270,12 +270,6 @@
       const feedback = document.getElementById("feedback");
       feedback.textContent = "";
       feedback.style.display = "none";
-    }
-
-    function liberarBotaoFinal() {
-      window.setTimeout(() => {
-        document.getElementById("finalStep").style.display = "block";
-      }, 700);
     }
 
     document.getElementById("formCadastro").addEventListener("submit", async function(event) {
