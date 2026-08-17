@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Executivo - EU⁺ Saber</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Kalam:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+        :root {
+            --fundo-principal: #060E18;
+            --fundo-secundario: #0A1624;
+            --fundo-terciario: #0E1E30;
+            --dourado-principal: #C4974A;
+            --dourado-secundario: #D4AA62;
+            --texto-principal: #EEF0F2;
+            --texto-secundario: #7A8FA3;
+            --bordas: rgba(196, 151, 74, 0.18);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--fundo-principal);
+            color: var(--texto-principal);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .brand-title, #aulaTitulo, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dourado-principal); }
+
+        header {
+            background-color: var(--fundo-secundario);
+            border-bottom: 1px solid var(--bordas);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .selector-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .selector-label {
+            font-size: 10px;
+            color: var(--dourado-principal);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select {
+            background-color: var(--fundo-terciario);
+            border: 1px solid var(--bordas);
+            color: var(--texto-principal);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'DM Sans', sans-serif;
+            width: 280px;
+        }
+
+        button, .btn-upgrade-global {
+            background-color: transparent;
+            border: 1px solid var(--dourado-principal);
+            color: var(--dourado-principal);
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 11px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+        }
+        button:hover, .btn-upgrade-global:hover { background-color: var(--dourado-principal); color: var(--fundo-principal); }
+
+        .btn-upgrade-global {
+            background-color: var(--dourado-principal);
+            color: var(--fundo-principal);
+            border-color: var(--dourado-principal);
+        }
+
+        .painel-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            height: calc(100vh - 72px);
+        }
+
+        .sidebar { background-color: var(--fundo-secundario); border-right: 1px solid var(--bordas); padding: 20px; overflow-y: auto; }
+        
+        .content-body { 
+            padding: 40px 20px; 
+            overflow-y: auto; 
+            background-color: #EAEFF4; 
+            display: block;
+        }
+
+        .notes-panel { 
+            background-color: var(--fundo-secundario); 
+            border-left: 1px solid var(--bordas); 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            overflow-y: auto;
+        }
+
+        .progress-container {
+            margin: 12px 0 18px 0;
+            background: var(--fundo-terciario);
+            border: 1px solid var(--bordas);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--texto-secundario);
+            margin-bottom: 6px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--dourado-principal), var(--dourado-secundario));
+            transition: width 0.4s ease;
+        }
+
+        .aula-item {
+            padding: 12px; border-radius: 4px; cursor: pointer; margin-bottom: 8px; font-size: 14px;
+            transition: all 0.2s; border: 1px solid transparent; color: var(--texto-secundario);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .aula-item:hover, .aula-item.active { background-color: var(--fundo-terciario); border-color: var(--bordas); color: var(--dourado-principal); }
+        
+        .aula-item.bloqueado {
+            opacity: 0.5;
+            background: rgba(0,0,0,0.15) !important;
+        }
+        
+        .tag-trava-discreta { 
+            font-size: 10px; 
+            color: #E74C3C; 
+            text-transform: uppercase; 
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .concluida-badge {
+            color: #2ECC71;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+       .folha-caderno {
+            background-color: #FFFFFF;
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            min-height: 100%;
+            height: auto;
+            padding: 45px 40px 50px 65px;
+            border-left: 2px solid #FF8585;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 2px;
+            position: relative;
+            background-image: linear-gradient(rgba(196, 209, 223, 0.35) 1px, transparent 1px);
+            background-size: 100% 28px;
+            line-height: 28px;
+            display: block;
+        }
+
+        .meta-leitura {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #556373;
+            font-weight: 400;
+        }
+
+        .btn-concluir {
+            background: #EAEFF4;
+            border: 1px solid #CBD5E1;
+            color: #475569;
+            padding: 4px 10px;
+            font-size: 11px;
+            border-radius: 3px;
+            cursor: pointer;
+            text-transform: none;
+        }
+        .btn-concluir.active {
+            background: #2ECC71;
+            color: white;
+            border-color: #2ECC71;
+        }
+        
+        @keyframes fadeInConteudo {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .conteudo-aula-dinamico {
+            font-family: 'Lora', serif;
+            font-size: 16px;
+            color: #1A2430;
+            text-align: justify;
+            line-height: 1.8;
+            word-break: break-word;
+            animation: fadeInConteudo 0.4s ease-out;
+        }
+
+        .conteudo-aula-dinamico h1, .conteudo-aula-dinamico h2, .conteudo-aula-dinamico h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #0A3663;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        .conteudo-aula-dinamico h1 { font-size: 24px; }
+        .conteudo-aula-dinamico h2 { font-size: 21px; }
+        .conteudo-aula-dinamico h3 { font-size: 18px; }
+
+        .conteudo-aula-dinamico p {
+            margin-bottom: 24px;
+        }
+
+        .custom-bullet {
+            display: flex;
+            align-items: flex-start;
+            margin-left: 15px;
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+        .custom-bullet::before {
+            content: "•";
+            color: #1A2430;
+            font-size: 24px;
+            line-height: 20px;
+            margin-right: 12px;
+            display: inline-block;
+        }
+
+        .custom-arrow {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+            margin-bottom: 16px;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+        .custom-arrow::before {
+            content: "➔";
+            color: var(--dourado-principal);
+            margin-right: 10px;
+        }
+
+        /* MÍDIAS: impede que imagens e links do documento ultrapassem a folha de leitura. */
+        .conteudo-aula-dinamico img {
+            display: block;
+            width: auto !important;
+            max-width: 100% !important;
+            height: auto !important;
+            margin: 26px auto;
+            border-radius: 5px;
+            box-shadow: 0 7px 22px rgba(15, 32, 51, 0.16);
+        }
+        .conteudo-aula-dinamico figure {
+            width: 100%;
+            max-width: 100%;
+            margin: 26px 0;
+        }
+        .conteudo-aula-dinamico figure img { margin: 0 auto; }
+        .conteudo-aula-dinamico a {
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        /* TABELAS: rolagem horizontal somente dentro da tabela, sem cortar a leitura no celular. */
+        .table-container-responsive {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            margin: 28px 0;
+            border: 1px solid #CBD5E1;
+            border-radius: 7px;
+            background: #FFFFFF;
+            box-shadow: 0 7px 18px rgba(15, 32, 51, 0.09);
+            -webkit-overflow-scrolling: touch;
+        }
+        .table-container-responsive::-webkit-scrollbar { height: 8px; }
+        .table-container-responsive::-webkit-scrollbar-thumb { background: #B7C3CF; border-radius: 8px; }
+
+        .conteudo-aula-dinamico table {
+            width: 100%;
+            min-width: 620px;
+            margin: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 14px;
+            line-height: 1.55;
+            color: #253648;
+            background: #FFFFFF;
+            font-family: 'DM Sans', sans-serif;
+            table-layout: fixed;
+        }
+        .conteudo-aula-dinamico th, .conteudo-aula-dinamico td {
+            padding: 15px 16px;
+            border: 0;
+            border-right: 1px solid #D8E0E8;
+            border-bottom: 1px solid #D8E0E8;
+            text-align: left;
+            overflow-wrap: anywhere;
+            vertical-align: top;
+        }
+        .conteudo-aula-dinamico th:last-child, .conteudo-aula-dinamico td:last-child { border-right: 0; }
+        .conteudo-aula-dinamico tr:last-child td { border-bottom: 0; }
+
+        /* Muitos documentos exportados pelo Google usam <td> no cabeçalho; por isso o primeiro registro também recebe destaque. */
+        .conteudo-aula-dinamico thead th,
+        .conteudo-aula-dinamico tr:first-child th,
+        .conteudo-aula-dinamico tr:first-child td {
+            background: #0E1E30 !important;
+            color: #F7E5BF !important;
+            font-size: 12px;
+            font-weight: 700 !important;
+            letter-spacing: 0.025em;
+            vertical-align: middle;
+        }
+        .conteudo-aula-dinamico tr:nth-child(even) td { background-color: #F4F7FA; }
+        .conteudo-aula-dinamico tr:hover td { background-color: #EDF4F8; }
+        .conteudo-aula-dinamico th:first-child, .conteudo-aula-dinamico td:first-child { font-weight: 600; }
+
+        .table-scroll-hint {
+            display: none;
+            margin: -20px 0 26px;
+            color: #647487;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            text-align: right;
+        }
+
+        @media screen and (max-width: 900px) {
+            .conteudo-aula-dinamico img {
+                max-width: 100% !important;
+                margin: 18px auto;
+                border-radius: 4px;
+            }
+            .conteudo-aula-dinamico table {
+                min-width: 560px;
+                font-size: 13px;
+            }
+            .conteudo-aula-dinamico th, .conteudo-aula-dinamico td { padding: 13px 14px; }
+            .table-scroll-hint { display: block; }
+        }
+
+        /* COMPONENTES FLUTUANTES DAS REDES SOCIAIS */
+        .social-floating-dock {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 990;
+        }
+
+        .social-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease, filter 0.2s ease;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .social-btn:hover { transform: scale(1.08); filter: brightness(1.1); }
+        
+        .btn-whatsapp { background-color: #25D366; }
+        .btn-linkedin { background-color: #0077B5; }
+        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        
+        .social-btn svg { width: 22px; height: 22px; fill: #FFFFFF; }
+
+        .wa-box-modal {
+            display: none;
+            position: fixed;
+            bottom: 85px;
+            left: 25px;
+            background-color: var(--fundo-secundario);
+            border: 1px solid var(--bordas);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 991;
+            width: 300px;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .wa-box-modal.open { display: block; animation: fadeInConteudo 0.2s ease-out; }
+        .wa-box-modal h4 { margin-bottom: 12px; font-size: 16px; font-family: 'Cormorant Garamond', serif; color: var(--dourado-principal); font-weight: bold; }
+        
+        .wa-field {
+            width: 100%;
+            background-color: var(--fundo-terciario);
+            border: 1px solid var(--bordas);
+            color: var(--texto-principal);
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+        }
+        .wa-field:focus { outline: none; border-color: var(--dourado-principal); }
+        textarea.wa-field { height: 90px; resize: none; }
+        
+        .wa-btn-submit {
+            width: 100%;
+            background-color: #25D366;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            transition: background 0.2s;
+        }
+        .wa-btn-submit:hover { background-color: #20ba5a; }
+
+        /* POST-IT & LOGIN COMPONENTES */
+        .post-it-nota {
+            background-color: #FEF5B1;
+            width: 100%;
+            max-width: 280px;
+            height: 280px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+            transform: rotate(-1deg);
+            transition: transform 0.2s ease;
+            margin-top: 20px;
+        }
+        .post-it-nota:hover { transform: rotate(0deg) scale(1.02); }
+        
+        .post-it-alfinete {
+            width: 12px; height: 12px;
+            background-color: #E74C3C;
+            border-radius: 50%;
+            position: absolute;
+            top: -6px; left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .post-it-nota textarea {
+            width: 100%; height: 85%;
+            background: transparent; border: none; resize: none;
+            font-family: 'Kalam', cursive;
+            font-size: 16px; color: #2C3E50;
+            line-height: 24px;
+        }
+        .post-it-nota textarea:focus { outline: none; }
+        .status-save { font-size: 11px; color: var(--texto-secundario); text-align: right; margin-top: 5px; }
+
+        #loginOverlay { position: fixed; top:0; left:0; width:100%; height:100%; background-color: var(--fundo-principal); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .card { background-color: var(--fundo-secundario); border: 1px solid var(--bordas); padding: 32px; border-radius: 4px; width: 100%; max-width: 400px; margin: 15px; }
+        .login-input { width: 100%; padding: 12px; background: var(--fundo-terciario); border: 1px solid var(--bordas); color: #fff; margin-bottom: 16px; border-radius: 4px; font-family: 'DM Sans', sans-serif; }
+        .link-recuperar { font-size: 12px; color: var(--texto-secundario); cursor: pointer; text-decoration: underline; margin-top: 12px; display: inline-block; }
+        .link-recuperar:hover { color: var(--dourado-principal); }
+
+        .floating-note-btn {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--dourado-principal);
+            color: var(--fundo-principal);
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 995;
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
+            z-index: 996;
+        }
+
+        .modal-upgrade {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--fundo-secundario);
+            border: 1px solid var(--dourado-principal);
+            padding: 30px;
+            border-radius: 6px;
+            z-index: 1000;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+        .modal-upgrade.open { display: block; }
+
+        @media screen and (max-width: 900px) {
+            header {
+                flex-direction: column;
+                align-items: center;
+                padding: 15px;
+                text-align: center;
+            }
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+            .selector-wrapper, select, .btn-upgrade-global {
+                width: 100%;
+            }
+
+            .painel-wrapper {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .sidebar {
+                max-height: 380px;
+                border-right: none;
+                border-bottom: 1px solid var(--bordas);
+            }
+
+            .content-body {
+                padding: 20px 10px;
+            }
+
+            .folha-caderno {
+                padding: 30px 15px 30px 25px;
+                background-size: 100% 24px;
+                line-height: 24px;
+            }
+
+            .notes-panel {
+                display: none; 
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                max-width: 340px;
+                background-color: var(--fundo-secundario);
+                border: 1px solid var(--dourado-principal);
+                border-radius: 6px;
+                padding: 20px;
+                z-index: 997;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            }
+
+            .notes-panel.open { display: flex !important; }
+            .floating-note-btn { display: flex; }
+            .modal-backdrop.open { display: block; }
+            
+            .social-floating-dock { bottom: 20px; left: 20px; gap: 10px; }
+            .social-btn { width: 42px; height: 42px; }
+            .wa-box-modal { bottom: 75px; left: 20px; width: 280px; }
+        }
+
+        /* CORREÇÃO MÓVEL: leitura em tela inteira; curso e insights em painéis sobrepostos. */
+        .mobile-course-btn, .mobile-course-switcher, .mobile-course-backdrop { display: none; }
+        @media screen and (max-width: 900px) {
+            html, body { height: 100%; overflow: hidden; }
+            header { height: 72px; min-height: 72px; padding: 12px 16px; flex-direction: row; justify-content: space-between; align-items: center; text-align: left; }
+            header .brand-title { font-size: 25px !important; white-space: nowrap; }
+            .header-actions { display: none; }
+            #nomeUsuario { max-width: 48vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px !important; text-align: right; }
+            #lblAmbiente { display: none; }
+
+            .painel-wrapper { display: block; position: relative; height: calc(100dvh - 72px); min-height: 0; overflow: hidden; }
+            .content-body { width: 100%; height: 100%; min-width: 0; padding: 16px 12px 92px; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+            .folha-caderno { width: 100%; max-width: none; min-height: calc(100dvh - 104px); margin: 0; padding: 28px 18px 42px 24px; border-left-width: 2px; background-size: 100% 25px; line-height: 25px; }
+            #aulaTitulo { font-size: 27px !important; line-height: 1.2 !important; margin-bottom: 18px !important; }
+            .meta-leitura { gap: 12px; align-items: flex-start; }
+            .conteudo-aula-dinamico { font-size: 16px; text-align: left; line-height: 1.75; }
+            .conteudo-aula-dinamico p { margin-bottom: 20px; }
+            .conteudo-aula-dinamico table { min-width: 520px; font-size: 13px; }
+            .table-container-responsive { margin: 20px 0; }
+
+            .sidebar { display: block; position: fixed; top: 72px; bottom: 0; left: 0; z-index: 2000; width: min(88vw, 380px); max-height: none; padding: 20px; overflow-y: auto; border-right: 1px solid var(--bordas); border-bottom: none; box-shadow: 14px 0 34px rgba(0,0,0,0.42); transform: translateX(-105%); transition: transform 0.28s ease; }
+            .sidebar.open { transform: translateX(0); }
+            .mobile-course-switcher { display: block; margin-bottom: 18px; }
+            .mobile-course-switcher label { display: block; color: var(--dourado-principal); font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
+            .mobile-course-switcher select { width: 100%; }
+            .mobile-course-backdrop { position: fixed; inset: 72px 0 0; z-index: 1900; background: rgba(0,0,0,0.6); }
+            .mobile-course-backdrop.open { display: block; }
+            .mobile-course-btn { display: inline-flex; position: fixed; left: 18px; bottom: 20px; z-index: 1800; align-items: center; gap: 8px; padding: 12px 15px; border: none; border-radius: 24px; background: var(--dourado-principal); color: var(--fundo-principal); box-shadow: 0 5px 16px rgba(0,0,0,0.35); font-size: 11px; font-weight: bold; }
+
+            .notes-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(90vw, 350px); max-width: 350px; max-height: 82dvh; overflow-y: auto; background-color: var(--fundo-secundario); border: 1px solid var(--dourado-principal); border-radius: 6px; padding: 20px; z-index: 3000; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+            .notes-panel.open { display: flex !important; }
+            .floating-note-btn { display: flex; bottom: 20px; right: 18px; z-index: 1800; }
+            .modal-backdrop { z-index: 2900; }
+            .modal-backdrop.open { display: block; }
+            .modal-upgrade { z-index: 3100; }
+            .modal-upgrade.open { display: block; }
+            .social-floating-dock { left: auto; right: 20px; bottom: 92px; gap: 9px; z-index: 1700; }
+            .social-btn { width: 40px; height: 40px; }
+            .wa-box-modal { left: auto; right: 20px; bottom: 145px; width: min(280px, calc(100vw - 40px)); z-index: 2700; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginOverlay">
+        <div class="card" id="boxLogin" style="text-align: center;">
+            <h2 style="margin-bottom: 16px;">Ambiente Inteligente de Negócios Saber⁺</h2>
+            <p style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 24px;">Porque o Conhecimento te leva ⁺ longe.</p>
+            <input type="text" id="loginEmail" placeholder="E-mail do Aluno" class="login-input">
+            <input type="password" id="loginSenha" placeholder="Senha" class="login-input">
+            <button id="btnLogin" style="width: 100%; padding: 12px;">Autenticar Acesso</button>
+            <span class="link-recuperar" onclick="alternarTelas(true)">Esqueceu ou quer alterar a senha?</span>
+        </div>
+
+        <div class="card" id="boxRecuperar" style="text-align: center; display: none;">
+            <h2 style="margin-bottom: 16px;">Alterar Senha</h2>
+            <p style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 24px;">Essa versão ainda é ambiente de projetos.</p>
+            <input type="text" id="recuperarEmail" placeholder="Digite seu e-mail cadastrado" class="login-input">
+            <button id="btnRecuperar" style="width: 100%; padding: 12px;">Solicitar Nova Senha</button>
+            <span class="link-recuperar" onclick="alternarTelas(false)">Voltar para a tela de Login</span>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="upgradeBackdrop" onclick="fecharModalUpgrade()"></div>
+    <div class="modal-upgrade" id="modalUpgrade">
+        <h2 id="tituloModalCompra" style="margin-bottom: 10px;">Curso completo disponível</h2>
+        <p id="textoModalCompra" style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 20px;">Você será direcionado ao checkout seguro do curso selecionado.</p>
+        <button id="btnModalCompra" onclick="iniciarCompraCurso()" style="width:100%; padding:12px; background: var(--dourado-principal); color: var(--fundo-principal);">Ir para o pagamento seguro</button>
+        <span class="link-recuperar" style="margin-top: 15px;" onclick="fecharModalUpgrade()">Continuar lendo o material gratuito</span>
+    </div>
+
+    <div class="social-floating-dock">
+        <div class="wa-box-modal" id="waModal">
+            <h4>Canal de Suporte Executivo</h4>
+            <select id="waTipo" class="wa-field">
+                <option value="Dúvida">❓ Dúvida sobre o conteúdo</option>
+                <option value="Sugestão">💡 Sugestão de melhoria</option>
+                <option value="Crítica">📢 Crítica / Feedback</option>
+            </select>
+            <textarea id="waMensagem" class="wa-field" placeholder="Escreva sua mensagem aqui detalhadamente..."></textarea>
+            <button class="wa-btn-submit" onclick="enviarMensagemWhatsApp()">Disparar via WhatsApp</button>
+        </div>
+
+        <button class="social-btn btn-whatsapp" onclick="toggleWhatsAppBox(event)" title="Suporte via WhatsApp">
+            <svg viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-3.859c1.63.968 3.434 1.48 5.275 1.481 5.466 0 9.913-4.441 9.916-9.913.002-2.651-1.02-5.144-2.878-7.004-1.857-1.858-4.351-2.88-7.001-2.881-5.47 0-9.917 4.441-9.92 9.914-.001 1.892.494 3.739 1.433 5.348L1.508 22.23l4.139-1.089zm11.336-7.391c-.328-.164-1.94-.959-2.268-1.079-.328-.12-.567-.181-.806.164-.238.346-.927 1.167-1.134 1.396-.208.23-.417.26-.745.096-.328-.164-1.386-.511-2.641-1.629-.977-.872-1.637-1.95-1.828-2.279-.191-.33-.02-.508.145-.671.149-.147.328-.385.493-.578.164-.193.219-.329.328-.55.11-.219.055-.411-.028-.574-.082-.164-.806-1.941-1.105-2.663-.291-.703-.588-.609-.806-.62-.208-.009-.447-.01-.686-.01-.239 0-.626.089-.953.447-.328.356-1.253 1.222-1.253 2.98 0 1.758 1.282 3.456 1.461 3.692.179.237 2.525 3.856 6.115 5.41.854.37 1.52.592 2.039.757.859.273 1.642.235 2.259.143.688-.102 1.94-.794 2.212-1.52.273-.727.273-1.352.191-1.482-.081-.13-.298-.21-.626-.374z"/></svg>
+        </button>
+        <a id="lnkLinkedin" href="#" target="_blank" class="social-btn btn-linkedin" title="Acessar LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </a>
+        <a id="lnkInstagram" href="#" target="_blank" class="social-btn btn-instagram" title="Acessar Instagram">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+    </div>
+
+    <header>
+        <div style="font-size: 24px; font-weight: bold;" class="brand-title">EU⁺ Saber</div>
+        <div class="header-actions">
+            <div class="selector-wrapper">
+                <span class="selector-label">Selecione o Curso</span>
+                <select id="selectCurso"></select>
+            </div>
+            <button type="button" class="btn-upgrade-global" id="btnUpgradeGlobal" onclick="iniciarCompraCurso()">⭐ Adquirir curso</button>
+        </div>
+        <div id="nomeUsuario" style="font-size: 14px; color: var(--dourado-principal);">Usuário: <span id="lblNomeAluno">---</span> <span id="lblAmbiente" style="opacity:0.5; font-size:11px;"></span></div>
+    </header>
+
+    <div class="painel-wrapper">
+        <div class="sidebar" id="listaAulas">
+            <div class="mobile-course-switcher">
+                <label for="selectCursoMobile">Curso selecionado</label>
+                <select id="selectCursoMobile" aria-label="Selecionar curso"></select>
+            </div>
+            <h4 style="color: var(--texto-secundario); margin-bottom: 15px; font-size: 12px; text-transform: uppercase;">Cronograma do Curso</h4>
+        </div>
+        
+        <div class="content-body">
+            <div class="folha-caderno">
+                <div id="aulaTitulo" style="margin-bottom: 5px; font-size: 28px; line-height: 34px;">Selecione uma aula no cronograma para iniciar</div>
+                
+                <div class="meta-leitura" id="metaLeitura" style="display: none;">
+                    <span id="tempoEstimado">⏱️ Leitura: -- min</span>
+                    <button class="btn-concluir" id="btnMarcarConcluido" onclick="toggleConclusaoAula()">✓ Marcar Concluído</button>
+                </div>
+
+                <div id="aulaConteudo" class="conteudo-aula-dinamico">
+                    Por favor, selecione o curso e a aula no cronograma para iniciar o seu manual de estudos.
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-backdrop" id="noteBackdrop" onclick="toggleMobileNote()"></div>
+
+        <div class="notes-panel" id="notesPanel">
+            <h3 style="font-size: 18px; margin-bottom: 5px; text-align: center;">✍️ Caderno de Insights</h3>
+            <p style="color: var(--texto-secundario); font-size: 12px; text-align: center; margin-bottom: 5px;">Sincronização em nuvem ativa</p>
+            
+            <div class="post-it-nota">
+                <div class="post-it-alfinete"></div>
+                <textarea id="txtAnotacoes" placeholder="Digite aqui seus insights e reflexões executivas..."></textarea>
+                <div class="status-save" id="statusSalvar">✨ Conectado à Nuvem</div>
+            </div>
+            <button id="btnSalvarNota" style="margin-top: 25px; width: 100%; max-width: 280px;">Sincronizar Agora</button>
+            <button id="btnFecharNotaMobile" style="margin-top: 10px; width: 100%; max-width: 280px; display: none; border-color: #E74C3C; color: #E74C3C;" onclick="toggleMobileNote()">Fechar e Ler</button>
+        </div>
+    </div>
+
+    <div class="mobile-course-backdrop" id="mobileCourseBackdrop" onclick="fecharMenuCursosMobile()"></div>
+    <button class="mobile-course-btn" id="mobileCourseBtn" onclick="toggleMenuCursosMobile()">☰ Cursos</button>
+    <button class="floating-note-btn" id="fabBtn" onclick="toggleMobileNote()">✍️</button>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
+
+        // CONFIGURAÇÕES DOS CANAIS COMPLEMENTARES (Ajuste aqui)
+        const WHATSAPP_NUMERO = "5527998131806"; // Inclua DDI (55) + DDD + Número completo
+        const LINK_LINKEDIN = "https://www.linkedin.com/company/eumaisempresa";
+        const LINK_INSTAGRAM = "https://www.instagram.com/eumaisempresa";
+
+        let currentAmbiente = "";
+        let restricoesPlano = null;
+        let dbCursos = [];
+        let currentCursoId = "";
+        let currentAulaId = "";
+        let saveTimeout;
+        let minutosAulasCache = {};
+
+        // Inicialização dos links estáticos de redes
+        document.getElementById('lnkLinkedin').href = LINK_LINKEDIN;
+        document.getElementById('lnkInstagram').href = LINK_INSTAGRAM;
+
+        function toggleMenuCursosMobile() {
+            if (window.innerWidth <= 900) {
+                document.getElementById('listaAulas').classList.toggle('open');
+                document.getElementById('mobileCourseBackdrop').classList.toggle('open');
+            }
+        }
+
+        function fecharMenuCursosMobile() {
+            document.getElementById('listaAulas').classList.remove('open');
+            document.getElementById('mobileCourseBackdrop').classList.remove('open');
+        }
+
+        function toggleMobileNote() {
+            if (window.innerWidth <= 900) {
+                const panel = document.getElementById('notesPanel');
+                const backdrop = document.getElementById('noteBackdrop');
+                const btnFechar = document.getElementById('btnFecharNotaMobile');
+                
+                if(panel.classList.contains('open')) {
+                    panel.classList.remove('open');
+                    backdrop.classList.remove('open');
+                    btnFechar.style.display = 'none';
+                } else {
+                    fecharMenuCursosMobile();
+                    panel.classList.add('open');
+                    backdrop.classList.add('open');
+                    btnFechar.style.display = 'block';
+                }
+            }
+        }
+
+        // Funções para controle do modal interativo do WhatsApp
+        function toggleWhatsAppBox(event) {
+            event.stopPropagation();
+            document.getElementById('waModal').classList.toggle('open');
+        }
+
+        function fecharWhatsAppBox() {
+            document.getElementById('waModal').classList.remove('open');
+        }
+
+        function enviarMensagemWhatsApp() {
+            const tipo = document.getElementById('waTipo').value;
+            const mensagem = document.getElementById('waMensagem').value.trim();
+            
+            if(!mensagem) {
+                alert("Por favor, digite sua mensagem antes de prosseguir.");
+                return;
+            }
+            
+            const textoFormatado = `Olá! Estou enviando uma *${tipo}* direto da minha Mesa Executiva Saber⁺:\n\n${mensagem}`;
+            const urlFinal = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMERO}&text=${encodeURIComponent(textoFormatado)}`;
+            
+            window.open(urlFinal, '_blank');
+            document.getElementById('waMensagem').value = "";
+            fecharWhatsAppBox();
+        }
+
+        // Fechamento de modais flutuantes ao clicar fora deles
+        document.addEventListener('click', function(e) {
+            const waBox = document.getElementById('waModal');
+            const btnWa = document.querySelector('.btn-whatsapp');
+            if (waBox && waBox.classList.contains('open') && !waBox.contains(e.target) && !btnWa.contains(e.target)) {
+                fecharWhatsAppBox();
+            }
+        });
+
+        function obterCursoAtual() {
+            return dbCursos.find(curso => curso.idCurso === currentCursoId) || null;
+        }
+
+        function formatarPrecoCompra(valor) {
+            const numero = Number(valor || 0);
+            return numero > 0 ? numero.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'valor a confirmar';
+        }
+
+        function atualizarBotaoCompraCurso(curso) {
+            const botao = document.getElementById('btnUpgradeGlobal');
+            if (!botao || !curso) return;
+
+            if (curso.comprado) {
+                botao.disabled = true;
+                botao.style.opacity = '0.6';
+                botao.style.cursor = 'default';
+                botao.innerText = '✓ Curso adquirido';
+                return;
+            }
+
+            botao.disabled = false;
+            botao.style.opacity = '1';
+            botao.style.cursor = 'pointer';
+            botao.innerText = curso.preco ? `⭐ Adquirir por ${formatarPrecoCompra(curso.preco)}` : '⭐ Adquirir curso';
+        }
+
+        function abrirModalUpgrade() {
+            const curso = obterCursoAtual();
+            const titulo = document.getElementById('tituloModalCompra');
+            const texto = document.getElementById('textoModalCompra');
+            const botao = document.getElementById('btnModalCompra');
+
+            if (!curso || curso.comprado) return;
+
+            titulo.innerText = curso.nomeCurso;
+            texto.innerText = `Você terá acesso ao curso completo por ${formatarPrecoCompra(curso.preco)}. Ao continuar, o interesse será registrado e o checkout seguro será aberto em uma nova guia.`;
+            botao.disabled = !curso.linkAsaas;
+            botao.style.opacity = curso.linkAsaas ? '1' : '0.55';
+            botao.innerText = curso.linkAsaas ? 'Ir para o pagamento seguro' : 'Link de pagamento indisponível';
+
+            document.getElementById('modalUpgrade').classList.add('open');
+            document.getElementById('upgradeBackdrop').classList.add('open');
+        }
+
+        function fecharModalUpgrade() {
+            document.getElementById('modalUpgrade').classList.remove('open');
+            document.getElementById('upgradeBackdrop').classList.remove('open');
+        }
+
+        function iniciarCompraCurso() {
+            const curso = obterCursoAtual();
+            if (!curso) return alert('Selecione um curso antes de iniciar a compra.');
+            if (curso.comprado) return alert('Este curso já está liberado no seu ambiente.');
+            if (!curso.linkAsaas) return alert('O link de pagamento deste curso ainda não foi configurado. Entre em contato com a equipe de suporte.');
+
+            // Abre uma guia vazia dentro do gesto do usuário para evitar bloqueio de pop-up.
+            const janelaCheckout = window.open('about:blank', '_blank');
+            if (!janelaCheckout) {
+                return alert('O navegador bloqueou a abertura do checkout. Permita pop-ups para este site e tente novamente.');
+            }
+
+            const botaoModal = document.getElementById('btnModalCompra');
+            const botaoCabecalho = document.getElementById('btnUpgradeGlobal');
+            const textoOriginalModal = botaoModal ? botaoModal.innerText : '';
+            const textoOriginalCabecalho = botaoCabecalho ? botaoCabecalho.innerText : '';
+            if (botaoModal) { botaoModal.disabled = true; botaoModal.innerText = 'Registrando interesse...'; }
+            if (botaoCabecalho) { botaoCabecalho.disabled = true; botaoCabecalho.innerText = 'Preparando checkout...'; }
+
+            const url = `${SCRIPT_URL}?action=registrarInteresseCompra&idAmbiente=${encodeURIComponent(currentAmbiente)}&idCurso=${encodeURIComponent(curso.idCurso)}&origem=PAINEL_ALUNO`;
+            fetch(url)
+                .then(resposta => resposta.json())
+                .then(resposta => {
+                    if (!resposta.success || !resposta.linkAsaas) {
+                        throw new Error(resposta.error || 'Não foi possível registrar a solicitação de compra.');
+                    }
+
+                    janelaCheckout.location.href = resposta.linkAsaas;
+                    fecharModalUpgrade();
+                    alert('O checkout foi aberto em uma nova guia. Após a confirmação do pagamento, você receberá a atualização do status do acesso.');
+                })
+                .catch(erro => {
+                    janelaCheckout.close();
+                    alert(erro.message || 'Não foi possível abrir o checkout. Tente novamente.');
+                })
+                .finally(() => {
+                    if (botaoModal) { botaoModal.disabled = false; botaoModal.innerText = textoOriginalModal; }
+                    if (botaoCabecalho) { botaoCabecalho.disabled = false; botaoCabecalho.innerText = textoOriginalCabecalho; }
+                });
+        }
+
+        function alternarTelas(mostrarRecuperar) {
+            document.getElementById('boxLogin').style.display = mostrarRecuperar ? 'none' : 'block';
+            document.getElementById('boxRecuperar').style.display = mostrarRecuperar ? 'block' : 'none';
+        }
+
+        // MOTOR DE TRATAMENTO DE TEXTO TOTALMENTE OPTIMIZADO COM SUPORTE GLOBAL A **NEGRITO**
+        function tratarSintaxeConteudo(textoBruto) {
+            if (!textoBruto) return "";
+            
+            // Tratamento global para converter **texto** em negrito HTML válido
+            let textoComNegrito = textoBruto.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            let htmlProcessado = textoComNegrito.replace(/\n/g, '<br>');
+            const linhas = htmlProcessado.split('<br>');
+            
+            let emTabela = false;
+            let blocoTabelaHtml = "";
+
+            for (let i = 0; i < linhas.length; i++) {
+                let linhaOriginal = linhas[i];
+                let linhaClean = linhaOriginal.trim();
+
+                if (/^[tT]\d+\./.test(linhaClean) || /^[tT]\.[0-9]/.test(linhaClean)) {
+                    if (!emTabela) {
+                        emTabela = true;
+                        blocoTabelaHtml = '<div class="table-container-responsive"><table>';
+                    }
+
+                    const ehCabecalho = /0/.test(linhaClean.split(/\s+/)[0]);
+                    const tagCelula = ehCabecalho ? 'th' : 'td';
+
+                    let conteudoLinha = linhaClean.replace(/^[tT]\d+\.\s*|^[tT]\.\d+\s*/i, '');
+                    const colunas = conteudoLinha.split('|');
+                    
+                    blocoTabelaHtml += '<tr>';
+                    colunas.forEach(col => {
+                        blocoTabelaHtml += `<${tagCelula}>${col.trim()}</${tagCelula}>`;
+                    });
+                    blocoTabelaHtml += '</tr>';
+
+                    linhas[i] = ''; 
+                    continue;
+                } else {
+                    if (emTabela) {
+                        blocoTabelaHtml += '</table></div>';
+                        linhas[i] = blocoTabelaHtml + '<br>' + linhaOriginal;
+                        emTabela = false;
+                        blocoTabelaHtml = "";
+                    }
+                }
+
+                if (/^\s*\d+(\.\d+)*\./.test(linhaClean)) {
+                    linhas[i] = linhaOriginal.replace(/^\s*(\d+(?:\.\d+)*\.)\s*(.+?)$/g, 
+                        '<div style="color: #C4974A; font-weight: bold; font-family: \'Cormorant Garamond\', serif; font-size: 21px; margin-top: 15px; margin-bottom: 10px;">$1 $2</div>');
+                    continue;
+                }
+
+                if (/^\s*\*\.\s*/.test(linhaClean)) {
+                    let conteudo = linhaClean.replace(/^\s*\*\.\s*/, '');
+                    if (conteudo.includes(':')) {
+                        conteudo = conteudo.replace(/^([^:]+:)/, '<strong>$1</strong>');
+                    }
+                    linhas[i] = `<div class="custom-bullet">${conteudo}</div>`;
+                    continue;
+                }
+
+                if (/^\s*\-\.\s*/.test(linhaClean)) {
+                    let conteudo = linhaClean.replace(/^\s*\-\.\s*/, '');
+                    if (conteudo.includes(':')) {
+                        conteudo = conteudo.replace(/^([^:]+:)/, '<strong>$1</strong>');
+                    }
+                    linhas[i] = `<div class="custom-arrow">${conteudo}</div>`;
+                    continue;
+                }
+            }
+
+            if (emTabela) {
+                blocoTabelaHtml += '</table></div>';
+                linhas[linhas.length - 1] += blocoTabelaHtml;
+            }
+
+            htmlProcessado = linhas.join('<br>');
+            htmlProcessado = htmlProcessado.replace(/(<br>){3,}/g, '<br><br>');
+            htmlProcessado = htmlProcessado.replace(/<br><div/g, '<div');
+            htmlProcessado = htmlProcessado.replace(/<\/div><br>/g, '</div>');
+
+            return htmlProcessado;
+        }
+
+        // Garante que tabelas presentes no HTML exportado sejam roladas dentro do leitor,
+        // sem aumentar a largura da página no celular.
+        function prepararTabelasParaLeitura() {
+            const area = document.getElementById('aulaConteudo');
+            if (!area) return;
+
+            area.querySelectorAll('table').forEach(tabela => {
+                let contenedor = tabela.parentElement;
+
+                if (!contenedor || !contenedor.classList.contains('table-container-responsive')) {
+                    const novoContenedor = document.createElement('div');
+                    novoContenedor.className = 'table-container-responsive';
+                    tabela.parentNode.insertBefore(novoContenedor, tabela);
+                    novoContenedor.appendChild(tabela);
+                    contenedor = novoContenedor;
+                }
+
+                const proximoElemento = contenedor.nextElementSibling;
+                if (!proximoElemento || !proximoElemento.classList.contains('table-scroll-hint')) {
+                    const aviso = document.createElement('p');
+                    aviso.className = 'table-scroll-hint';
+                    aviso.textContent = '← Deslize a tabela para ver todas as colunas →';
+                    contenedor.insertAdjacentElement('afterend', aviso);
+                }
+            });
+        }
+        
+        document.getElementById('btnRecuperar').addEventListener('click', function() {
+            const email = document.getElementById('recuperarEmail').value.trim();
+            if(!email) return alert("Por favor, digite seu e-mail.");
+            
+            this.innerText = "Processando Alteração...";
+            this.disabled = true;
+
+            fetch(`${SCRIPT_URL}?action=alterarSenha&email=${encodeURIComponent(email)}`)
+            .then(res => res.json())
+            .then(res => {
+                if(res.success) {
+                    alert("Sucesso! Uma nova senha foi gerada e enviada para o seu e-mail.");
+                    alternarTelas(false);
+                } else {
+                    alert("Erro: " + res.error);
+                }
+                this.innerText = "Solicitar Nova Senha";
+                this.disabled = false;
+            }).catch(() => {
+                alert("Erro ao processar requisição na central.");
+                this.innerText = "Solicitar Nova Senha";
+                this.disabled = false;
+            });
+        });
+
+        document.getElementById('btnLogin').addEventListener('click', function() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const senha = document.getElementById('loginSenha').value.trim();
+            
+            if(!email || !senha) return alert("Por favor, preencha todos os campos.");
+            
+            this.innerText = "Validando Credenciais...";
+            
+            fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`)
+            .then(res => res.json())
+            .then(res => {
+                if(res.autorizado) {
+                    currentAmbiente = res.idAmbiente;
+                    restricoesPlano = res.restricoes;
+                    
+                    document.getElementById('lblNomeAluno').innerText = res.nome;
+                    document.getElementById('lblAmbiente').innerText = `(${res.idAmbiente})`;
+                    document.getElementById('loginOverlay').style.display = 'none';
+
+                    if (restricoesPlano && !restricoesPlano.limitarCapitulos && !restricoesPlano.bloqueado) {
+                        document.getElementById('btnUpgradeGlobal').style.display = 'none';
+                    }
+
+                    carregarMenu();
+                } else {
+                    alert(res.error || "Acesso negado. Credenciais inválidas.");
+                    this.innerText = "Autenticar Acesso";
+                }
+            }).catch(() => {
+                alert("Erro de comunicação com o servidor.");
+                this.innerText = "Autenticar Acesso";
+            });
+        });
+
+        function carregarMenu() {
+            const url = `${SCRIPT_URL}?action=carregarMenu&idAmbiente=${encodeURIComponent(currentAmbiente)}`;
+
+            fetch(url)
+            .then(res => res.json())
+            .then(res => {
+                if (!res.success) {
+                    throw new Error(res.error || "O catálogo não pôde ser carregado.");
+                }
+
+                // Compatibiliza o formato novo do Apps Script (cursos/aulas agrupados)
+                // com as funções do painel, sem alterar a experiência visual.
+                const cursosRecebidos = Array.isArray(res.cursos) ? res.cursos : (Array.isArray(res.dados) ? res.dados : []);
+                dbCursos = cursosRecebidos.map((curso, indiceCurso) => ({
+                    idCurso: String(curso.idCurso || curso.id || `CURSO_${indiceCurso + 1}`).trim(),
+                    nomeCurso: String(curso.nomeCurso || curso.nome || "Curso sem título").trim(),
+                    categoria: String(curso.categoria || "Geral").trim(),
+                    preco: Number(curso.preco || 0),
+                    descricao: String(curso.descricao || "").trim(),
+                    linkAsaas: String(curso.linkAsaas || "").trim(),
+                    comprado: curso.comprado === true || String(curso.comprado).toLowerCase() === "true",
+                    aulas: Array.isArray(curso.aulas) ? curso.aulas.map((aula, indiceAula) => ({
+                        // O Apps Script retorna idDoc como código da aula e id como ID do Google Doc.
+                        idAula: String(aula.idAula || aula.idDoc || `AULA${String(indiceAula + 1).padStart(3, "0")}`).trim(),
+                        tituloAula: String(aula.tituloAula || aula.titulo || `Aula ${indiceAula + 1}`).trim(),
+                        idDoc: String(aula.idDocumento || aula.idGoogleDoc || aula.linkDoc || aula.id || "").trim()
+                    })) : []
+                }));
+
+                if (!dbCursos.length) {
+                    throw new Error("Nenhum curso está disponível para este ambiente.");
+                }
+
+                renderizarSeletorCursos();
+            })
+            .catch(erro => {
+                console.error("Falha ao carregar catálogo:", erro);
+                document.getElementById('aulaConteudo').innerHTML = `<b style="color:#E74C3C;">Não foi possível carregar o catálogo de cursos.</b><br><small>${erro.message || "Tente atualizar a página."}</small>`;
+            });
+        }
+
+        function renderizarSeletorCursos() {
+            const selectDesktop = document.getElementById('selectCurso');
+            const selectMobile = document.getElementById('selectCursoMobile');
+            const selects = [selectDesktop, selectMobile].filter(Boolean);
+            const uniqueCursos = [...new Set(dbCursos.map(c => c.idCurso))];
+
+            selects.forEach(select => { select.innerHTML = ""; });
+            uniqueCursos.forEach(cId => {
+                const curso = dbCursos.find(c => c.idCurso === cId);
+                selects.forEach(select => {
+                    const opt = document.createElement('option');
+                    opt.value = cId;
+                    opt.innerText = curso.nomeCurso;
+                    select.appendChild(opt);
+                });
+            });
+            selects.forEach(select => {
+                select.onchange = (e) => {
+                    selects.forEach(outroSelect => { outroSelect.value = e.target.value; });
+                    renderizarAulas(e.target.value);
+                };
+            });
+            if(uniqueCursos.length > 0) renderizarAulas(uniqueCursos[0]);
+        }
+
+        function atualizarBarraProgresso(cursoId) {
+            const curso = dbCursos.find(c => c.idCurso === cursoId);
+            const aulasFiltradas = curso && Array.isArray(curso.aulas) ? curso.aulas : [];
+            let totalMinutosCurso = 0;
+            let minutesConcluidos = 0;
+
+            aulasFiltradas.forEach(aula => {
+                const minutosAula = minutosAulasCache[`${cursoId}_${aula.idAula}`] || 10;
+                totalMinutosCurso += minutosAula;
+
+                const estaConcluida = localStorage.getItem(`concluida_${cursoId}_${aula.idAula}`) === 'true';
+                if (estaConcluida) {
+                    minutesConcluidos += minutosAula;
+                }
+            });
+
+            const porcentagem = totalMinutosCurso > 0 ? Math.round((minutesConcluidos / totalMinutosCurso) * 100) : 0;
+            
+            document.getElementById('lblPorcentagem').innerText = `${porcentagem}%`;
+            document.getElementById('lblMinutosFracao').innerText = `${minutesConcluidos} de ${totalMinutosCurso} min`;
+            document.getElementById('barFill').style.width = `${porcentagem}%`;
+        }
+
+        function renderizarAulas(cursoId) {
+            currentCursoId = cursoId;
+            const container = document.getElementById('listaAulas');
+            const seletorMobile = container.querySelector('.mobile-course-switcher');
+            container.innerHTML = "";
+            if (seletorMobile) container.appendChild(seletorMobile);
+
+            const tituloCronograma = document.createElement('h4');
+            tituloCronograma.style = "color: var(--texto-secundario); margin-bottom: 5px; font-size: 12px; text-transform: uppercase;";
+            tituloCronograma.innerText = "Cronograma do Curso";
+            container.appendChild(tituloCronograma);
+
+            const progressWrapper = document.createElement('div');
+            progressWrapper.className = "progress-container";
+            progressWrapper.innerHTML = `
+                <div class="progress-info">
+                    <span id="lblPorcentagem" style="font-weight: bold; color: var(--dourado-principal);">0%</span>
+                    <span id="lblMinutosFracao">0 de 0 min</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="barFill"></div>
+                </div>
+            `;
+            container.appendChild(progressWrapper);
+
+            const cursoAtual = dbCursos.find(c => c.idCurso === cursoId);
+            atualizarBotaoCompraCurso(cursoAtual);
+            const cursoComprado = Boolean(cursoAtual && cursoAtual.comprado);
+
+            if (!cursoComprado || (restricoesPlano && (restricoesPlano.limitarCapitulos || restricoesPlano.bloqueado))) {
+                const avisoFree = document.createElement('p');
+                avisoFree.style = "color: var(--dourado-principal); font-size: 10px; margin-bottom: 15px; font-weight: 500;";
+                avisoFree.innerText = "⚡ Modo de Degustação Ativo — o primeiro capítulo está liberado";
+                container.appendChild(avisoFree);
+            } else {
+                const divEspaco = document.createElement('div');
+                divEspaco.style.marginBottom = "15px";
+                container.appendChild(divEspaco);
+            }
+            
+            const aulasFiltradas = cursoAtual && Array.isArray(cursoAtual.aulas) ? cursoAtual.aulas : [];
+            
+            aulasFiltradas.forEach((aula, index) => {
+                // Curso não adquirido: primeira aula é degustação; demais ficam bloqueadas.
+                let bloqueada = !cursoComprado && index > 0;
+                
+                if(restricoesPlano && restricoesPlano.limitarCapitulos && index > 0) bloqueada = true;
+                if(restricoesPlano && restricoesPlano.bloqueado) bloqueada = true;
+                if(restricoesPlano && restricoesPlano.limitarPorMeses) {
+                    if(index >= restricoesPlano.limitarPorMeses) bloqueada = true;
+                }
+
+                const div = document.createElement('div');
+                div.className = "aula-item" + (bloqueada ? " bloqueado" : "");
+                div.id = `item-aula-${aula.idAula}`;
+                
+                const estaConcluida = localStorage.getItem(`concluida_${currentCursoId}_${aula.idAula}`) === 'true';
+                const badgeConclusao = estaConcluida ? `<span class="concluida-badge">✓</span>` : '';
+
+                if(bloqueada) {
+                    div.innerHTML = `<span>${aula.tituloAula}</span> <span class="tag-trava-discreta">🔒 Bloqueado</span>`;
+                    div.addEventListener('click', () => {
+                        fecharMenuCursosMobile();
+                        abrirModalUpgrade();
+                    });
+                } else {
+                    div.innerHTML = `<span>${aula.tituloAula}</span> ${badgeConclusao}`;
+                    div.addEventListener('click', () => {
+                        document.querySelectorAll('.aula-item').forEach(el => el.classList.remove('active'));
+                        div.classList.add('active');
+                        fecharMenuCursosMobile();
+                        exibirAula(aula);
+                    });
+                }
+                container.appendChild(div);
+            });
+
+            atualizarBarraProgresso(cursoId);
+        }
+
+        function exibirAula(aula) {
+            currentAulaId = aula.idAula;
+            document.getElementById('aulaTitulo').innerText = aula.tituloAula;
+            document.getElementById('aulaConteudo').innerHTML = "<em>Carregando conteúdo executivo...</em>";
+            document.getElementById('metaLeitura').style.display = 'none';
+            
+            const idDoDocumento = aula.idDoc || aula.idDocumento || aula.idGoogleDoc || aula.linkDoc;
+            
+            if (!idDoDocumento || idDoDocumento === "undefined") {
+                document.getElementById('aulaConteudo').innerHTML = "<b style='color:#E74C3C;'>Erro: O ID do Google Doc não foi encontrado para esta aula na planilha de Cursos.</b>";
+                return;
+            }
+            
+            fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${currentAmbiente}&idCurso=${currentCursoId}&idAula=${currentAulaId}&idDoc=${idDoDocumento}`)
+            .then(res => res.json())
+            .then(res => {
+                if(res.success) {
+                    const conteudoTratado = tratarSintaxeConteudo(res.conteudo);
+                    document.getElementById('aulaConteudo').innerHTML = conteudoTratado;
+                    prepararTabelasParaLeitura();
+                    document.getElementById('metaLeitura').style.display = 'flex';
+                    
+                    const contagemPalavras = res.conteudo.split(/\s+/).length;
+                    const tempoEstimado = Math.max(1, Math.ceil(contagemPalavras / 150));
+                    document.getElementById('tempoEstimado').innerText = `⏱️ Leitura: ${tempoEstimado} min`;
+                    
+                    minutosAulasCache[`${currentCursoId}_${currentAulaId}`] = tempoEstimado;
+                    atualizarBarraProgresso(currentCursoId);
+
+                    document.getElementById('txtAnotacoes').value = res.anotacao || "";
+                    atualizarStatusBotaoConcluido();
+                } else {
+                    document.getElementById('aulaConteudo').innerHTML = `<b style='color:#E74C3C;'>Erro ao carregar o conteúdo do documento.</b><br><small>${res.error || 'Verifique as permissões do Google Doc e se o ID está correto.'}</small>`;
+                }
+            }).catch((err) => {
+                document.getElementById('aulaConteudo').innerHTML = "<b style='color:#E74C3C;'>Erro de comunicação com o ecossistema central.</b>";
+                console.error(err);
+            });
+        }
+
+        function atualizarStatusBotaoConcluido() {
+            const btn = document.getElementById('btnMarcarConcluido');
+            const estaConcluida = localStorage.getItem(`concluida_${currentCursoId}_${currentAulaId}`) === 'true';
+            if(estaConcluida) {
+                btn.classList.add('active');
+                btn.innerText = "✓ Aula Concluída";
+            } else {
+                btn.classList.remove('active');
+                btn.innerText = "✓ Marcar Concluído";
+            }
+        }
+
+        function toggleConclusaoAula() {
+            const chave = `concluida_${currentCursoId}_${currentAulaId}`;
+            const statusAtual = localStorage.getItem(chave) === 'true';
+            localStorage.setItem(chave, !statusAtual);
+            
+            atualizarStatusBotaoConcluido();
+            renderizarAulas(currentCursoId);
+        }
+    </script>
+</body>
+</html>
