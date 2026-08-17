@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console Gestor AILS⁺ | EU⁺ Empresa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&display=swap' );
+        :root { --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --bordas: rgba(196, 151, 74, 0.2); --accent: #25D366; }
+        body { background: var(--fundo); color: #EEF0F2; font-family: 'DM Sans', sans-serif; padding: 0; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        .main-content { flex: 1; padding: 30px; max-width: 1600px; margin: 0 auto; width: 100%; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--bordas); padding-bottom: 20px; }
+        .stats-bar { display: flex; gap: 20px; align-items: center; }
+        .stat-item { background: var(--card); border: 1px solid var(--bordas); padding: 10px 20px; border-radius: 6px; font-size: 13px; }
+        .stat-val { color: var(--dourado); font-weight: bold; margin-left: 8px; }
+        .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; background: var(--card); padding: 20px; border-radius: 8px; border: 1px solid var(--bordas); }
+        .filter-group label { display: block; font-size: 10px; color: var(--dourado); text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
+        input, select { background: #0E1E30; border: 1px solid var(--bordas); color: #fff; padding: 10px; border-radius: 4px; outline: none; width: 100%; font-size: 12px; }
+        .card-table { background: var(--card); border: 1px solid var(--bordas); border-radius: 8px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 15px; border-bottom: 1px solid var(--bordas); font-size: 13px; }
+        th { background: rgba(196, 151, 74, 0.05); color: var(--dourado); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+        .btn { padding: 10px 15px; border-radius: 4px; font-weight: bold; font-size: 11px; cursor: pointer; border: 1px solid var(--dourado); background: transparent; color: var(--dourado); transition: 0.3s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+        .btn:hover { background: var(--dourado); color: #000; }
+        .btn-primary { background: var(--dourado); color: #000; }
+        .btn-wa { border-color: var(--accent); color: var(--accent); }
+        .btn-wa:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .btn-export { border-color: #7A8FA3; color: #7A8FA3; }
+        .btn-export:hover { background: #7A8FA3; color: #fff; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; margin: 2px; border: 1px solid var(--bordas); }
+        .tag-paid { background: rgba(37, 211, 102, 0.1); border-color: var(--accent); color: var(--accent); }
+        .tag-interest { background: rgba(196, 151, 74, 0.1); color: var(--dourado); }
+        .promo-box { display: flex; gap: 5px; margin-top: 8px; }
+        .promo-input { width: 70px; padding: 5px; font-size: 11px; }
+        footer { background: var(--card); border-top: 1px solid var(--bordas); padding: 40px 20px; text-align: center; margin-top: 40px; }
+        .footer-logo { font-family: 'Cormorant Garamond'; color: var(--dourado); font-size: 28px; font-weight: bold; margin-bottom: 20px; }
+        .footer-links { display: flex; justify-content: center; gap: 20px; }
+        .footer-links a { color: #EEF0F2; text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 4px; background: rgba(255,255,255,0.03); }
+        #authOverlay { position: fixed; inset: 0; background: var(--fundo); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+    </style>
+</head>
+<body>
+    <div id="authOverlay">
+        <div class="card-table" style="width: 350px; padding: 40px; text-align: center; border: 1px solid var(--dourado);">
+            <h2 style="color: var(--dourado); font-family: 'Cormorant Garamond'; margin-bottom: 20px;">AILS⁺ Gestor</h2>
+            <input type="password" id="masterPass" placeholder="Senha Master Admin" style="text-align: center; margin-bottom: 20px;">
+            <button onclick="autenticarGestor()" class="btn btn-primary" style="width: 100%; padding: 15px;">ENTRAR NO CRM</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 style="font-family: 'Cormorant Garamond'; color: var(--dourado); margin: 0;">Console Central AILS⁺</h1>
+            <div class="stats-bar">
+                <div class="stat-item">Alunos: <span id="countAlunos" class="stat-val">0</span></div>
+                <button class="btn btn-export" onclick="exportarCSV()"><i class="fas fa-file-excel"></i> EXPORTAR LEADS</button>
+                <button class="btn btn-primary" onclick="carregarDados()"><i class="fas fa-sync-alt"></i> ATUALIZAR</button>
+            </div>
+        </div>
+
+        <div class="filters-grid">
+            <div class="filter-group">
+                <label>Busca Rápida</label>
+                <input type="text" id="filterBusca" placeholder="Nome, e-mail ou ID..." oninput="aplicarFiltros()">
+            </div>
+            <div class="filter-group">
+                <label>Status do Aluno</label>
+                <select id="filterStatus" onchange="aplicarFiltros()">
+                    <option value="todos">Todos os Alunos</option>
+                    <option value="comprador">Compradores (Pago)</option>
+                    <option value="interessado">Interessados (Sem Pagamento)</option>
+                    <option value="degustacao">Apenas Degustação</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Categoria de Interesse</label>
+                <select id="filterCategoria" onchange="aplicarFiltros()">
+                    <option value="todas">Todas as Categorias</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Profissão/Empresa</label>
+                <select id="filterProfissao" onchange="aplicarFiltros()">
+                    <option value="todas">Todas as Profissões</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="card-table">
+            <table id="tabelaAlunos">
+                <thead>
+                    <tr>
+                        <th width="20%">Aluno / Perfil</th>
+                        <th width="15%">Contato</th>
+                        <th width="25%">Cursos & Interesses</th>
+                        <th width="22%">Sugestão & Promoção</th>
+                        <th width="18%">Ações CRM</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-logo">EU⁺ Empresa</div>
+        <div class="footer-links">
+            <a href="https://wa.me/5527998131806" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            <a href="https://www.linkedin.com/company/133754181/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            <a href="https://instagram.com/eumaisempresa" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+        </div>
+        <p style="color: #444; font-size: 10px; margin-top: 30px;">© 2026 AILS - Ambientes Inteligentes Leves</p>
+    </footer>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
+        let dbAlunos = [];
+        let dbCatalogo = [];
+
+        function autenticarGestor( ) {
+            const pass = document.getElementById('masterPass').value;
+            fetch(`${SCRIPT_URL}?action=validarAdmin&senha=${encodeURIComponent(pass)}`)
+                .then(r => r.json()).then(res => {
+                    if(res.autorizado) { document.getElementById('authOverlay').style.display = 'none'; carregarDados(); } 
+                    else { alert("Senha incorreta!"); }
+                });
+        }
+
+        async function carregarDados() {
+            const btn = document.querySelector('.btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> CARREGANDO...';
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=carregarPainelGestor`);
+                const res = await r.json();
+                if(res.success) {
+                    dbAlunos = res.data.alunos;
+                    dbCatalogo = res.data.catalogo;
+                    popularFiltros();
+                    aplicarFiltros();
+                }
+            } catch(e) { alert("Erro ao carregar dados."); }
+            btn.innerHTML = '<i class="fas fa-sync-alt"></i> ATUALIZAR';
+        }
+
+        function popularFiltros() {
+            const cats = [...new Set(dbCatalogo.map(c => c.categoria))];
+            const profs = [...new Set(dbAlunos.map(a => a.profissao))].filter(p => p);
+            const selCat = document.getElementById('filterCategoria');
+            selCat.innerHTML = '<option value="todas">Todas as Categorias</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            const selProf = document.getElementById('filterProfissao');
+            selProf.innerHTML = '<option value="todas">Todas as Profissões</option>' + profs.map(p => `<option value="${p}">${p}</option>`).join('');
+        }
+
+        function aplicarFiltros() {
+            const busca = document.getElementById('filterBusca').value.toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+            const cat = document.getElementById('filterCategoria').value;
+            const prof = document.getElementById('filterProfissao').value;
+
+            const filtrados = dbAlunos.filter(a => {
+                const matchBusca = !busca || a.nome.toLowerCase().includes(busca) || a.email.toLowerCase().includes(busca) || a.idAmbiente.toLowerCase().includes(busca);
+                const matchProf = prof === 'todas' || a.profissao === prof;
+                let matchStatus = true;
+                if(status === 'comprador') matchStatus = a.cursos.length > 0;
+                else if(status === 'interessado') matchStatus = a.interesses.length > 0;
+                else if(status === 'degustacao') matchStatus = a.cursos.length === 0 && a.interesses.length === 0;
+                let matchCat = cat === 'todas';
+                if(!matchCat) {
+                    matchCat = a.cursos.some(c => c.categoria === cat) || a.interesses.some(i => {
+                        const curso = dbCatalogo.find(cc => cc.id === i.cursoId);
+                        return curso && curso.categoria === cat;
+                    });
+                }
+                return matchBusca && matchStatus && matchCat && matchProf;
+            });
+            renderizarTabela(filtrados);
+        }
+
+        function renderizarTabela(alunos) {
+            const tbody = document.querySelector('#tabelaAlunos tbody');
+            tbody.innerHTML = "";
+            document.getElementById('countAlunos').innerText = alunos.length;
+            alunos.forEach((aluno, index) => {
+                const tr = document.createElement('tr');
+                const tagsCursos = aluno.cursos.map(c => `<span class="tag tag-paid">${c.nome}</span>`).join('');
+                const tagsInteresses = aluno.interesses.map(i => {
+                    const c = dbCatalogo.find(cc => cc.id === i.cursoId);
+                    return `<span class="tag tag-interest">Interesse: ${c ? c.nome : i.cursoId}</span>`;
+                }).join('');
+                const sugestoes = aluno.ofertas.map(o => `<option value="${o.id}" data-preco="${o.preco}">[${o.categoria}] ${o.nome} - R$ ${o.preco}</option>`).join('');
+                tr.innerHTML = `
+                    <td><div style="font-weight:bold">${aluno.nome}</div><div style="font-size:10px; color:var(--texto-secundario)">${aluno.profissao} • ${aluno.idAmbiente}</div></td>
+                    <td><div style="font-size:11px">${aluno.whatsapp}</div><div style="font-size:10px; color:var(--texto-secundario)">${aluno.email}</div></td>
+                    <td>${tagsCursos} ${tagsInteresses || (aluno.cursos.length === 0 ? '<small style="color:#444">Apenas Degustação</small>' : '')}</td>
+                    <td>
+                        <select id="sel-oferta-${index}" onchange="atualizarBotaoWA(${index})"><option value="">Sugerir curso...</option>${sugestoes}</select>
+                        <div class="promo-box"><input type="text" id="promo-${index}" class="promo-input" placeholder="R$ Promo" oninput="atualizarBotaoWA(${index})"><small style="font-size:9px; color:var(--texto-secundario); align-self:center">Preço Custom</small></div>
+                    </td>
+                    <td><a id="btn-wa-${index}" class="btn btn-wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WHATSAPP</a><button class="btn" onclick="liberarManual('${aluno.idAmbiente}', ${index})" style="border-color:#7A8FA3; color:#7A8FA3; margin-top:5px; width:100%">+ LIBERAR MANUAL</button></td>
+                `;
+                tbody.appendChild(tr);
+                atualizarBotaoWA(index);
+            });
+        }
+
+        function atualizarBotaoWA(idx) {
+            const aluno = dbAlunos[idx];
+            const sel = document.getElementById(`sel-oferta-${idx}`);
+            const promo = document.getElementById(`promo-${idx}`).value;
+            const btn = document.getElementById(`btn-wa-${idx}`);
+            let msg = `Olá ${aluno.nome}! Notamos seu interesse no Saber⁺. `;
+            if(sel.value) {
+                const cursoNome = sel.options[sel.selectedIndex].text.split(' - ')[0];
+                const preco = promo || sel.options[sel.selectedIndex].getAttribute('data-preco');
+                msg += `Preparamos uma oferta especial para o curso *${cursoNome}* por apenas *R$ ${preco}*.\n\nPodemos fechar agora?`;
+            } else { msg += `Como está sendo sua experiência na plataforma? Estamos à disposição para ajudar em sua jornada executiva!`; }
+            btn.href = `https://wa.me/55${aluno.whatsapp.toString( ).replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`;
+        }
+
+        function exportarCSV() {
+            let csv = "Nome;Email;WhatsApp;Profissao;Status;Cursos\n";
+            dbAlunos.forEach(a => { csv += `${a.nome};${a.email};${a.whatsapp};${a.profissao};${a.status};${a.cursos.map(c => c.nome).join(" | ")}\n`; });
+            const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute("download", "leads_ails.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        async function liberarManual(idAmb, idx) {
+            const sel = document.getElementById(`sel-oferta-${idx}`);
+            if(!sel.value) return alert("Selecione um curso na lista de sugestões.");
+            if(confirm(`Confirmar liberação manual do curso para ${idAmb}?`)) {
+                const r = await fetch(`${SCRIPT_URL}?action=liberarCurso&idAmbiente=${idAmb}&idCurso=${sel.value}`);
+                const res = await r.json();
+                if(res.success) { alert("Curso liberado com sucesso!"); carregarDados(); }
+            }
+        }
+    </script>
+</body>
+</html>
