@@ -19,48 +19,48 @@
         .user-info { display: flex; align-items: center; gap: 1rem; font-size: 0.9rem; }
         .btn-logout { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 0.4rem 1rem; border-radius: 4px; cursor: pointer; transition: 0.3s; }
         .btn-logout:hover { background: var(--accent); color: var(--white); }
+        
         main { display: grid; grid-template-columns: 300px 1fr; height: calc(100vh - 70px); overflow: hidden; }
-        #sidebar { background: var(--white); border-right: 1px solid #eee; overflow-y: auto; padding: 1.5rem; }
+        #sidebar { background: var(--white); border-right: 1px solid #eee; overflow-y: auto; padding: 1.5rem; transition: 0.3s; }
+        
         .cat-filter { margin-bottom: 1.5rem; }
         .cat-filter select { width: 100%; padding: 0.6rem; border-radius: 4px; border: 1px solid #ddd; font-family: var(--font-body); }
+        
         .course-card { border: 1px solid #eee; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; cursor: pointer; transition: 0.3s; }
         .course-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .course-card.active { border-left: 4px solid var(--accent); background: #fdfaf4; }
         .course-card h4 { font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 0.3rem; }
         .course-card .badge { display: inline-block; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 20px; background: #eee; margin-top: 0.5rem; }
         .course-card .badge.adquirido { background: #d4edda; color: #155724; }
+
         #content-area { overflow-y: auto; padding: 2rem 5%; background: var(--white); position: relative; }
         .reader-container { max-width: 850px; margin: 0 auto; }
-        .lesson-header { margin-bottom: 2rem; border-bottom: 1px solid #eee; padding-bottom: 1rem; }
-        .lesson-header h2 { font-family: var(--font-title); font-size: 2.5rem; color: var(--primary); }
+        
+        /* Formatação do Conteúdo (Sua versão favorita) */
         #lesson-body { font-family: var(--font-reader); font-size: 1.15rem; color: #2c3e50; line-height: 1.8; }
         #lesson-body p { margin-bottom: 1.5rem; text-align: justify; }
-        #lesson-body img { max-width: 100%; height: auto; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        #lesson-body table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; }
-        #lesson-body th { background: var(--primary); color: var(--white); padding: 12px; text-align: left; }
+        #lesson-body img { max-width: 100%; height: auto !important; border-radius: 8px; margin: 1.5rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: block; }
+        
+        /* Tabelas Profissionais */
+        #lesson-body table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.95rem; overflow-x: auto; display: block; }
+        #lesson-body th { background: var(--primary); color: var(--white); padding: 12px; text-align: left; font-family: var(--font-body); }
         #lesson-body td { border: 1px solid #eee; padding: 10px; }
         #lesson-body tr:nth-child(even) { background: #f9f9f9; }
-        .navigation-footer { display: flex; justify-content: space-between; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee; }
-        .btn-nav { padding: 0.8rem 1.5rem; border-radius: 4px; border: none; cursor: pointer; font-family: var(--font-body); font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 0.5rem; }
-        .btn-prev { background: #eee; color: var(--text); }
-        .btn-next { background: var(--primary); color: var(--white); }
-        .btn-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .annotations-box { margin-top: 3rem; background: #fdfaf4; padding: 1.5rem; border-radius: 8px; border: 1px solid #f1e6d0; }
-        .annotations-box h3 { font-family: var(--font-title); margin-bottom: 1rem; }
-        .annotations-box textarea { width: 100%; height: 120px; padding: 1rem; border-radius: 4px; border: 1px solid #ddd; font-family: var(--font-body); resize: vertical; }
         .btn-save-note { margin-top: 0.8rem; background: var(--accent); color: var(--white); border: none; padding: 0.6rem 1.2rem; border-radius: 4px; cursor: pointer; }
-        #modal-compra { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: var(--white); padding: 3rem; border-radius: 12px; max-width: 500px; width: 90%; text-align: center; }
-        .modal-content i { font-size: 4rem; color: var(--accent); margin-bottom: 1.5rem; }
-        .modal-content h2 { font-family: var(--font-title); font-size: 2rem; margin-bottom: 1rem; }
-        .modal-content p { margin-bottom: 2rem; color: #666; }
-        .btn-buy-now { background: #28a745; color: var(--white); padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; transition: 0.3s; border: none; cursor: pointer; }
-        .btn-buy-now:hover { background: #218838; transform: scale(1.05); }
-        .btn-buy-now.loading { background: #6c757d; cursor: wait; opacity: 0.8; }
-        .close-modal { margin-top: 1rem; display: block; color: #999; cursor: pointer; text-decoration: underline; }
+
+        /* Modal de Compra */
+        #modal-compra { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--white); padding: 3rem; border-radius: 12px; max-width: 500px; width: 90%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .btn-buy-now { background: #28a745; color: var(--white); padding: 1.2rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 700; display: inline-block; transition: 0.3s; border: none; cursor: pointer; width: 100%; font-size: 1rem; }
+        .btn-buy-now:hover { background: #218838; transform: scale(1.02); }
+        .btn-buy-now.loading { background: #6c757d; cursor: wait; }
+
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--white); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #eee; border-top: 5px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         @media (max-width: 900px) {
             main { grid-template-columns: 1fr; }
             #sidebar { display: none; }
@@ -90,33 +90,25 @@
                     <option value="TODOS">Todas as Categorias</option>
                 </select>
             </div>
-            <div id="menu-cursos">
-                <!-- Cursos carregados via JS -->
-            </div>
+            <div id="menu-cursos"></div>
         </aside>
 
         <section id="content-area">
             <div id="welcome-screen" class="reader-container" style="text-align: center; padding-top: 10vh;">
                 <h1 style="font-family: var(--font-title); font-size: 3rem; margin-bottom: 1rem;">Bem-vindo ao AILS</h1>
-                <p>Selecione um curso no menu lateral para iniciar sua jornada de conhecimento.</p>
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800" style="width: 100%; max-width: 500px; margin-top: 2rem; border-radius: 12px; opacity: 0.8;" alt="Ambiente de Estudos">
+                <p>Selecione um curso no menu lateral para iniciar sua jornada.</p>
+                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800" style="width: 100%; max-width: 500px; margin-top: 2rem; border-radius: 12px; opacity: 0.8;" alt="Estudos">
             </div>
 
             <div id="reader" class="reader-container" style="display: none;">
-                <div class="lesson-header">
-                    <h2 id="aula-titulo">Título da Aula</h2>
-                    <p id="curso-nome" style="color: var(--accent ); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;"></p>
+                <div class="lesson-header" style="margin-bottom: 2rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+                    <h2 id="aula-titulo" style="font-family: var(--font-title ); font-size: 2.5rem;">Título da Aula</h2>
+                    <p id="curso-nome" style="color: var(--accent); font-weight: 600; text-transform: uppercase; font-size: 0.8rem;"></p>
                 </div>
-                <div id="lesson-body">
-                    <!-- Conteúdo do Google Doc -->
-                </div>
-                <div class="navigation-footer">
-                    <button id="btn-prev" class="btn-nav btn-prev" onclick="navegar(-1)"><i class="fas fa-arrow-left"></i> Anterior</button>
-                    <button id="btn-next" class="btn-nav btn-next" onclick="navegar(1)">Próxima <i class="fas fa-arrow-right"></i></button>
-                </div>
+                <div id="lesson-body"></div>
                 <div class="annotations-box">
                     <h3>Minhas Anotações</h3>
-                    <textarea id="anotacao-texto" placeholder="Suas reflexões sobre esta aula..."></textarea>
+                    <textarea id="anotacao-texto" style="width: 100%; height: 120px; padding: 1rem; margin-top: 1rem; border: 1px solid #ddd; border-radius: 4px;" placeholder="Suas reflexões..."></textarea>
                     <button class="btn-save-note" onclick="salvarAnotacao()"><i class="fas fa-save"></i> Salvar Anotação</button>
                 </div>
             </div>
@@ -125,36 +117,40 @@
 
     <div id="modal-compra">
         <div class="modal-content">
-            <i class="fas fa-lock"></i>
-            <h2 id="modal-curso-nome">Curso Bloqueado</h2>
-            <p>Este módulo é exclusivo para alunos do curso completo. Adquira agora para liberar o acesso imediato a todas as aulas e materiais.</p>
-            <button id="btn-gerar-checkout" class="btn-buy-now" onclick="processarCompra()">
+            <i class="fas fa-lock" style="font-size: 4rem; color: var(--accent); margin-bottom: 1.5rem; display: block;"></i>
+            <h2 id="modal-curso-nome" style="font-family: var(--font-title); font-size: 2rem; margin-bottom: 1rem;">Curso Bloqueado</h2>
+            <p style="margin-bottom: 2rem; color: #666;">Este módulo é exclusivo para alunos do curso completo. Adquira agora para liberar o acesso imediato.</p>
+            <button id="btn-comprar" class="btn-buy-now" onclick="processarCompra()">
                 <i class="fas fa-shopping-cart"></i> ADQUIRIR CURSO COMPLETO
             </button>
-            <span class="close-modal" onclick="fecharModal()">Continuar na degustação</span>
+            <span style="margin-top: 1.5rem; display: block; color: #999; cursor: pointer; text-decoration: underline;" onclick="fecharModal()">Continuar na degustação</span>
         </div>
     </div>
 
     <script>
         const URL_APPS_SCRIPT = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
-        let dadosAluno = { idAmbiente: localStorage.getItem("ails_idAmbiente" ), nome: localStorage.getItem("ails_nome") };
+        
+        // Recuperação robusta dos dados do aluno
+        let idAmbiente = localStorage.getItem("ails_idAmbiente" ) || localStorage.getItem("idAmbiente");
+        let nomeAluno = localStorage.getItem("ails_nome") || localStorage.getItem("nome") || "Aluno";
+        
         let catalogo = [];
-        let aulaAtual = null;
         let cursoSelecionadoId = null;
+        let aulaAtual = null;
 
-        if (!dadosAluno.idAmbiente) window.location.href = "../login/";
-        document.getElementById("user-display").innerHTML = `<i class="fas fa-user-circle"></i> ${dadosAluno.nome}`;
+        if (!idAmbiente) window.location.href = "../login/";
+        document.getElementById("user-display").innerHTML = `<i class="fas fa-user-circle"></i> ${nomeAluno}`;
 
         async function inicializar() {
             try {
-                const resp = await fetch(`${URL_APPS_SCRIPT}?action=carregarMenu&idAmbiente=${dadosAluno.idAmbiente}`);
+                const resp = await fetch(`${URL_APPS_SCRIPT}?action=carregarMenu&idAmbiente=${idAmbiente}`);
                 const data = await resp.json();
                 if (data.success) {
                     catalogo = data.cursos;
                     popularFiltros();
                     renderizarMenu();
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Erro inicialização:", e); }
             document.getElementById("loading-overlay").style.display = "none";
         }
 
@@ -172,7 +168,6 @@
             const filtro = document.getElementById("filtro-categoria").value;
             const container = document.getElementById("menu-cursos");
             container.innerHTML = "";
-            
             catalogo.filter(c => filtro === "TODOS" || c.categoria === filtro).forEach(curso => {
                 const div = document.createElement("div");
                 div.className = `course-card ${cursoSelecionadoId === curso.idCurso ? 'active' : ''}`;
@@ -192,15 +187,15 @@
         async function carregarAula(idCurso, idAula) {
             const curso = catalogo.find(c => c.idCurso === idCurso);
             const aula = curso.aulas.find(a => a.idAula === idAula);
-            
             if (!curso.comprado && !aula.degustacao) {
-                abrirModalCompra(curso);
+                cursoSelecionadoId = idCurso;
+                document.getElementById("modal-curso-nome").textContent = curso.nomeCurso;
+                document.getElementById("modal-compra").style.display = "flex";
                 return;
             }
-
             document.getElementById("loading-overlay").style.display = "flex";
             try {
-                const resp = await fetch(`${URL_APPS_SCRIPT}?action=carregarAula&idAmbiente=${dadosAluno.idAmbiente}&idCurso=${idCurso}&idAula=${idAula}&idDoc=${aula.idDocumento}`);
+                const resp = await fetch(`${URL_APPS_SCRIPT}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${idCurso}&idAula=${idAula}&idDoc=${aula.idDocumento}`);
                 const data = await resp.json();
                 if (data.success) {
                     aulaAtual = { ...aula, idCurso: idCurso };
@@ -214,69 +209,50 @@
                     renderizarMenu();
                     window.scrollTo(0,0);
                 }
-            } catch (e) { alert("Erro ao carregar conteúdo."); }
+            } catch (e) { alert("Erro ao carregar aula."); }
             document.getElementById("loading-overlay").style.display = "none";
         }
 
-        function abrirModalCompra(curso) {
-            cursoSelecionadoId = curso.idCurso;
-            document.getElementById("modal-curso-nome").textContent = curso.nomeCurso;
-            document.getElementById("modal-compra").style.display = "flex";
-            
-            // Reseta o botão para o estado inicial
-            const btn = document.getElementById("btn-gerar-checkout");
-            btn.innerHTML = `<i class="fas fa-shopping-cart"></i> ADQUIRIR CURSO COMPLETO`;
-            btn.className = "btn-buy-now";
-            btn.disabled = false;
-        }
-
         async function processarCompra() {
-            const btn = document.getElementById("btn-gerar-checkout");
+            const btn = document.getElementById("btn-comprar");
+            const originalText = btn.innerHTML;
             btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> GERANDO LINK SEGURO...`;
-            btn.className = "btn-buy-now loading";
+            btn.classList.add("loading");
             btn.disabled = true;
 
             try {
-                const url = `${URL_APPS_SCRIPT}?action=registrarInteresseCompra&idAmbiente=${dadosAluno.idAmbiente}&idCurso=${cursoSelecionadoId}&origem=PAINEL_ALUNO`;
+                const url = `${URL_APPS_SCRIPT}?action=registrarInteresseCompra&idAmbiente=${idAmbiente}&idCurso=${cursoSelecionadoId}&origem=PAINEL_ALUNO`;
                 const resp = await fetch(url);
                 const data = await resp.json();
-
                 if (data.success && data.linkAsaas) {
                     window.open(data.linkAsaas, '_blank');
                     fecharModal();
                 } else {
-                    alert("Erro ao gerar link: " + (data.error || "Tente novamente."));
-                    btn.innerHTML = `<i class="fas fa-shopping-cart"></i> TENTAR NOVAMENTE`;
-                    btn.className = "btn-buy-now";
-                    btn.disabled = false;
+                    alert("Erro ao gerar pagamento: " + (data.error || "Tente novamente."));
                 }
-            } catch (e) {
-                alert("Falha na conexão com o servidor.");
-                btn.innerHTML = `<i class="fas fa-shopping-cart"></i> ADQUIRIR CURSO COMPLETO`;
-                btn.className = "btn-buy-now";
-                btn.disabled = false;
-            }
+            } catch (e) { alert("Falha na conexão com o servidor."); }
+            
+            btn.innerHTML = originalText;
+            btn.classList.remove("loading");
+            btn.disabled = false;
         }
 
         function fecharModal() { document.getElementById("modal-compra").style.display = "none"; }
-
         async function salvarAnotacao() {
             if (!aulaAtual) return;
-            const texto = document.getElementById("anotacao-texto").value;
             const btn = document.querySelector(".btn-save-note");
+            const original = btn.innerHTML;
             btn.innerHTML = "Salvando...";
             try {
                 await fetch(URL_APPS_SCRIPT, {
                     method: "POST",
-                    body: JSON.stringify({ action: "salvarAnotacao", idAmbiente: dadosAluno.idAmbiente, idCurso: aulaAtual.idCurso, idAula: aulaAtual.idAula, texto: texto })
+                    body: JSON.stringify({ action: "salvarAnotacao", idAmbiente: idAmbiente, idCurso: aulaAtual.idCurso, idAula: aulaAtual.idAula, texto: document.getElementById("anotacao-texto").value })
                 });
                 btn.innerHTML = '<i class="fas fa-check"></i> Salvo!';
-                setTimeout(() => btn.innerHTML = '<i class="fas fa-save"></i> Salvar Anotação', 2000);
-            } catch (e) { alert("Erro ao salvar."); btn.innerHTML = "Erro"; }
+                setTimeout(() => btn.innerHTML = original, 2000);
+            } catch (e) { btn.innerHTML = "Erro"; }
         }
-
         function logout() { localStorage.clear(); window.location.href = "../login/"; }
-        
         inicializar();
     </script>
 </body>
