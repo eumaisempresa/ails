@@ -19,52 +19,21 @@
             --sucesso: #25D366;
         }
 
-        body {
-            background-color: var(--fundo);
-            color: var(--texto);
-            font-family: 'DM Sans', sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
+        body { background-color: var(--fundo); color: var(--texto); font-family: 'DM Sans', sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
-        /* TELA DE LOGIN */
-        #tela-login {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: radial-gradient(circle at 18% 0%, rgba(196, 151, 74, 0.1), transparent 40rem), var(--fundo);
-        }
-
-        .login-card {
-            background: var(--card);
-            border: 1px solid var(--bordas);
-            padding: 40px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-
+        /* LOGIN */
+        #tela-login { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; background: radial-gradient(circle at 18% 0%, rgba(196, 151, 74, 0.1), transparent 40rem), var(--fundo); }
+        .login-card { background: var(--card); border: 1px solid var(--bordas); padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; }
         .login-card h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 32px; margin-bottom: 10px; }
         .login-card p { color: var(--texto-secundario); font-size: 14px; margin-bottom: 30px; }
-
         .input-group { text-align: left; margin-bottom: 20px; }
         .input-group label { display: block; color: var(--dourado); font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
         .input-group input { width: 100%; background: #0D1B2B; border: 1px solid rgba(196, 151, 74, 0.3); padding: 12px 15px; border-radius: 6px; color: #fff; outline: none; box-sizing: border-box; }
-
         .btn-login-submit { width: 100%; background: var(--dourado); color: #000; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
         .btn-login-submit:hover { background: var(--dourado-hover); transform: translateY(-2px); }
 
-        /* TELA DO PAINEL */
+        /* PAINEL */
         #tela-painel { display: none; flex-direction: column; flex: 1; }
-
         .header { background: var(--card); border-bottom: 1px solid var(--bordas); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--dourado); text-decoration: none; font-weight: bold; }
         .user-info { display: flex; align-items: center; gap: 15px; font-size: 13px; }
@@ -76,12 +45,11 @@
         .sidebar-header { padding: 20px; border-bottom: 1px solid var(--bordas); }
         .progresso-container { background: rgba(255,255,255,0.05); height: 6px; border-radius: 3px; margin-bottom: 8px; overflow: hidden; }
         .progresso-barra { background: var(--dourado); height: 100%; width: 0%; transition: 0.5s; }
-
         .item-aula { padding: 15px 20px; border-bottom: 1px solid rgba(196, 151, 74, 0.05); cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--texto-secundario); }
         .item-aula.ativa { background: rgba(196, 151, 74, 0.1); color: var(--dourado); border-left: 4px solid var(--dourado); }
         .item-aula.concluida i { color: var(--sucesso); }
 
-        .conteudo { padding: 40px; background: #EAEFF4; min-height: 100vh; overflow-y: auto; }
+        .conteudo { padding: 40px; background: #EAEFF4; min-height: 100vh; overflow-y: auto; position: relative; }
         .folha-caderno { max-width: 850px; margin: 0 auto; background: #fff; padding: 60px; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; border-left: 2px solid #FF8585; background-image: linear-gradient(rgba(196, 209, 223, 0.35) 1px, transparent 1px); background-size: 100% 28px; line-height: 28px; }
         .conteudo-aula-dinamico { font-family: 'Lora', serif; font-size: 16px; color: #1A2430; text-align: justify; line-height: 1.8; }
         .conteudo-aula-dinamico img { max-width: 100% !important; height: auto !important; margin: 20px auto; display: block; border-radius: 5px; box-shadow: 0 7px 22px rgba(15,32,51,0.16); }
@@ -104,34 +72,18 @@
 </head>
 <body>
 
-    <!-- SEÇÃO DE LOGIN -->
     <div id="tela-login">
         <div class="login-card">
             <h1>EU⁺ Saber</h1>
             <p>Ambiente de Aprendizagem Executiva</p>
-            
-            <div class="input-group">
-                <label>E-mail de Acesso</label>
-                <input type="email" id="login-email" placeholder="seu@email.com">
-            </div>
-            
-            <div class="input-group">
-                <label>Senha</label>
-                <input type="password" id="login-senha" placeholder="••••••">
-            </div>
-            
+            <div class="input-group"><label>E-mail de Acesso</label><input type="email" id="login-email" placeholder="seu@email.com"></div>
+            <div class="input-group"><label>Senha</label><input type="password" id="login-senha" placeholder="••••••"></div>
             <button class="btn-login-submit" onclick="fazerLogin()" id="btn-entrar">Acessar Ambiente</button>
-            
-            <div style="margin-top: 20px; font-size: 11px;">
-                <a href="javascript:void(0)" onclick="esqueciSenha()" style="color: var(--texto-secundario); text-decoration: none;">Esqueci minha senha</a>
-            </div>
-            <div style="margin-top: 15px; font-size: 12px;">
-                <a href="../cadastro/" style="color: var(--dourado); text-decoration: none;">Não tem acesso? <strong>Crie sua conta aqui</strong></a>
-            </div>
+            <div style="margin-top: 20px; font-size: 11px;"><a href="javascript:void(0)" onclick="esqueciSenha()" style="color: var(--texto-secundario); text-decoration: none;">Esqueci minha senha</a></div>
+            <div style="margin-top: 15px; font-size: 12px;"><a href="../cadastro/" style="color: var(--dourado); text-decoration: none;">Não tem acesso? <strong>Crie sua conta aqui</strong></a></div>
         </div>
     </div>
 
-    <!-- SEÇÃO DO PAINEL -->
     <div id="tela-painel">
         <header class="header">
             <a href="#" class="logo">EU⁺ Saber</a>
@@ -144,9 +96,7 @@
 
         <div class="curso-selector-top">
             <small style="color: var(--dourado); text-transform: uppercase; font-weight: bold; font-size: 10px;">Selecione o Curso</small>
-            <select id="select-curso" onchange="trocarCurso(this.value)">
-                <option value="">Carregando catálogo...</option>
-            </select>
+            <select id="select-curso" onchange="trocarCurso(this.value)"><option value="">Carregando catálogo...</option></select>
             <div id="status-container"></div>
         </div>
 
@@ -155,10 +105,7 @@
                 <div class="sidebar-header">
                     <h3 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0 0 10px 0; font-size:16px;">Cronograma</h3>
                     <div class="progresso-container"><div id="barra-progresso" class="progresso-barra"></div></div>
-                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--texto-secundario);">
-                        <span id="percentual-progresso">0%</span>
-                        <span id="contagem-aulas">0 de 0 aulas</span>
-                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--texto-secundario);"><span id="percentual-progresso">0%</span><span id="contagem-aulas">0 de 0 aulas</span></div>
                 </div>
                 <div id="lista-aulas" class="lista-aulas"></div>
             </aside>
@@ -170,60 +117,33 @@
                     <p style="color: var(--texto-secundario); max-width: 400px; margin-bottom: 30px;">Desbloqueie este curso para ter acesso imediato.</p>
                     <button id="btn-desbloquear" class="btn-header" style="background:var(--dourado); color:#000; padding:15px 40px; border:none;">DESBLOQUEAR AGORA</button>
                 </div>
-
-                <article class="folha-caderno">
-                    <div id="conteudo-aula">
-                        <div style="text-align:center; padding:50px; color:var(--dourado);">Selecione uma aula no cronograma para iniciar</div>
-                    </div>
-                </article>
+                <article class="folha-caderno"><div id="conteudo-aula"><div style="text-align:center; padding:50px; color:var(--dourado);">Selecione uma aula no cronograma para iniciar</div></div></article>
             </main>
 
             <aside class="insights-panel">
-                <div style="text-align:center; border-bottom:1px solid var(--bordas); padding-bottom:15px;">
-                    <h4 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0;">Caderno de Insights</h4>
-                    <small style="color:var(--texto-secundario); font-size:10px;">Sincronização em nuvem ativa</small>
-                </div>
+                <div style="text-align:center; border-bottom:1px solid var(--bordas); padding-bottom:15px;"><h4 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0;">Caderno de Insights</h4><small style="color:var(--texto-secundario); font-size:10px;">Sincronização em nuvem ativa</small></div>
                 <div class="post-it"><textarea id="anotacoes-aluno" placeholder="Suas reflexões executivas..."></textarea></div>
                 <button class="btn-header" onclick="salvarAnotacao()" style="width:100%">SINCRONIZAR AGORA</button>
             </aside>
         </div>
     </div>
 
-    <!-- Modal de Senha -->
     <div id="modalSenha" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
         <div style="background:var(--card); padding:30px; border-radius:8px; border:1px solid var(--dourado); width:320px;">
             <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0;">Alterar Senha</h3>
             <input type="password" id="senhaAtual" placeholder="Senha Atual" style="width:100%; background:#0E1E30; border:1px solid var(--bordas); color:#fff; padding:10px; margin-bottom:10px; border-radius:4px;">
             <input type="password" id="novaSenha" placeholder="Nova Senha" style="width:100%; background:#0E1E30; border:1px solid var(--bordas); color:#fff; padding:10px; margin-bottom:20px; border-radius:4px;">
-            <div style="display:flex; gap:10px;">
-                <button class="btn-header" style="flex:1" onclick="processarTrocaSenha()">SALVAR</button>
-                <button class="btn-header" style="flex:1; border-color:#666; color:#666;" onclick="fecharModalSenha()">CANCELAR</button>
-            </div>
+            <div style="display:flex; gap:10px;"><button class="btn-header" style="flex:1" onclick="processarTrocaSenha()">SALVAR</button><button class="btn-header" style="flex:1; border-color:#666; color:#666;" onclick="fecharModalSenha()">CANCELAR</button></div>
         </div>
     </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
-        
-        let idAmbiente = localStorage.getItem('ails_idAmbiente' );
-        let nomeUsuario = localStorage.getItem('ails_nome');
-        let dbCursos = [];
-        let cursoAtual = null;
-        let aulaAtiva = null;
+        let idAmbiente = localStorage.getItem('ails_idAmbiente' ), nomeUsuario = localStorage.getItem('ails_nome'), dbCursos = [], cursoAtual = null, aulaAtiva = null;
 
         window.onload = () => { if (idAmbiente) mostrarPainel(); else mostrarLogin(); };
-
-        function mostrarLogin() {
-            document.getElementById('tela-login').style.display = 'flex';
-            document.getElementById('tela-painel').style.display = 'none';
-        }
-
-        function mostrarPainel() {
-            document.getElementById('tela-login').style.display = 'none';
-            document.getElementById('tela-painel').style.display = 'flex';
-            document.getElementById('display-usuario').innerText = `Usuário: ${nomeUsuario} (${idAmbiente})`;
-            carregarCatalogo();
-        }
+        function mostrarLogin() { document.getElementById('tela-login').style.display = 'flex'; document.getElementById('tela-painel').style.display = 'none'; }
+        function mostrarPainel() { document.getElementById('tela-login').style.display = 'none'; document.getElementById('tela-painel').style.display = 'flex'; document.getElementById('display-usuario').innerText = `Usuário: ${nomeUsuario} (${idAmbiente})`; carregarCatalogo(); }
 
         async function fazerLogin() {
             const email = document.getElementById('login-email').value, senha = document.getElementById('login-senha').value, btn = document.getElementById('btn-entrar');
@@ -232,12 +152,8 @@
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`);
                 const res = await r.json();
-                if (res.autorizado) {
-                    localStorage.setItem('ails_idAmbiente', res.idAmbiente);
-                    localStorage.setItem('ails_nome', res.nome);
-                    idAmbiente = res.idAmbiente; nomeUsuario = res.nome;
-                    mostrarPainel();
-                } else alert("Erro: " + res.error);
+                if (res.autorizado) { localStorage.setItem('ails_idAmbiente', res.idAmbiente); localStorage.setItem('ails_nome', res.nome); idAmbiente = res.idAmbiente; nomeUsuario = res.nome; mostrarPainel(); }
+                else alert("Erro: " + res.error);
             } catch (e) { alert("Falha na comunicação."); } finally { btn.disabled = false; btn.innerText = "ACESSAR AMBIENTE"; }
         }
 
@@ -248,10 +164,8 @@
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=esqueciSenha&email=${encodeURIComponent(email)}`);
                 const res = await r.json();
-                if (res.success) {
-                    if (res.fallback) alert("Sua nova senha temporária é: " + res.senha);
-                    else alert(res.message);
-                } else alert("Erro: " + res.error);
+                if (res.success) { if (res.fallback) alert("Sua nova senha temporária é: " + res.senha); else alert(res.message); }
+                else alert("Erro: " + res.error);
             } catch (e) { alert("Erro na comunicação."); }
         }
 
@@ -305,8 +219,14 @@
         async function carregarAula(idCurso, idAula, idDoc) {
             const aula = cursoAtual.aulas.find(a => a.idAula === idAula);
             const overlay = document.getElementById('bloqueioOverlay');
-            if (!cursoAtual.comprado && (!aula || !aula.degustacao)) { overlay.style.display = 'flex'; return; }
-            else { overlay.style.display = 'none'; }
+            
+            // CORRECAO DEGUSTACAO: Se comprou OU se a aula for degustacao, esconde o overlay
+            if (cursoAtual.comprado || (aula && aula.degustacao)) {
+                overlay.style.display = 'none';
+            } else {
+                overlay.style.display = 'flex';
+                return;
+            }
 
             aulaAtiva = idAula; renderizarCronograma();
             const area = document.getElementById('conteudo-aula');
