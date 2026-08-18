@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Executivo - EU⁺ Saber</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Kalam:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
 
@@ -40,6 +41,8 @@
             justify-content: space-between;
             align-items: center;
             gap: 15px;
+            position: relative;
+            z-index: 100;
         }
 
         .header-actions {
@@ -251,55 +254,47 @@
             margin-bottom: 24px;
         }
 
-        /* MÍDIAS: impede que imagens ultrapassem a folha no celular. */
+        /* IMAGENS: Limitadas estritamente ao tamanho da folha */
         .conteudo-aula-dinamico img {
             display: block;
-            width: 100% !important;
             max-width: 100% !important;
             height: auto !important;
             object-fit: contain;
-            margin: 26px auto;
-            border-radius: 5px;
-            box-shadow: 0 7px 22px rgba(15, 32, 51, 0.16);
+            margin: 20px auto;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(15, 32, 51, 0.12);
         }
 
-        /* TABELAS: Cores de cabeçalho corrigidas para leitura. */
+        /* TABELAS COM SCROLL HORIZONTAIS NATIVO */
         .table-container-responsive {
-            position: relative;
             width: 100%;
-            max-width: 100%;
             overflow-x: auto;
-            margin: 28px 0;
+            margin: 25px 0;
             border: 1px solid #CBD5E1;
-            border-radius: 7px;
+            border-radius: 6px;
             background: #FFFFFF;
-            box-shadow: 0 7px 18px rgba(15, 32, 51, 0.09);
+            box-shadow: 0 4px 12px rgba(15, 32, 51, 0.08);
             -webkit-overflow-scrolling: touch;
         }
 
         .conteudo-aula-dinamico table {
             width: 100%;
-            min-width: 620px;
-            margin: 0;
-            border-collapse: separate;
-            border-spacing: 0;
+            min-width: 600px;
+            border-collapse: collapse;
             font-size: 14px;
-            line-height: 1.55;
             color: #253648;
             background: #FFFFFF;
             font-family: 'DM Sans', sans-serif;
         }
 
         .conteudo-aula-dinamico th, .conteudo-aula-dinamico td {
-            padding: 15px 16px;
-            border: 0;
-            border-right: 1px solid #D8E0E8;
-            border-bottom: 1px solid #D8E0E8;
+            padding: 12px 14px;
+            border-right: 1px solid #E2E8F0;
+            border-bottom: 1px solid #E2E8F0;
             text-align: left;
             vertical-align: top;
         }
 
-        /* FIX CABEÇALHO TABELA: Força cores claras no texto do cabeçalho */
         .conteudo-aula-dinamico thead th,
         .conteudo-aula-dinamico tr:first-child th,
         .conteudo-aula-dinamico tr:first-child td {
@@ -307,23 +302,75 @@
             color: #F7E5BF !important;
             font-size: 12px;
             font-weight: 700 !important;
-            letter-spacing: 0.025em;
         }
 
-        /* Garante que elementos internos (p, span, strong) no cabeçalho também fiquem claros */
         .conteudo-aula-dinamico tr:first-child td *, 
         .conteudo-aula-dinamico tr:first-child th * {
             color: #F7E5BF !important;
         }
 
-        .conteudo-aula-dinamico tr:nth-child(even) td { background-color: #F4F7FA; }
-        .conteudo-aula-dinamico tr:hover td { background-color: #EDF4F8; }
+        .conteudo-aula-dinamico tr:nth-child(even) td { background-color: #F8FAFC; }
 
-        /* COMPONENTES FLUTUANTES */
-        .social-floating-dock {
+        /* OVERLAY DE BLOQUEIO - MODAL FLUTUANTE CENTRALIZADO */
+        #bloqueioOverlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(6, 14, 24, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-bloqueio-card {
+            background-color: var(--fundo-secundario);
+            border: 1px solid var(--bordas);
+            padding: 35px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+        }
+
+        .lock-icon { font-size: 48px; color: var(--dourado-principal); margin-bottom: 15px; }
+
+        /* OVERLAY PARA FECHAR MENUS */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 1500;
+            display: none;
+        }
+
+        /* FLUTUANTES MOBILE */
+        .floating-notes-btn, .floating-menu-btn {
+            display: none;
             position: fixed;
             bottom: 25px;
-            left: 25px;
+            background: var(--dourado-principal);
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1600;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        /* REDES SOCIAIS */
+        .social-floating-dock {
+            position: fixed;
+            bottom: 85px; /* Subi para não bater nos botões flutuantes */
+            left: 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -331,8 +378,8 @@
         }
 
         .social-btn {
-            width: 46px;
-            height: 46px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -347,117 +394,69 @@
         .btn-whatsapp { background-color: #25D366; }
         .btn-linkedin { background-color: #0077B5; }
         .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .social-btn svg { width: 22px; height: 22px; fill: #FFFFFF; }
+        .social-btn i { font-size: 18px; color: white; }
 
         .wa-box-modal {
             display: none;
             position: fixed;
-            bottom: 85px;
-            left: 25px;
+            bottom: 140px;
+            left: 20px;
             background-color: var(--fundo-secundario);
             border: 1px solid var(--bordas);
             padding: 20px;
             border-radius: 6px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            width: 320px;
+            width: 280px;
             z-index: 1000;
         }
         .wa-box-modal.open { display: block; }
 
-        .wa-field {
-            width: 100%;
-            background: var(--fundo-terciario);
-            border: 1px solid var(--bordas);
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        .wa-btn-submit {
-            width: 100%;
-            background: #25D366;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* OVERLAY DE BLOQUEIO */
-        #bloqueioOverlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(6, 14, 24, 0.9);
-            backdrop-filter: blur(6px);
-            z-index: 100;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 40px;
-            border-radius: 2px;
-        }
-
-        .lock-icon { font-size: 64px; color: var(--dourado-principal); margin-bottom: 20px; }
-
-        /* RESPONSIVIDADE MOBILE */
+        /* RESPONSIVIDADE MOBILE REFINADA */
         @media screen and (max-width: 900px) {
             header { padding: 10px 15px; flex-wrap: wrap; height: auto !important; }
-            .header-actions { width: 100%; justify-content: space-between; order: 3; margin-top: 10px; display: flex !important; }
+            .header-actions { width: 100%; justify-content: space-between; order: 3; margin-top: 8px; display: flex !important; flex-wrap: wrap; gap: 8px; }
             select { width: 100%; }
-            .selector-wrapper { flex: 1; }
+            .selector-wrapper { width: 100%; order: -1; }
             
             .painel-wrapper { grid-template-columns: 1fr; height: auto; display: block; }
             .sidebar { position: fixed; top: 0; left: -100%; width: 85%; height: 100%; z-index: 2000; transition: 0.3s; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             .sidebar.open { left: 0; }
             
             .content-body { padding: 15px 10px; background-color: #EAEFF4; }
-            .folha-caderno { padding: 30px 15px 30px 25px; border-left-width: 2px; line-height: 24px; background-size: 100% 24px; width: 100% !important; max-width: none !important; }
+            .folha-caderno { padding: 25px 15px 30px 20px; border-left-width: 2px; line-height: 24px; background-size: 100% 24px; width: 100% !important; max-width: none !important; }
             
-            .social-floating-dock { bottom: 15px; right: 15px; left: auto; z-index: 3000; }
-            .wa-box-modal { bottom: 75px; right: 15px; left: auto; width: 280px; z-index: 3100; }
-
-            .floating-menu-btn {
-                display: flex !important;
-                position: fixed;
-                bottom: 20px;
-                left: 20px;
-                background: var(--dourado-principal);
-                color: #000;
-                padding: 12px 20px;
-                border-radius: 30px;
-                font-weight: bold;
-                z-index: 1500;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                border: none;
-                align-items: center;
-                gap: 8px;
-                font-size: 12px;
+            /* IMAGENS MOBILE: Garante que NUNCA transbordam */
+            .conteudo-aula-dinamico img {
+                max-width: 100% !important;
+                width: auto !important;
+                margin: 15px auto !important;
             }
+
+            .notes-panel { 
+                position: fixed; top: 0; right: -100%; width: 90%; height: 100%; z-index: 2000; transition: 0.3s; border-left: 1px solid var(--bordas); box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
+                display: flex !important;
+            }
+            .notes-panel.open { right: 0; }
+
+            .floating-menu-btn { display: flex !important; left: 20px; }
+            .floating-notes-btn { display: flex !important; right: 20px; }
             
-            .conteudo-aula-dinamico table { min-width: 100%; font-size: 12px; }
-            .conteudo-aula-dinamico img { margin: 15px 0; width: 100% !important; }
-            
-            #userInfo { width: 100%; text-align: center; margin-top: 10px; }
+            .social-floating-dock { bottom: 85px; left: 20px; }
         }
 
-        /* ESTILO LOGIN */
+        /* TELA DE LOGIN */
         #loginOverlay {
             position: fixed;
-            inset: 0;
-            background: var(--fundo-principal);
-            z-index: 5000;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--fundo-principal);
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            z-index: 3000;
         }
+
         .card-login {
-            background: var(--fundo-secundario);
+            background-color: var(--fundo-secundario);
             border: 1px solid var(--bordas);
             padding: 40px;
             border-radius: 8px;
@@ -465,40 +464,42 @@
             max-width: 450px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
+
         .login-input {
             width: 100%;
-            background: var(--fundo-terciario);
+            background-color: var(--fundo-terciario);
             border: 1px solid var(--bordas);
             color: white;
             padding: 15px;
             border-radius: 4px;
             margin-bottom: 20px;
-            font-size: 16px;
+            font-family: 'DM Sans', sans-serif;
         }
+
         .link-recuperar {
-            display: block;
-            margin-top: 15px;
             color: var(--texto-secundario);
-            font-size: 13px;
+            font-size: 12px;
             cursor: pointer;
             text-decoration: underline;
         }
 
         /* MODAL SENHA */
         .modal-senha {
-            display: none;
             position: fixed;
-            inset: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8);
-            z-index: 6000;
+            display: none;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            z-index: 4000;
         }
         .modal-senha.open { display: flex; }
     </style>
 </head>
 <body>
+
+    <!-- OVERLAY PARA FECHAR MENUS AO CLICAR FORA -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharTodosMenus()"></div>
 
     <!-- TELA DE LOGIN -->
     <div id="loginOverlay">
@@ -559,11 +560,17 @@
 
         <main class="content-body">
             <div class="folha-caderno">
+                <!-- MODAL DE BLOQUEIO FLUTUANTE CENTRALIZADO -->
                 <div id="bloqueioOverlay">
-                    <div class="lock-icon">🔒</div>
-                    <h2 id="bloqueioTitulo">Conteúdo Exclusivo</h2>
-                    <p id="bloqueioTexto" style="color: var(--texto-secundario); margin-bottom: 30px;">Desbloqueie este curso para ter acesso imediato.</p>
-                    <button id="btnDesbloquearOverlay" style="padding: 15px 40px; background: var(--dourado-principal); color: #000; font-weight: bold;" onclick="registrarInteresse()">DESBLOQUEAR AGORA</button>
+                    <div class="modal-bloqueio-card">
+                        <div class="lock-icon">🔒</div>
+                        <h2 id="bloqueioTitulo" style="margin-bottom: 10px;">Conteúdo Exclusivo</h2>
+                        <p id="bloqueioTexto" style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 25px;">Desbloqueie este curso para ter acesso imediato a todo o material executivo.</p>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button id="btnDesbloquearOverlay" style="padding: 14px; background: var(--dourado-principal); color: #000; font-weight: bold; width: 100%;" onclick="registrarInteresse()">DESBLOQUEAR AGORA</button>
+                            <button style="padding: 10px; background: transparent; border-color: var(--texto-secundario); color: var(--texto-secundario); width: 100%;" onclick="voltarDegustacao()">← VOLTAR PARA AULAS DE DEGUSTAÇÃO</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="meta-leitura" id="metaLeitura">
@@ -579,20 +586,26 @@
             </div>
         </main>
 
-        <aside class="notes-panel">
-            <h4 style="color: var(--dourado-principal); font-family: 'Cormorant Garamond', serif; font-size: 22px; margin-bottom: 5px;">✍️ Caderno de Insights</h4>
-            <p style="font-size: 10px; color: var(--texto-secundario); margin-bottom: 20px;">Sincronização em nuvem ativa</p>
+        <aside class="notes-panel" id="notesPanel">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px;">
+                <h4 style="color: var(--dourado-principal); font-family: 'Cormorant Garamond', serif; font-size: 22px;">✍️ Caderno de Insights</h4>
+                <button onclick="toggleNotes()" style="display: none; background: transparent; border: none; color: white; font-size: 18px;" id="btnCloseNotes">✕</button>
+            </div>
+            <p style="font-size: 10px; color: var(--texto-secundario); margin-bottom: 20px; width: 100%;">Sincronização em nuvem ativa</p>
             
-            <textarea id="txtAnotacoes" style="width: 100%; height: 350px; background: #FFF9C4; border: none; padding: 20px; font-family: 'Kalam', cursive; font-size: 16px; color: #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); border-radius: 2px;" placeholder="Digite aqui seus insights e reflexões executivas..."></textarea>
+            <textarea id="txtAnotacoes" style="width: 100%; height: 320px; background: #FFF9C4; border: none; padding: 20px; font-family: 'Kalam', cursive; font-size: 16px; color: #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); border-radius: 2px;" placeholder="Digite aqui seus insights e reflexões executivas..."></textarea>
             
             <button style="width: 100%; margin-top: 20px;" onclick="salvarNota()">SINCRONIZAR AGORA</button>
             <div id="statusSalvar" style="font-size: 10px; margin-top: 10px; color: var(--sucesso);"></div>
         </aside>
     </div>
 
-    <!-- BOTÕES MOBILE -->
-    <button class="floating-menu-btn" onclick="toggleSidebar()" id="btnMobileMenu" style="display: none;">
+    <!-- BOTÕES FLUTUANTES MOBILE -->
+    <button class="floating-menu-btn" onclick="toggleSidebar()" id="btnMobileMenu">
         <i class="fas fa-bars"></i> CURSOS
+    </button>
+    <button class="floating-notes-btn" onclick="toggleNotes()" id="btnMobileNotes">
+        <i class="fas fa-pen-nib"></i> INSIGHTS
     </button>
 
     <!-- REDES SOCIAIS -->
@@ -607,9 +620,9 @@
             <textarea id="waMensagem" class="wa-field" style="height: 80px;" placeholder="Como podemos ajudar?"></textarea>
             <button class="wa-btn-submit" onclick="enviarWA()">Enviar via WhatsApp</button>
         </div>
-        <button class="social-btn btn-whatsapp" onclick="toggleWA()"><i class="fab fa-whatsapp" style="font-size: 24px; color: white;"></i></button>
-        <a href="https://www.linkedin.com/company/eumaisexecutivo/" target="_blank" class="social-btn btn-linkedin"><i class="fab fa-linkedin-in" style="font-size: 20px; color: white;"></i></a>
-        <a href="https://www.instagram.com/eumaisempresa/" target="_blank" class="social-btn btn-instagram"><i class="fab fa-instagram" style="font-size: 22px; color: white;"></i></a>
+        <button class="social-btn btn-whatsapp" onclick="toggleWA()"><i class="fab fa-whatsapp"></i></button>
+        <a href="https://www.linkedin.com/company/eumaisexecutivo/" target="_blank" class="social-btn btn-linkedin"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://www.instagram.com/eumaisempresa/" target="_blank" class="social-btn btn-instagram"><i class="fab fa-instagram"></i></a>
     </div>
 
     <!-- MODAL SENHA -->
@@ -626,7 +639,6 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         let idAmbiente = localStorage.getItem('ails_idAmbiente');
@@ -634,16 +646,12 @@
         let cursoAtual = null;
         let aulaAtiva = null;
 
-        // Inicialização
         window.onload = () => {
             if (idAmbiente) {
                 document.getElementById('loginOverlay').style.display = 'none';
                 document.getElementById('lblNomeAluno').innerText = localStorage.getItem('ails_nome');
                 document.getElementById('lblAmbiente').innerText = `(${idAmbiente})`;
                 carregarMenu();
-            }
-            if (window.innerWidth <= 900) {
-                document.getElementById('btnMobileMenu').style.display = 'flex';
             }
         };
 
@@ -700,20 +708,29 @@
             mudarCurso();
         }
 
+        function formatarMoeda(valor) {
+            let n = String(valor).replace(/R\$/gi, "").replace(/\s/g, "").replace(",", ".");
+            let num = parseFloat(n);
+            if (isNaN(num)) return "0,00";
+            return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
         function mudarCurso() {
             const idC = document.getElementById('selectCurso').value;
             cursoAtual = dbCursos.find(c => c.idCurso === idC);
             
             const container = document.getElementById('statusContainer');
-            if (cursoAtual.comprado) {
+            if (cursoAtual && cursoAtual.comprado) {
                 container.innerHTML = `<span style="color: var(--sucesso); font-size: 11px; font-weight: bold; border: 1px solid var(--sucesso); padding: 5px 10px; border-radius: 4px;">✓ CURSO ADQUIRIDO</span>`;
             } else {
-                const preco = cursoAtual.preco ? String(cursoAtual.preco).split('.')[0] : "---";
+                const preco = (cursoAtual && cursoAtual.preco) ? formatarMoeda(cursoAtual.preco) : "0,00";
                 container.innerHTML = `<button class="btn-upgrade-global" onclick="registrarInteresse()">DESBLOQUEAR R$ ${preco}</button>`;
             }
             
             renderizarCronograma();
-            if (cursoAtual.aulas.length > 0) carregarAula(cursoAtual.aulas[0].idAula, cursoAtual.aulas[0].idDoc || cursoAtual.aulas[0].idDocumento);
+            if (cursoAtual && cursoAtual.aulas.length > 0) {
+                carregarAula(cursoAtual.aulas[0].idAula, cursoAtual.aulas[0].idDoc || cursoAtual.aulas[0].idDocumento);
+            }
         }
 
         function renderizarCronograma() {
@@ -752,24 +769,63 @@
             
             document.getElementById('aulaTituloPagina').innerText = aula.tituloAula;
             document.getElementById('aulaConteudo').innerHTML = "<em>Carregando conteúdo executivo...</em>";
+            
+            // Atualiza o botão de conclusão
+            const btnConcluir = document.getElementById('btnConcluir');
+            if (aula.concluida) {
+                btnConcluir.classList.add('active');
+                btnConcluir.innerText = "✓ Aula Concluída";
+            } else {
+                btnConcluir.classList.remove('active');
+                btnConcluir.innerText = "✓ Marcar Concluído";
+            }
+
             if (window.innerWidth <= 900) fecharSidebar();
 
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&idAula=${idA}&idDoc=${idD}&idDocumento=${idD}`);
                 const res = await r.json();
                 if (res.success) {
-                    document.getElementById('aulaConteudo').innerHTML = res.html || res.conteudo;
+                    let htmlConteudo = res.html || res.conteudo;
+                    htmlConteudo = htmlConteudo.replace(/<table/g, '<div class="table-container-responsive"><table').replace(/<\/table>/g, '</table></div>');
+                    
+                    document.getElementById('aulaConteudo').innerHTML = htmlConteudo;
                     document.getElementById('txtAnotacoes').value = res.anotacao || "";
                     
-                    // Ajuste de imagens e tabelas após carregar
                     document.querySelectorAll('#aulaConteudo img').forEach(img => {
                         img.style.maxWidth = "100%";
                         img.style.height = "auto";
+                        img.style.display = "block";
+                        img.style.margin = "20px auto";
                     });
                 } else {
-                    document.getElementById('aulaConteudo').innerHTML = `<div style="color:red;">${res.error}</div>`;
+                    document.getElementById('aulaConteudo').innerHTML = `<div style="color:red; padding:20px;">Erro: ${res.error}</div>`;
                 }
             } catch (e) { alert("Erro ao carregar aula."); }
+        }
+
+        async function toggleConclusao() {
+            if (!aulaAtiva) return;
+            const aula = cursoAtual.aulas.find(a => a.idAula === aulaAtiva);
+            const novoStatus = !aula.concluida;
+            
+            try {
+                const r = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: 'salvarProgresso', 
+                        idAmbiente: idAmbiente, 
+                        idCurso: cursoAtual.idCurso, 
+                        idAula: aulaAtiva, 
+                        status: novoStatus ? 'CONCLUIDA' : 'PENDENTE' 
+                    }) 
+                });
+                const res = await r.json();
+                if (res.success) {
+                    aula.concluida = novoStatus;
+                    carregarAula(aulaAtiva, aula.idDoc || aula.idDocumento);
+                }
+            } catch (e) { alert("Erro ao salvar progresso."); }
         }
 
         async function registrarInteresse() {
@@ -789,8 +845,37 @@
             finally { btn.innerText = original; btn.disabled = false; }
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-        function fecharSidebar() { document.getElementById('sidebar').classList.remove('open'); }
+        function voltarDegustacao() {
+            document.getElementById('bloqueioOverlay').style.display = 'none';
+            const primeiraDegustacao = cursoAtual.aulas.find(a => a.degustacao) || cursoAtual.aulas[0];
+            if (primeiraDegustacao) {
+                carregarAula(primeiraDegustacao.idAula, primeiraDegustacao.idDoc || primeiraDegustacao.idDocumento);
+            }
+        }
+
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open'); 
+            document.getElementById('sidebarOverlay').style.display = document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none';
+        }
+        
+        function fecharSidebar() { 
+            document.getElementById('sidebar').classList.remove('open'); 
+            document.getElementById('sidebarOverlay').style.display = 'none';
+        }
+        
+        function toggleNotes() { 
+            const panel = document.getElementById('notesPanel');
+            panel.classList.toggle('open');
+            document.getElementById('btnCloseNotes').style.display = panel.classList.contains('open') ? 'block' : 'none';
+            document.getElementById('sidebarOverlay').style.display = panel.classList.contains('open') ? 'block' : 'none';
+        }
+
+        function fecharTodosMenus() {
+            fecharSidebar();
+            document.getElementById('notesPanel').classList.remove('open');
+            document.getElementById('sidebarOverlay').style.display = 'none';
+        }
+
         function logout() { localStorage.clear(); location.reload(); }
         function toggleWA() { document.getElementById('waModal').classList.toggle('open'); }
         async function enviarWA() {
@@ -816,8 +901,22 @@
             const status = document.getElementById('statusSalvar');
             status.innerText = "Sincronizando...";
             try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarAnotacao', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, texto: texto }) });
-                status.innerText = "✓ Sincronizado";
+                const r = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: 'salvarAnotacao', 
+                        idAmbiente: idAmbiente, 
+                        idCurso: cursoAtual.idCurso, 
+                        idAula: aulaAtiva, 
+                        texto: texto 
+                    }) 
+                });
+                const res = await r.json();
+                if (res.success) {
+                    status.innerText = "✓ Sincronizado";
+                } else {
+                    status.innerText = "Erro ao salvar";
+                }
             } catch (e) { status.innerText = "Erro ao salvar"; }
         }
     </script>
