@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Executivo - EU⁺ Saber</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Kalam:wght@300;400&family=Lora:ital,wght@0,400;0,500;1,400&display=swap');
+
+        :root {
+            --fundo-principal: #060E18;
+            --fundo-secundario: #0A1624;
+            --fundo-terciario: #0E1E30;
+            --dourado-principal: #C4974A;
+            --dourado-secundario: #D4AA62;
+            --texto-principal: #EEF0F2;
+            --texto-secundario: #7A8FA3;
+            --bordas: rgba(196, 151, 74, 0.18);
+            --sucesso: #2ECC71;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--fundo-principal);
+            color: var(--texto-principal);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            line-height: 1.6;
+            overflow-x: hidden;
+            width: 100vw;
+        }
+
+        .brand-title, #aulaTitulo, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dourado-principal); }
+
+        header {
+            background-color: var(--fundo-secundario);
+            border-bottom: 1px solid var(--bordas);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 100;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .selector-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .selector-label {
+            font-size: 10px;
+            color: var(--dourado-principal);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select {
+            background-color: var(--fundo-terciario);
+            border: 1px solid var(--bordas);
+            color: var(--texto-principal);
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'DM Sans', sans-serif;
+            width: 280px;
+        }
+
+        button, .btn-upgrade-global {
+            background-color: transparent;
+            border: 1px solid var(--dourado-principal);
+            color: var(--dourado-principal);
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 11px;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+        }
+        button:hover, .btn-upgrade-global:hover { background-color: var(--dourado-principal); color: var(--fundo-principal); }
+
+        .btn-upgrade-global {
+            background-color: var(--dourado-principal);
+            color: var(--fundo-principal);
+            border-color: var(--dourado-principal);
+        }
+
+        .painel-wrapper {
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            height: calc(100vh - 72px);
+        }
+
+        .sidebar { background-color: var(--fundo-secundario); border-right: 1px solid var(--bordas); padding: 20px; overflow-y: auto; }
+        
+        .content-body { 
+            padding: 40px 20px; 
+            overflow-y: auto; 
+            background-color: #EAEFF4; 
+            display: block;
+            width: 100%;
+        }
+
+        .notes-panel { 
+            background-color: var(--fundo-secundario); 
+            border-left: 1px solid var(--bordas); 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            overflow-y: auto;
+            z-index: 2000;
+        }
+
+        .progress-container {
+            margin: 12px 0 18px 0;
+            background: var(--fundo-terciario);
+            border: 1px solid var(--bordas);
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--texto-secundario);
+            margin-bottom: 6px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--dourado-principal), var(--dourado-secundario));
+            transition: width 0.4s ease;
+        }
+
+        .aula-item {
+            padding: 12px; border-radius: 4px; cursor: pointer; margin-bottom: 8px; font-size: 14px;
+            transition: all 0.2s; border: 1px solid transparent; color: var(--texto-secundario);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .aula-item:hover, .aula-item.active { background-color: var(--fundo-terciario); border-color: var(--bordas); color: var(--dourado-principal); }
+        
+        .aula-item.bloqueado {
+            opacity: 0.6;
+            background: rgba(0,0,0,0.1) !important;
+        }
+        
+        .tag-trava-discreta { 
+            font-size: 10px; 
+            color: #E74C3C; 
+            text-transform: uppercase; 
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .concluida-badge {
+            color: #2ECC71;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+       .folha-caderno {
+            background-color: #FFFFFF;
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            min-height: 100%;
+            height: auto;
+            padding: 45px 40px 50px 65px;
+            border-left: 2px solid #FF8585;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 2px;
+            position: relative;
+            background-image: linear-gradient(rgba(196, 209, 223, 0.35) 1px, transparent 1px);
+            background-size: 100% 28px;
+            line-height: 28px;
+            display: block;
+            overflow-x: hidden;
+        }
+
+        .meta-leitura {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #556373;
+            font-weight: 400;
+        }
+
+        .btn-concluir {
+            background: #EAEFF4;
+            border: 1px solid #CBD5E1;
+            color: #475569;
+            padding: 4px 10px;
+            font-size: 11px;
+            border-radius: 3px;
+            cursor: pointer;
+            text-transform: none;
+        }
+        .btn-concluir.active {
+            background: #2ECC71;
+            color: white;
+            border-color: #2ECC71;
+        }
+        
+        @keyframes fadeInConteudo {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .conteudo-aula-dinamico {
+            font-family: 'Lora', serif;
+            font-size: 16px;
+            color: #1A2430;
+            text-align: justify;
+            line-height: 1.8;
+            word-break: break-word;
+            animation: fadeInConteudo 0.4s ease-out;
+            width: 100%;
+        }
+
+        .conteudo-aula-dinamico h1, .conteudo-aula-dinamico h2, .conteudo-aula-dinamico h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: #0A3663;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+        .conteudo-aula-dinamico h1 { font-size: 24px; }
+        .conteudo-aula-dinamico h2 { font-size: 21px; }
+        .conteudo-aula-dinamico h3 { font-size: 18px; }
+
+        .conteudo-aula-dinamico p {
+            margin-bottom: 24px;
+        }
+
+        .media-scroll-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            margin: 25px 0;
+            border-radius: 6px;
+            -webkit-overflow-scrolling: touch;
+            display: block !important;
+            position: relative;
+        }
+
+        .conteudo-aula-dinamico img {
+            display: block !important;
+            max-width: 100% !important;
+            height: auto !important;
+            margin: 0 auto;
+            border-radius: 4px;
+        }
+
+        .media-scroll-container img {
+            max-width: none !important; 
+            min-width: 100% !important;
+        }
+
+        .conteudo-aula-dinamico table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            font-size: 14px;
+            color: #253648;
+            background: #FFFFFF;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .conteudo-aula-dinamico th, .conteudo-aula-dinamico td {
+            padding: 12px 14px;
+            border-right: 1px solid #E2E8F0;
+            border-bottom: 1px solid #E2E8F0;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .conteudo-aula-dinamico thead th,
+        .conteudo-aula-dinamico tr:first-child th,
+        .conteudo-aula-dinamico tr:first-child td {
+            background: #0E1E30 !important;
+            color: #F7E5BF !important;
+            font-size: 12px;
+            font-weight: 700 !important;
+        }
+
+        .conteudo-aula-dinamico tr:nth-child(even) td { background-color: #F8FAFC; }
+
+        /* OVERLAY DE BLOQUEIO - CORRIGIDO PARA FIXED */
+        #bloqueioOverlay {
+            position: fixed; /* Mudado de absolute para fixed */
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(6, 14, 24, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 5000; /* Acima de tudo */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-bloqueio-card {
+            background-color: var(--fundo-secundario);
+            border: 1px solid var(--bordas);
+            padding: 35px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            margin-top: -10vh; /* Sobe um pouco o box no mobile */
+        }
+
+        .lock-icon { font-size: 48px; color: var(--dourado-principal); margin-bottom: 15px; }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 1500;
+            display: none;
+        }
+
+        .floating-notes-btn, .floating-menu-btn {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            background: var(--dourado-principal);
+            color: #000;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            z-index: 1600;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .social-floating-dock {
+            position: fixed;
+            bottom: 85px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 990;
+        }
+
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+        .social-btn:hover { transform: scale(1.08); }
+        .btn-whatsapp { background-color: #25D366; }
+        .btn-linkedin { background-color: #0077B5; }
+        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .social-btn i { font-size: 18px; color: white; }
+
+        .wa-box-modal {
+            display: none;
+            position: fixed;
+            bottom: 140px;
+            left: 20px;
+            background-color: var(--fundo-secundario);
+            border: 1px solid var(--bordas);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 280px;
+            z-index: 2000;
+        }
+        .wa-box-modal.open { display: block; }
+
+        @media screen and (max-width: 900px) {
+            header { padding: 10px 15px; flex-wrap: wrap; height: auto !important; }
+            .header-actions { width: 100%; justify-content: space-between; order: 3; margin-top: 8px; display: flex !important; flex-wrap: wrap; gap: 8px; }
+            select { width: 100%; }
+            .selector-wrapper { width: 100%; order: -1; }
+            
+            .painel-wrapper { grid-template-columns: 1fr; height: auto; display: block; }
+            .sidebar { position: fixed; top: 0; left: -100%; width: 85%; height: 100%; z-index: 2000; transition: 0.3s; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
+            .sidebar.open { left: 0; }
+            
+            .content-body { padding: 15px 10px; background-color: #EAEFF4; width: 100vw; }
+            .folha-caderno { padding: 25px 15px 30px 20px; border-left-width: 2px; line-height: 24px; background-size: 100% 24px; width: 100% !important; max-width: none !important; }
+            
+            .notes-panel { 
+                position: fixed; top: 0; right: -100%; width: 90%; height: 100%; z-index: 2000; transition: 0.3s; border-left: 1px solid var(--bordas); box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
+                display: flex !important;
+            }
+            .notes-panel.open { right: 0; }
+
+            .floating-menu-btn { display: flex !important; left: 20px; }
+            .floating-notes-btn { display: flex !important; right: 20px; }
+            
+            .social-floating-dock { bottom: 85px; left: 20px; }
+        }
+
+        #loginOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--fundo-principal);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .card-login {
+            background-color: var(--fundo-secundario);
+            border: 1px solid var(--bordas);
+            padding: 40px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .login-input {
+            width: 100%;
+            background-color: var(--fundo-terciario);
+            border: 1px solid var(--bordas);
+            color: white;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .link-recuperar {
+            color: var(--texto-secundario);
+            font-size: 12px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .modal-senha {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 4000;
+        }
+        .modal-senha.open { display: flex; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharTodosMenus()"></div>
+
+    <div id="loginOverlay">
+        <div class="card-login" id="boxLogin">
+            <h2 style="text-align: center; margin-bottom: 10px;">EU⁺ Saber</h2>
+            <p style="text-align: center; color: var(--texto-secundario); margin-bottom: 30px;">Ambiente de Aprendizagem Executiva</p>
+            
+            <label class="selector-label">E-mail de Acesso</label>
+            <input type="email" id="loginEmail" class="login-input" placeholder="seu@email.com">
+            
+            <label class="selector-label">Senha</label>
+            <input type="password" id="loginSenha" class="login-input" placeholder="••••••••">
+            
+            <button id="btnLogin" style="width: 100%; padding: 15px; font-size: 14px; background: var(--dourado-principal); color: #000;" onclick="autenticar()">ACESSAR AMBIENTE</button>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <span class="link-recuperar" onclick="recuperarSenha()">Esqueci minha senha</span>
+                <p style="margin-top: 15px; font-size: 12px; color: var(--texto-secundario);">Não tem acesso? <a href="../cadastro/" style="color: var(--dourado-principal);">Crie sua conta aqui</a></p>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <div class="brand-title" style="font-size: 24px; font-weight: bold;">EU⁺ Saber</div>
+        
+        <div class="header-actions">
+            <div class="selector-wrapper">
+                <span class="selector-label">Selecione o Curso</span>
+                <select id="selectCurso" onchange="mudarCurso()"></select>
+            </div>
+            <div id="statusContainer"></div>
+            <button onclick="abrirModalSenha()">🔑 Senha</button>
+            <button onclick="logout()" style="border-color: #ff4444; color: #ff4444;">🚪 Sair</button>
+        </div>
+        
+        <div id="userInfo" style="font-size: 12px; text-align: right; color: var(--texto-secundario);">
+            Usuário: <span id="lblNomeAluno" style="color: var(--dourado-principal);">---</span>
+            <div id="lblAmbiente" style="opacity: 0.5;">(---)</div>
+        </div>
+    </header>
+
+    <div class="painel-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <h4 style="color: var(--texto-secundario); font-size: 12px; text-transform: uppercase; margin-bottom: 15px;">Cronograma do Curso</h4>
+            <div class="progress-container">
+                <div class="progress-info">
+                    <span id="lblPorcentagem" style="font-weight: bold; color: var(--dourado-principal);">0%</span>
+                    <span id="lblMinutosFracao">0 de 0 aulas</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="barFill"></div>
+                </div>
+            </div>
+            <div id="listaAulas"></div>
+        </aside>
+
+        <main class="content-body">
+            <div class="folha-caderno">
+                <div id="bloqueioOverlay">
+                    <div class="modal-bloqueio-card">
+                        <div class="lock-icon">🔒</div>
+                        <h2 id="bloqueioTitulo" style="margin-bottom: 10px;">Conteúdo Exclusivo</h2>
+                        <p id="bloqueioTexto" style="color: var(--texto-secundario); font-size: 14px; margin-bottom: 25px;">Desbloqueie este curso para ter acesso imediato a todo o material executivo.</p>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button id="btnDesbloquearOverlay" style="padding: 14px; background: var(--dourado-principal); color: #000; font-weight: bold; width: 100%;" onclick="registrarInteresse()">DESBLOQUEAR AGORA</button>
+                            <button style="padding: 10px; background: transparent; border-color: var(--texto-secundario); color: var(--texto-secundario); width: 100%;" onclick="voltarDegustacao()">← VOLTAR PARA AULAS DE DEGUSTAÇÃO</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="meta-leitura" id="metaLeitura">
+                    <span id="aulaTituloPagina" style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 600; color: #0A3663;">Selecione uma aula</span>
+                    <button class="btn-concluir" id="btnConcluir" onclick="toggleConclusao()">✓ Marcar Concluído</button>
+                </div>
+
+                <div id="aulaConteudo" class="conteudo-aula-dinamico">
+                    <div style="text-align: center; margin-top: 100px; color: #7A8FA3;">
+                        Selecione uma aula no cronograma para iniciar sua jornada executiva.
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="notes-panel" id="notesPanel">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px;">
+                <h4 style="color: var(--dourado-principal); font-family: 'Cormorant Garamond', serif; font-size: 22px;">✍️ Caderno de Insights</h4>
+                <button onclick="fecharTodosMenus()" style="display: none; background: transparent; border: none; color: white; font-size: 18px;" id="btnCloseNotes">✕</button>
+            </div>
+            <p style="font-size: 10px; color: var(--texto-secundario); margin-bottom: 20px; width: 100%;">Sincronização em nuvem ativa</p>
+            <textarea id="txtAnotacoes" style="width: 100%; height: 320px; background: #FFF9C4; border: none; padding: 20px; font-family: 'Kalam', cursive; font-size: 16px; color: #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); border-radius: 2px;" placeholder="Digite aqui seus insights e reflexões executivas..."></textarea>
+            <button style="width: 100%; margin-top: 20px;" onclick="salvarNota()">SINCRONIZAR AGORA</button>
+            <div id="statusSalvar" style="font-size: 10px; margin-top: 10px; color: var(--sucesso);"></div>
+        </aside>
+    </div>
+
+    <button class="floating-menu-btn" onclick="toggleSidebar()" id="btnMobileMenu"><i class="fas fa-bars"></i> CURSOS</button>
+    <button class="floating-notes-btn" onclick="toggleNotes()" id="btnMobileNotes"><i class="fas fa-pen-nib"></i> INSIGHTS</button>
+
+    <div class="social-floating-dock">
+        <div class="wa-box-modal" id="waModal">
+            <h4 style="color: var(--dourado-principal); margin-bottom: 10px;">Suporte Executivo</h4>
+            <select id="waTipo" class="wa-field" style="width:100%; background:#0E1E30; color:white; border:1px solid var(--bordas); padding:5px; margin-bottom:10px;">
+                <option value="Dúvida">Dúvida sobre o conteúdo</option>
+                <option value="Sugestão">Sugestão de melhoria</option>
+                <option value="Suporte">Problema técnico</option>
+            </select>
+            <textarea id="waMensagem" class="wa-field" style="width:100%; height: 80px; background:#0E1E30; color:white; border:1px solid var(--bordas); padding:5px; margin-bottom:10px;" placeholder="Como podemos ajudar?"></textarea>
+            <button style="width:100%; background: var(--dourado-principal); color: #000; border: none; padding: 10px; font-weight: bold; cursor: pointer;" onclick="enviarWA()">Enviar via WhatsApp</button>
+        </div>
+        <button class="social-btn btn-whatsapp" onclick="toggleWA()"><i class="fab fa-whatsapp"></i></button>
+        <a href="https://www.linkedin.com/company/eumaisexecutivo/" target="_blank" class="social-btn btn-linkedin"><i class="fab fa-linkedin-in"></i></a>
+        <a href="https://www.instagram.com/eumaisempresa/" target="_blank" class="social-btn btn-instagram"><i class="fab fa-instagram"></i></a>
+    </div>
+
+    <div class="modal-senha" id="modalSenha">
+        <div class="card-login" style="max-width: 400px;">
+            <h3>Alterar Senha</h3>
+            <p style="font-size: 12px; color: var(--texto-secundario); margin-bottom: 20px;">Sua nova senha deve ser fácil de lembrar.</p>
+            <input type="password" id="senhaAtual" class="login-input" placeholder="Senha Atual">
+            <input type="password" id="novaSenha" class="login-input" placeholder="Nova Senha">
+            <div style="display: flex; gap: 10px;">
+                <button onclick="processarTrocaSenha()" style="flex: 1; background: var(--dourado-principal); color: #000;">SALVAR</button>
+                <button onclick="fecharModalSenha()" style="flex: 1; border-color: #666; color: #666;">CANCELAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
+        let idAmbiente = localStorage.getItem('ails_idAmbiente');
+        let dbCursos = [];
+        let cursoAtual = null;
+        let aulaAtiva = null;
+
+        window.onload = () => {
+            if (idAmbiente) {
+                document.getElementById('loginOverlay').style.display = 'none';
+                document.getElementById('lblNomeAluno').innerText = localStorage.getItem('ails_nome');
+                document.getElementById('lblAmbiente').innerText = `(${idAmbiente})`;
+                carregarMenu();
+            }
+        };
+
+        async function autenticar() {
+            const email = document.getElementById('loginEmail').value;
+            const senha = document.getElementById('loginSenha').value;
+            const btn = document.getElementById('btnLogin');
+            if (!email || !senha) return alert("Preencha todos os campos.");
+            btn.innerText = "AUTENTICANDO...";
+            btn.disabled = true;
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`);
+                const res = await r.json();
+                if (res.autorizado) {
+                    idAmbiente = res.idAmbiente;
+                    localStorage.setItem('ails_idAmbiente', res.idAmbiente);
+                    localStorage.setItem('ails_nome', res.nome);
+                    location.reload();
+                } else alert(res.error || "Credenciais inválidas.");
+            } catch (e) { alert("Erro de conexão."); }
+            finally { btn.innerText = "ACESSAR AMBIENTE"; btn.disabled = false; }
+        }
+
+        async function recuperarSenha() {
+            const email = document.getElementById('loginEmail').value;
+            if (!email) return alert("Digite seu e-mail no campo acima.");
+            if (!confirm("Deseja receber uma nova senha por e-mail?")) return;
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=esqueciSenha&email=${encodeURIComponent(email)}`);
+                const res = await r.json();
+                if (res.success) alert(res.message || "Verifique seu e-mail!");
+                else alert(res.error || "Erro ao recuperar.");
+            } catch (e) { alert("Erro de conexão."); }
+        }
+
+        async function carregarMenu() {
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=carregarMenu&idAmbiente=${idAmbiente}`);
+                const res = await r.json();
+                if (res.success) { dbCursos = res.cursos; renderizarSeletor(); }
+            } catch (e) { console.error(e); }
+        }
+
+        function renderizarSeletor() {
+            const sel = document.getElementById('selectCurso');
+            sel.innerHTML = dbCursos.map(c => `<option value="${c.idCurso}">${c.nomeCurso}</option>`).join('');
+            mudarCurso();
+        }
+
+        function formatarMoeda(valor) {
+            let n = String(valor).replace(/R\$/gi, "").replace(/\s/g, "").replace(",", ".");
+            let num = parseFloat(n);
+            if (isNaN(num)) return "0,00";
+            return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function mudarCurso() {
+            const idC = document.getElementById('selectCurso').value;
+            cursoAtual = dbCursos.find(c => c.idCurso === idC);
+            const container = document.getElementById('statusContainer');
+            if (cursoAtual && cursoAtual.comprado) {
+                container.innerHTML = `<span style="color: var(--sucesso); font-size: 11px; font-weight: bold; border: 1px solid var(--sucesso); padding: 5px 10px; border-radius: 4px;">✓ CURSO ADQUIRIDO</span>`;
+            } else {
+                const preco = (cursoAtual && cursoAtual.preco) ? formatarMoeda(cursoAtual.preco) : "0,00";
+                container.innerHTML = `<button class="btn-upgrade-global" onclick="registrarInteresse()">DESBLOQUEAR R$ ${preco}</button>`;
+            }
+            renderizarCronograma();
+            if (cursoAtual && cursoAtual.aulas.length > 0) carregarAula(cursoAtual.aulas[0].idAula, cursoAtual.aulas[0].idDoc || cursoAtual.aulas[0].idDocumento);
+        }
+
+        function renderizarCronograma() {
+            const lista = document.getElementById('listaAulas');
+            lista.innerHTML = cursoAtual.aulas.map((a, i) => {
+                const bloqueada = !cursoAtual.comprado && !a.degustacao;
+                const ativa = a.idAula === aulaAtiva ? 'active' : '';
+                return `
+                    <div class="aula-item ${ativa} ${bloqueada ? 'bloqueado' : ''}" onclick="carregarAula('${a.idAula}', '${a.idDoc || a.idDocumento}')">
+                        <span>(${i+1}/${cursoAtual.aulas.length}) ${a.tituloAula}</span>
+                        ${bloqueada ? '<span class="tag-trava-discreta">🔒 BLOQUEADO</span>' : (a.concluida ? '<span class="concluida-badge">✓</span>' : '')}
+                    </div>
+                `;
+            }).join('');
+            const concluidas = cursoAtual.aulas.filter(a => a.concluida).length;
+            const perc = Math.round((concluidas / cursoAtual.aulas.length) * 100) || 0;
+            document.getElementById('lblPorcentagem').innerText = `${perc}%`;
+            document.getElementById('lblMinutosFracao').innerText = `${concluidas} de ${cursoAtual.aulas.length} aulas`;
+            document.getElementById('barFill').style.width = `${perc}%`;
+        }
+
+        async function carregarAula(idA, idD) {
+            const aula = cursoAtual.aulas.find(a => a.idAula === idA);
+            const overlay = document.getElementById('bloqueioOverlay');
+            if (!cursoAtual.comprado && !aula.degustacao) { overlay.style.display = 'flex'; if (window.innerWidth <= 900) fecharTodosMenus(); return; }
+            overlay.style.display = 'none';
+            aulaAtiva = idA;
+            renderizarCronograma();
+            document.getElementById('aulaTituloPagina').innerText = aula.tituloAula;
+            document.getElementById('aulaConteudo').innerHTML = "<em>Carregando conteúdo executivo...</em>";
+            const btnConcluir = document.getElementById('btnConcluir');
+            if (aula.concluida) { btnConcluir.classList.add('active'); btnConcluir.innerText = "✓ Aula Concluída"; }
+            else { btnConcluir.classList.remove('active'); btnConcluir.innerText = "✓ Marcar Concluído"; }
+            if (window.innerWidth <= 900) fecharTodosMenus();
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&idAula=${idA}&idDoc=${idD}&idDocumento=${idD}`);
+                const res = await r.json();
+                if (res.success) {
+                    let html = res.html || res.conteudo;
+                    html = html.replace(/<table/g, '<div class="media-scroll-container"><table').replace(/<\/table>/g, '</table></div>');
+                    document.getElementById('aulaConteudo').innerHTML = html;
+                    document.getElementById('txtAnotacoes').value = res.anotacao || "";
+                    
+                    document.querySelectorAll('#aulaConteudo img').forEach(img => {
+                        if (!img.parentElement.classList.contains('media-scroll-container')) {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = 'media-scroll-container';
+                            img.parentNode.insertBefore(wrapper, img);
+                            wrapper.appendChild(img);
+                        }
+                        img.style.maxWidth = "none"; 
+                        img.style.minWidth = "100%"; 
+                        img.style.height = "auto"; 
+                        img.style.display = "block"; 
+                        img.style.margin = "0 auto";
+                    });
+                } else document.getElementById('aulaConteudo').innerHTML = `<div style="color:red; padding:20px;">Erro: ${res.error}</div>`;
+            } catch (e) { alert("Erro ao carregar aula."); }
+        }
+
+        async function toggleConclusao() {
+            if (!aulaAtiva) return;
+            const aula = cursoAtual.aulas.find(a => a.idAula === aulaAtiva);
+            const novoStatus = !aula.concluida;
+            try {
+                const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarProgresso', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, status: novoStatus ? 'CONCLUIDA' : 'PENDENTE' }) });
+                const res = await r.json();
+                if (res.success) { aula.concluida = novoStatus; carregarAula(aulaAtiva, aula.idDoc || aula.idDocumento); }
+            } catch (e) { alert("Erro ao salvar progresso."); }
+        }
+
+        async function registrarInteresse() {
+            const btn = document.getElementById('btnDesbloquearOverlay');
+            btn.innerText = "PROCESSANDO..."; btn.disabled = true;
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=registrarInteresseCompra&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&origem=PAINEL_ALUNO`);
+                const res = await r.json();
+                if (res.success && res.linkAsaas) { window.open(res.linkAsaas, '_blank'); alert("O checkout foi aberto em uma nova guia. Após o pagamento, faça novo login para liberar."); }
+                else alert("Erro ao gerar link de pagamento.");
+            } catch (e) { alert("Erro de conexão."); }
+            finally { btn.innerText = "DESBLOQUEAR AGORA"; btn.disabled = false; }
+        }
+
+        function voltarDegustacao() {
+            document.getElementById('bloqueioOverlay').style.display = 'none';
+            const p = cursoAtual.aulas.find(a => a.degustacao) || cursoAtual.aulas[0];
+            if (p) carregarAula(p.idAula, p.idDoc || p.idDocumento);
+        }
+
+        function toggleSidebar() { const s = document.getElementById('sidebar'); const open = s.classList.contains('open'); fecharTodosMenus(); if (!open) { s.classList.add('open'); document.getElementById('sidebarOverlay').style.display = 'block'; } }
+        function toggleNotes() { const p = document.getElementById('notesPanel'); const open = p.classList.contains('open'); fecharTodosMenus(); if (!open) { p.classList.add('open'); document.getElementById('btnCloseNotes').style.display = 'block'; document.getElementById('sidebarOverlay').style.display = 'block'; } }
+        
+        function toggleWA() { 
+            const m = document.getElementById('waModal'); 
+            const open = m.classList.contains('open'); 
+            fecharTodosMenus(); 
+            if (!open) { 
+                m.classList.add('open'); 
+                document.getElementById('sidebarOverlay').style.display = 'block'; 
+            } 
+        }
+
+        function fecharTodosMenus() {
+            document.getElementById('sidebar').classList.remove('open'); 
+            document.getElementById('notesPanel').classList.remove('open');
+            document.getElementById('waModal').classList.remove('open');
+            document.getElementById('sidebarOverlay').style.display = 'none';
+            document.getElementById('btnCloseNotes').style.display = 'none';
+        }
+
+        function logout() { localStorage.clear(); location.reload(); }
+        async function enviarWA() { window.open(`https://wa.me/5527998131806?text=${encodeURIComponent(`[${document.getElementById('waTipo').value}] ${document.getElementById('waMensagem').value}`)}`, '_blank'); fecharTodosMenus(); }
+        function abrirModalSenha() { document.getElementById('modalSenha').classList.add('open'); }
+        function fecharModalSenha() { document.getElementById('modalSenha').classList.remove('open'); }
+        async function processarTrocaSenha() {
+            try {
+                const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'alterarSenha', idAmbiente: idAmbiente, senhaAtual: document.getElementById('senhaAtual').value, novaSenha: document.getElementById('novaSenha').value }) });
+                const res = await r.json();
+                if (res.success) { alert("Senha alterada!"); fecharModalSenha(); } else alert(res.error);
+            } catch (e) { alert("Erro de conexão."); }
+        }
+        async function salvarNota() {
+            const s = document.getElementById('statusSalvar'); s.innerText = "Sincronizando...";
+            try {
+                const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarAnotacao', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, texto: document.getElementById('txtAnotacoes').value }) });
+                const res = await r.json();
+                if (res.success) s.innerText = "✓ Sincronizado"; else s.innerText = "Erro ao salvar";
+            } catch (e) { s.innerText = "Erro ao salvar"; }
+        }
+    </script>
+</body>
+</html>
