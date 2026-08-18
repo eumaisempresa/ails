@@ -254,27 +254,30 @@
             margin-bottom: 24px;
         }
 
-        /* IMAGENS: Limitadas estritamente ao tamanho da folha */
+        /* CONTAINER DE ROLAGEM PARA MÍDIAS LARGAS */
+        .media-scroll-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 25px 0;
+            border-radius: 6px;
+            -webkit-overflow-scrolling: touch;
+            display: block;
+        }
+
         .conteudo-aula-dinamico img {
             display: block;
-            max-width: 100% !important;
+            max-width: 100%; /* Por padrão cabe na folha */
             height: auto !important;
             object-fit: contain;
-            margin: 20px auto;
+            margin: 0 auto;
             border-radius: 4px;
             box-shadow: 0 4px 15px rgba(15, 32, 51, 0.12);
         }
 
-        /* TABELAS COM SCROLL HORIZONTAIS NATIVO */
-        .table-container-responsive {
-            width: 100%;
-            overflow-x: auto;
-            margin: 25px 0;
-            border: 1px solid #CBD5E1;
-            border-radius: 6px;
-            background: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(15, 32, 51, 0.08);
-            -webkit-overflow-scrolling: touch;
+        /* Se a imagem for forçada a ser maior que a folha, ela rola */
+        .media-scroll-container img {
+            max-width: none !important; 
+            min-width: 100%;
         }
 
         .conteudo-aula-dinamico table {
@@ -369,7 +372,7 @@
         /* REDES SOCIAIS */
         .social-floating-dock {
             position: fixed;
-            bottom: 85px; /* Subi para não bater nos botões flutuantes */
+            bottom: 85px;
             left: 20px;
             display: flex;
             flex-direction: column;
@@ -425,13 +428,6 @@
             .content-body { padding: 15px 10px; background-color: #EAEFF4; }
             .folha-caderno { padding: 25px 15px 30px 20px; border-left-width: 2px; line-height: 24px; background-size: 100% 24px; width: 100% !important; max-width: none !important; }
             
-            /* IMAGENS MOBILE: Garante que NUNCA transbordam */
-            .conteudo-aula-dinamico img {
-                max-width: 100% !important;
-                width: auto !important;
-                margin: 15px auto !important;
-            }
-
             .notes-panel { 
                 position: fixed; top: 0; right: -100%; width: 90%; height: 100%; z-index: 2000; transition: 0.3s; border-left: 1px solid var(--bordas); box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
                 display: flex !important;
@@ -589,7 +585,7 @@
         <aside class="notes-panel" id="notesPanel">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px;">
                 <h4 style="color: var(--dourado-principal); font-family: 'Cormorant Garamond', serif; font-size: 22px;">✍️ Caderno de Insights</h4>
-                <button onclick="toggleNotes()" style="display: none; background: transparent; border: none; color: white; font-size: 18px;" id="btnCloseNotes">✕</button>
+                <button onclick="fecharTodosMenus()" style="display: none; background: transparent; border: none; color: white; font-size: 18px;" id="btnCloseNotes">✕</button>
             </div>
             <p style="font-size: 10px; color: var(--texto-secundario); margin-bottom: 20px; width: 100%;">Sincronização em nuvem ativa</p>
             
@@ -759,7 +755,7 @@
             
             if (!cursoAtual.comprado && !aula.degustacao) {
                 overlay.style.display = 'flex';
-                if (window.innerWidth <= 900) fecharSidebar();
+                if (window.innerWidth <= 900) fecharTodosMenus();
                 return;
             }
             
@@ -770,7 +766,6 @@
             document.getElementById('aulaTituloPagina').innerText = aula.tituloAula;
             document.getElementById('aulaConteudo').innerHTML = "<em>Carregando conteúdo executivo...</em>";
             
-            // Atualiza o botão de conclusão
             const btnConcluir = document.getElementById('btnConcluir');
             if (aula.concluida) {
                 btnConcluir.classList.add('active');
@@ -780,23 +775,33 @@
                 btnConcluir.innerText = "✓ Marcar Concluído";
             }
 
-            if (window.innerWidth <= 900) fecharSidebar();
+            if (window.innerWidth <= 900) fecharTodosMenus();
 
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&idAula=${idA}&idDoc=${idD}&idDocumento=${idD}`);
                 const res = await r.json();
                 if (res.success) {
                     let htmlConteudo = res.html || res.conteudo;
-                    htmlConteudo = htmlConteudo.replace(/<table/g, '<div class="table-container-responsive"><table').replace(/<\/table>/g, '</table></div>');
+                    
+                    // Envolve tabelas em containers de scroll
+                    htmlConteudo = htmlConteudo.replace(/<table/g, '<div class="media-scroll-container"><table').replace(/<\/table>/g, '</table></div>');
                     
                     document.getElementById('aulaConteudo').innerHTML = htmlConteudo;
                     document.getElementById('txtAnotacoes').value = res.anotacao || "";
                     
+                    // Envolve imagens programaticamente para garantir precisão e rolagem se necessário
                     document.querySelectorAll('#aulaConteudo img').forEach(img => {
-                        img.style.maxWidth = "100%";
+                        if (!img.parentElement.classList.contains('media-scroll-container')) {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = 'media-scroll-container';
+                            img.parentNode.insertBefore(wrapper, img);
+                            wrapper.appendChild(img);
+                        }
+                        img.style.maxWidth = "none"; 
+                        img.style.minWidth = "100%";
                         img.style.height = "auto";
                         img.style.display = "block";
-                        img.style.margin = "20px auto";
+                        img.style.margin = "0 auto";
                     });
                 } else {
                     document.getElementById('aulaConteudo').innerHTML = `<div style="color:red; padding:20px;">Erro: ${res.error}</div>`;
@@ -854,39 +859,57 @@
         }
 
         function toggleSidebar() { 
-            document.getElementById('sidebar').classList.toggle('open'); 
-            document.getElementById('sidebarOverlay').style.display = document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none';
-        }
-        
-        function fecharSidebar() { 
-            document.getElementById('sidebar').classList.remove('open'); 
-            document.getElementById('sidebarOverlay').style.display = 'none';
+            const sidebar = document.getElementById('sidebar');
+            const isOpen = sidebar.classList.contains('open');
+            fecharTodosMenus();
+            if (!isOpen) {
+                sidebar.classList.add('open');
+                document.getElementById('sidebarOverlay').style.display = 'block';
+            }
         }
         
         function toggleNotes() { 
             const panel = document.getElementById('notesPanel');
-            panel.classList.toggle('open');
-            document.getElementById('btnCloseNotes').style.display = panel.classList.contains('open') ? 'block' : 'none';
-            document.getElementById('sidebarOverlay').style.display = panel.classList.contains('open') ? 'block' : 'none';
+            const isOpen = panel.classList.contains('open');
+            fecharTodosMenus();
+            if (!isOpen) {
+                panel.classList.add('open');
+                document.getElementById('btnCloseNotes').style.display = 'block';
+                document.getElementById('sidebarOverlay').style.display = 'block';
+            }
+        }
+
+        function toggleWA() { 
+            const modal = document.getElementById('waModal');
+            const isOpen = modal.classList.contains('open');
+            fecharTodosMenus();
+            if (!isOpen) {
+                modal.classList.add('open');
+                document.getElementById('sidebarOverlay').style.display = 'block';
+            }
         }
 
         function fecharTodosMenus() {
-            fecharSidebar();
+            document.getElementById('sidebar').classList.remove('open'); 
             document.getElementById('notesPanel').classList.remove('open');
+            document.getElementById('waModal').classList.remove('open');
             document.getElementById('sidebarOverlay').style.display = 'none';
+            document.getElementById('btnCloseNotes').style.display = 'none';
         }
 
         function logout() { localStorage.clear(); location.reload(); }
-        function toggleWA() { document.getElementById('waModal').classList.toggle('open'); }
+
         async function enviarWA() {
             const tipo = document.getElementById('waTipo').value;
             const msg = document.getElementById('waMensagem').value;
             const url = `https://wa.me/5527998131806?text=${encodeURIComponent(`[${tipo}] ${msg}`)}`;
             window.open(url, '_blank');
-            toggleWA();
+            fecharTodosMenus();
         }
+
         function abrirModalSenha() { document.getElementById('modalSenha').classList.add('open'); }
         function fecharModalSenha() { document.getElementById('modalSenha').classList.remove('open'); }
+        
         async function processarTrocaSenha() {
             const atual = document.getElementById('senhaAtual').value;
             const nova = document.getElementById('novaSenha').value;
@@ -896,6 +919,7 @@
                 if (res.success) { alert("Senha alterada!"); fecharModalSenha(); } else alert(res.error);
             } catch (e) { alert("Erro de conexão."); }
         }
+
         async function salvarNota() {
             const texto = document.getElementById('txtAnotacoes').value;
             const status = document.getElementById('statusSalvar');
