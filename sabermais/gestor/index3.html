@@ -1,0 +1,156 @@
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
+    let dbAlunos = [];
+    let dbCatalogo = [];
+
+    function autenticarGestor( ) {
+        const pass = document.getElementById('masterPass').value;
+        fetch(`${SCRIPT_URL}?action=validarAdmin&senha=${encodeURIComponent(pass)}`)
+            .then(r => r.json()).then(res => {
+                if(res.autorizado) { document.getElementById('authOverlay').style.display = 'none'; carregarDados(); } 
+                else { alert("Senha incorreta!"); }
+            });
+    }
+
+    async function carregarDados() {
+        const btn = document.querySelector('.btn-primary');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> CARREGANDO...';
+        try {
+            const r = await fetch(`${SCRIPT_URL}?action=carregarPainelGestor`);
+            const res = await r.json();
+            if(res.success) {
+                dbAlunos = res.data.alunos;
+                dbCatalogo = res.data.catalogo;
+                popularFiltros();
+                aplicarFiltros();
+            }
+        } catch(e) { alert("Erro ao carregar dados."); }
+        btn.innerHTML = '<i class="fas fa-sync-alt"></i> ATUALIZAR';
+    }
+
+    function popularFiltros() {
+        const cats = [...new Set(dbCatalogo.map(c => c.categoria))];
+        const profs = [...new Set(dbAlunos.map(a => a.profissao))].filter(p => p);
+        const selCat = document.getElementById('filterCategoria');
+        selCat.innerHTML = '<option value="todas">Todas as Categorias</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+        const selProf = document.getElementById('filterProfissao');
+        selProf.innerHTML = '<option value="todas">Todas as Profissões</option>' + profs.map(p => `<option value="${p}">${p}</option>`).join('');
+    }
+
+    function aplicarFiltros() {
+        const busca = document.getElementById('filterBusca').value.toLowerCase();
+        const status = document.getElementById('filterStatus').value;
+        const cat = document.getElementById('filterCategoria').value;
+        const prof = document.getElementById('filterProfissao').value;
+
+        const filtrados = dbAlunos.filter(a => {
+            const matchBusca = !busca || a.nome.toLowerCase().includes(busca) || a.email.toLowerCase().includes(busca) || a.idAmbiente.toLowerCase().includes(busca);
+            const matchProf = prof === 'todas' || a.profissao === prof;
+            let matchStatus = true;
+            if(status === 'comprador') matchStatus = a.cursos.length > 0;
+            else if(status === 'interessado') matchStatus = a.interesses.length > 0;
+            else if(status === 'degustacao') matchStatus = a.cursos.length === 0 && a.interesses.length === 0;
+            let matchCat = cat === 'todas';
+            if(!matchCat) {
+                matchCat = a.cursos.some(c => c.categoria === cat) || a.interesses.some(i => {
+                    const curso = dbCatalogo.find(cc => cc.id === i.cursoId);
+                    return curso && curso.categoria === cat;
+                });
+            }
+            return matchBusca && matchStatus && matchCat && matchProf;
+        });
+        renderizarTabela(filtrados);
+    }
+
+    function renderizarTabela(alunos) {
+        const tbody = document.querySelector('#tabelaAlunos tbody');
+        tbody.innerHTML = "";
+        document.getElementById('countAlunos').innerText = alunos.length;
+        alunos.forEach((aluno, index) => {
+            const tr = document.createElement('tr');
+            const tagsCursos = aluno.cursos.map(c => `<span class="tag tag-paid">${c.nome}</span>`).join('');
+            const tagsInteresses = aluno.interesses.map(i => {
+                const c = dbCatalogo.find(cc => cc.id === i.cursoId);
+                return `<span class="tag tag-interest">Lead: ${c ? c.nome : i.cursoId}</span>`;
+            }).join('');
+            const sugestoes = aluno.ofertas.map(o => `<option value="${o.id}">[${o.categoria}] ${o.nome} - R$ ${o.preco}</option>`).join('');
+            
+            tr.innerHTML = `
+                <td><div style="font-weight:bold">${aluno.nome}</div><div style="font-size:10px; color:#7A8FA3">${aluno.profissao} • ${aluno.idAmbiente}</div></td>
+                <td><div style="font-size:11px">${aluno.whatsapp}</div><div style="font-size:10px; color:#7A8FA3">${aluno.email}</div></td>
+                <td>${tagsCursos} ${tagsInteresses || '<small style="color:#444">Apenas Degustação</small>'}</td>
+                <td>
+                    <select id="sel-oferta-${index}"><option value="">Sugerir curso...</option>${sugestoes}</select>
+                    <div class="promo-box"><input type="text" id="promo-${index}" class="promo-input" placeholder="R$ Promo"><small style="font-size:9px; color:#7A8FA3; align-self:center">Valor Final</small></div>
+                </td>
+                <td>
+                    <button class="btn btn-wa" onclick="enviarOfertaWA(${index})"><i class="fab fa-whatsapp"></i> GERAR & ENVIAR</button>
+                    <button class="btn" onclick="liberarManual('${aluno.idAmbiente}', ${index})" style="border-color:#7A8FA3; color:#7A8FA3; margin-top:5px; width:100%">+ LIBERAR MANUAL</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    async function enviarOfertaWA(idx) {
+        const aluno = dbAlunos[idx];
+        const sel = document.getElementById(`sel-oferta-${idx}`);
+        const promo = document.getElementById(`promo-${idx}`).value;
+        const btn = event.currentTarget;
+        
+        if(!sel.value) { alert("Selecione um curso para ofertar."); return; }
+        
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GERANDO...';
+        btn.disabled = true;
+
+        try {
+            const r = await fetch(`${SCRIPT_URL}?action=gerarLinkPromocional&idAmbiente=${aluno.idAmbiente}&idCurso=${sel.value}&preco=${encodeURIComponent(promo)}`);
+            const res = await r.json();
+            
+            if(res.success) {
+                const cursoNome = sel.options[sel.selectedIndex].text.split(' - ')[0];
+                const link = res.linkAsaas;
+                const valor = promo || sel.options[sel.selectedIndex].text.split('R$ ')[1];
+                
+                let msg = `Olá ${aluno.nome}! Preparamos uma condição especial para você no curso *${cursoNome}*.\n\n`;
+                msg += `Valor exclusivo: *R$ ${valor}*\n`;
+                msg += `Link para ativação imediata: ${link}\n\n`;
+                msg += `Podemos confirmar sua matrícula?`;
+                
+                window.open(`https://wa.me/55${aluno.whatsapp.toString( ).replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
+            } else {
+                alert("Erro ao gerar link no Asaas: " + res.error);
+            }
+        } catch(e) {
+            alert("Falha na comunicação com o servidor.");
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    function liberarManual(idAmb, idx) {
+        const sel = document.getElementById(`sel-oferta-${idx}`);
+        if(!sel.value) { alert("Selecione o curso."); return; }
+        if(!confirm("Liberar este curso manualmente para o aluno?")) return;
+        
+        fetch(`${SCRIPT_URL}?action=liberarCurso&idAmbiente=${idAmb}&idCurso=${sel.value}`)
+            .then(r => r.json()).then(res => {
+                if(res.success) { alert("Curso liberado!"); carregarDados(); }
+                else { alert("Erro ao liberar."); }
+            });
+    }
+
+    function exportarCSV() {
+        let csv = "Nome;Email;WhatsApp;Profissao;Status;Cursos\n";
+        dbAlunos.forEach(a => { csv += `${a.nome};${a.email};${a.whatsapp};${a.profissao};${a.status};${a.cursos.map(c => c.nome).join(" | ")}\n`; });
+        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        link.setAttribute("href", URL.createObjectURL(blob));
+        link.setAttribute("download", "leads_ails.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
