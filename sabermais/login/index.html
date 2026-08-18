@@ -41,6 +41,8 @@
             justify-content: space-between;
             align-items: center;
             gap: 15px;
+            position: relative;
+            z-index: 100;
         }
 
         .header-actions {
@@ -252,27 +254,23 @@
             margin-bottom: 24px;
         }
 
-        /* IMAGENS: Limitadas estritamente ao tamanho da folha */
-        .conteudo-aula-dinamico img {
-            display: block;
-            max-width: 100% !important;
-            height: auto !important;
-            object-fit: contain;
-            margin: 20px auto;
-            border-radius: 4px;
-            box-shadow: 0 4px 15px rgba(15, 32, 51, 0.12);
-        }
-
-        /* TABELAS COM SCROLL HORIZONTAIS NATIVO */
-        .table-container-responsive {
+        /* IMAGENS E TABELAS: Garantindo que nada transborda a folha */
+        .media-scroll-container {
             width: 100%;
             overflow-x: auto;
             margin: 25px 0;
-            border: 1px solid #CBD5E1;
             border-radius: 6px;
-            background: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(15, 32, 51, 0.08);
             -webkit-overflow-scrolling: touch;
+        }
+
+        .conteudo-aula-dinamico img {
+            display: block;
+            max-width: 100%;
+            height: auto !important;
+            object-fit: contain;
+            margin: 0 auto;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(15, 32, 51, 0.12);
         }
 
         .conteudo-aula-dinamico table {
@@ -335,19 +333,28 @@
 
         .lock-icon { font-size: 48px; color: var(--dourado-principal); margin-bottom: 15px; }
 
+        /* OVERLAY PARA FECHAR MENUS */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 1500;
+            display: none;
+        }
+
         /* FLUTUANTES MOBILE */
         .floating-notes-btn, .floating-menu-btn {
             display: none;
             position: fixed;
-            bottom: 20px;
+            bottom: 25px;
             background: var(--dourado-principal);
             color: #000;
             border: none;
-            padding: 10px 18px;
+            padding: 12px 20px;
             border-radius: 30px;
             font-weight: bold;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 1000;
+            z-index: 1600;
             align-items: center;
             gap: 8px;
             font-size: 11px;
@@ -358,8 +365,8 @@
         /* REDES SOCIAIS */
         .social-floating-dock {
             position: fixed;
-            bottom: 25px;
-            left: 25px;
+            bottom: 85px;
+            left: 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -367,8 +374,8 @@
         }
 
         .social-btn {
-            width: 46px;
-            height: 46px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -383,44 +390,22 @@
         .btn-whatsapp { background-color: #25D366; }
         .btn-linkedin { background-color: #0077B5; }
         .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-        .social-btn i { font-size: 20px; color: white; }
+        .social-btn i { font-size: 18px; color: white; }
 
         .wa-box-modal {
             display: none;
             position: fixed;
-            bottom: 85px;
-            left: 25px;
+            bottom: 140px;
+            left: 20px;
             background-color: var(--fundo-secundario);
             border: 1px solid var(--bordas);
             padding: 20px;
             border-radius: 6px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            width: 320px;
+            width: 280px;
             z-index: 1000;
         }
         .wa-box-modal.open { display: block; }
-
-        .wa-field {
-            width: 100%;
-            background: var(--fundo-terciario);
-            border: 1px solid var(--bordas);
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            font-family: 'DM Sans', sans-serif;
-        }
-
-        .wa-btn-submit {
-            width: 100%;
-            background: #25D366;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
 
         /* RESPONSIVIDADE MOBILE REFINADA */
         @media screen and (max-width: 900px) {
@@ -437,16 +422,15 @@
             .folha-caderno { padding: 25px 15px 30px 20px; border-left-width: 2px; line-height: 24px; background-size: 100% 24px; width: 100% !important; max-width: none !important; }
             
             .notes-panel { 
-                position: fixed; top: 0; right: -100%; width: 90%; height: 100%; z-index: 2500; transition: 0.3s; border-left: 1px solid var(--bordas); box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
+                position: fixed; top: 0; right: -100%; width: 90%; height: 100%; z-index: 2000; transition: 0.3s; border-left: 1px solid var(--bordas); box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
                 display: flex !important;
             }
             .notes-panel.open { right: 0; }
 
-            .social-floating-dock { bottom: 15px; left: 15px; gap: 8px; }
-            .social-btn { width: 40px; height: 40px; }
-            
             .floating-menu-btn { display: flex !important; left: 20px; }
             .floating-notes-btn { display: flex !important; right: 20px; }
+            
+            .social-floating-dock { bottom: 85px; left: 20px; }
         }
 
         /* TELA DE LOGIN */
@@ -502,6 +486,9 @@
     </style>
 </head>
 <body>
+
+    <!-- OVERLAY PARA FECHAR MENUS AO CLICAR FORA -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharTodosMenus()"></div>
 
     <!-- TELA DE LOGIN -->
     <div id="loginOverlay">
@@ -710,6 +697,13 @@
             mudarCurso();
         }
 
+        function formatarMoeda(valor) {
+            let n = String(valor).replace(/R\$/gi, "").replace(/\s/g, "").replace(",", ".");
+            let num = parseFloat(n);
+            if (isNaN(num)) return "0,00";
+            return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
         function mudarCurso() {
             const idC = document.getElementById('selectCurso').value;
             cursoAtual = dbCursos.find(c => c.idCurso === idC);
@@ -718,7 +712,7 @@
             if (cursoAtual && cursoAtual.comprado) {
                 container.innerHTML = `<span style="color: var(--sucesso); font-size: 11px; font-weight: bold; border: 1px solid var(--sucesso); padding: 5px 10px; border-radius: 4px;">✓ CURSO ADQUIRIDO</span>`;
             } else {
-                const preco = (cursoAtual && cursoAtual.preco) ? String(cursoAtual.preco).split(',')[0] : "---";
+                const preco = (cursoAtual && cursoAtual.preco) ? formatarMoeda(cursoAtual.preco) : "0,00";
                 container.innerHTML = `<button class="btn-upgrade-global" onclick="registrarInteresse()">DESBLOQUEAR R$ ${preco}</button>`;
             }
             
@@ -754,7 +748,7 @@
             
             if (!cursoAtual.comprado && !aula.degustacao) {
                 overlay.style.display = 'flex';
-                if (window.innerWidth <= 900) fecharSidebar();
+                if (window.innerWidth <= 900) fecharTodosMenus();
                 return;
             }
             
@@ -764,14 +758,27 @@
             
             document.getElementById('aulaTituloPagina').innerText = aula.tituloAula;
             document.getElementById('aulaConteudo').innerHTML = "<em>Carregando conteúdo executivo...</em>";
-            if (window.innerWidth <= 900) fecharSidebar();
+            
+            const btnConcluir = document.getElementById('btnConcluir');
+            if (aula.concluida) {
+                btnConcluir.classList.add('active');
+                btnConcluir.innerText = "✓ Aula Concluída";
+            } else {
+                btnConcluir.classList.remove('active');
+                btnConcluir.innerText = "✓ Marcar Concluído";
+            }
+
+            if (window.innerWidth <= 900) fecharTodosMenus();
 
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&idAula=${idA}&idDoc=${idD}&idDocumento=${idD}`);
                 const res = await r.json();
                 if (res.success) {
                     let htmlConteudo = res.html || res.conteudo;
-                    htmlConteudo = htmlConteudo.replace(/<table/g, '<div class="table-container-responsive"><table').replace(/<\/table>/g, '</table></div>');
+                    
+                    // Envolve tabelas E imagens em containers de scroll para evitar quebra no mobile
+                    htmlConteudo = htmlConteudo.replace(/<table/g, '<div class="media-scroll-container"><table').replace(/<\/table>/g, '</table></div>');
+                    htmlConteudo = htmlConteudo.replace(/<img/g, '<div class="media-scroll-container"><img').replace(/\/>/g, '/></div>');
                     
                     document.getElementById('aulaConteudo').innerHTML = htmlConteudo;
                     document.getElementById('txtAnotacoes').value = res.anotacao || "";
@@ -780,12 +787,36 @@
                         img.style.maxWidth = "100%";
                         img.style.height = "auto";
                         img.style.display = "block";
-                        img.style.margin = "20px auto";
+                        img.style.margin = "0 auto";
                     });
                 } else {
                     document.getElementById('aulaConteudo').innerHTML = `<div style="color:red; padding:20px;">Erro: ${res.error}</div>`;
                 }
             } catch (e) { alert("Erro ao carregar aula."); }
+        }
+
+        async function toggleConclusao() {
+            if (!aulaAtiva) return;
+            const aula = cursoAtual.aulas.find(a => a.idAula === aulaAtiva);
+            const novoStatus = !aula.concluida;
+            
+            try {
+                const r = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: 'salvarProgresso', 
+                        idAmbiente: idAmbiente, 
+                        idCurso: cursoAtual.idCurso, 
+                        idAula: aulaAtiva, 
+                        status: novoStatus ? 'CONCLUIDA' : 'PENDENTE' 
+                    }) 
+                });
+                const res = await r.json();
+                if (res.success) {
+                    aula.concluida = novoStatus;
+                    carregarAula(aulaAtiva, aula.idDoc || aula.idDocumento);
+                }
+            } catch (e) { alert("Erro ao salvar progresso."); }
         }
 
         async function registrarInteresse() {
@@ -813,26 +844,58 @@
             }
         }
 
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-        function fecharSidebar() { document.getElementById('sidebar').classList.remove('open'); }
+        function toggleSidebar() { 
+            const sidebar = document.getElementById('sidebar');
+            const isOpen = sidebar.classList.contains('open');
+            fecharTodosMenus();
+            if (!isOpen) {
+                sidebar.classList.add('open');
+                document.getElementById('sidebarOverlay').style.display = 'block';
+            }
+        }
         
         function toggleNotes() { 
             const panel = document.getElementById('notesPanel');
-            panel.classList.toggle('open');
-            document.getElementById('btnCloseNotes').style.display = panel.classList.contains('open') ? 'block' : 'none';
+            const isOpen = panel.classList.contains('open');
+            fecharTodosMenus();
+            if (!isOpen) {
+                panel.classList.add('open');
+                document.getElementById('btnCloseNotes').style.display = 'block';
+                document.getElementById('sidebarOverlay').style.display = 'block';
+            }
+        }
+
+        function toggleWA() { 
+            const modal = document.getElementById('waModal');
+            const isOpen = modal.classList.contains('open');
+            fecharTodosMenus();
+            if (!isOpen) {
+                modal.classList.add('open');
+                document.getElementById('sidebarOverlay').style.display = 'block';
+            }
+        }
+
+        function fecharTodosMenus() {
+            document.getElementById('sidebar').classList.remove('open'); 
+            document.getElementById('notesPanel').classList.remove('open');
+            document.getElementById('waModal').classList.remove('open');
+            document.getElementById('sidebarOverlay').style.display = 'none';
+            document.getElementById('btnCloseNotes').style.display = 'none';
         }
 
         function logout() { localStorage.clear(); location.reload(); }
-        function toggleWA() { document.getElementById('waModal').classList.toggle('open'); }
+
         async function enviarWA() {
             const tipo = document.getElementById('waTipo').value;
             const msg = document.getElementById('waMensagem').value;
             const url = `https://wa.me/5527998131806?text=${encodeURIComponent(`[${tipo}] ${msg}`)}`;
             window.open(url, '_blank');
-            toggleWA();
+            fecharTodosMenus();
         }
+
         function abrirModalSenha() { document.getElementById('modalSenha').classList.add('open'); }
         function fecharModalSenha() { document.getElementById('modalSenha').classList.remove('open'); }
+        
         async function processarTrocaSenha() {
             const atual = document.getElementById('senhaAtual').value;
             const nova = document.getElementById('novaSenha').value;
@@ -842,13 +905,28 @@
                 if (res.success) { alert("Senha alterada!"); fecharModalSenha(); } else alert(res.error);
             } catch (e) { alert("Erro de conexão."); }
         }
+
         async function salvarNota() {
             const texto = document.getElementById('txtAnotacoes').value;
             const status = document.getElementById('statusSalvar');
             status.innerText = "Sincronizando...";
             try {
-                await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarAnotacao', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, texto: texto }) });
-                status.innerText = "✓ Sincronizado";
+                const r = await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ 
+                        action: 'salvarAnotacao', 
+                        idAmbiente: idAmbiente, 
+                        idCurso: cursoAtual.idCurso, 
+                        idAula: aulaAtiva, 
+                        texto: texto 
+                    }) 
+                });
+                const res = await r.json();
+                if (res.success) {
+                    status.innerText = "✓ Sincronizado";
+                } else {
+                    status.innerText = "Erro ao salvar";
+                }
             } catch (e) { status.innerText = "Erro ao salvar"; }
         }
     </script>
