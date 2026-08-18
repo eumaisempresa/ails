@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Executivo AILS⁺ | Saber⁺</title>
+    <title>Saber+ | EU⁺ Empresa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&display=swap' );
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap' );
         
         :root {
             --fundo: #060E18;
@@ -25,464 +25,181 @@
             font-family: 'DM Sans', sans-serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Header Executivo */
-        .header {
-            background: var(--card);
-            border-bottom: 1px solid var(--bordas);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            color: var(--dourado);
-            text-decoration: none;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 13px;
-        }
-
-        .btn-senha {
-            background: transparent;
-            border: 1px solid var(--dourado);
-            color: var(--dourado);
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-
-        .btn-senha:hover {
-            background: var(--dourado);
-            color: #000;
-        }
-
-        /* Layout Principal */
-        .layout {
-            display: flex;
+        /* TELA DE LOGIN */
+        #tela-login {
             flex: 1;
-            max-width: 1800px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* Sidebar - Cronograma */
-        .sidebar {
-            width: 320px;
-            background: var(--card);
-            border-right: 1px solid var(--bordas);
             display: flex;
-            flex-direction: column;
-            height: calc(100vh - 70px);
-            position: sticky;
-            top: 70px;
-        }
-
-        .sidebar-header {
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            border-bottom: 1px solid var(--bordas);
+            background: radial-gradient(circle at 18% 0%, rgba(196, 151, 74, 0.1), transparent 40rem), var(--fundo);
         }
 
-        .sidebar-header h3 {
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--dourado);
-            margin: 0 0 15px 0;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .progresso-container {
-            background: rgba(255,255,255,0.05);
-            height: 6px;
-            border-radius: 3px;
-            margin-bottom: 8px;
-            overflow: hidden;
-        }
-
-        .progresso-barra {
-            background: var(--dourado);
-            height: 100%;
-            width: 0%;
-            transition: 0.5s;
-        }
-
-        .progresso-texto {
-            font-size: 11px;
-            color: var(--texto-secundario);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .lista-aulas {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px 0;
-        }
-
-        .item-aula {
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(196, 151, 74, 0.05);
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            color: var(--texto-secundario);
-        }
-
-        .item-aula:hover {
-            background: rgba(196, 151, 74, 0.05);
-            color: var(--texto);
-        }
-
-        .item-aula.ativa {
-            background: rgba(196, 151, 74, 0.1);
-            border-left: 4px solid var(--dourado);
-            color: var(--dourado);
-        }
-
-        .item-aula.concluida i {
-            color: var(--sucesso);
-        }
-
-        /* Conteúdo Central */
-        .conteudo {
-            flex: 1;
-            padding: 40px;
-            background: #fff;
-            color: #333;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        /* Papel Almaço Estilizado */
-        .folha-caderno {
-            max-width: 900px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 60px;
-            min-height: 1000px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative;
-            background-image: linear-gradient(#e5e5e5 1px, transparent 1px);
-            background-size: 100% 30px;
-            line-height: 30px;
-        }
-
-        .folha-caderno::before {
-            content: '';
-            position: absolute;
-            left: 50px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: rgba(255, 0, 0, 0.2);
-        }
-
-        .titulo-aula-doc {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 32px;
-            color: var(--dourado);
-            margin-bottom: 20px;
-            line-height: 1.2;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-        }
-
-        /* Painel Lateral - Insights */
-        .insights-panel {
-            width: 350px;
+        .login-card {
             background: var(--card);
-            border-left: 1px solid var(--bordas);
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .insights-header {
-            text-align: center;
-            border-bottom: 1px solid var(--bordas);
-            padding-bottom: 15px;
-        }
-
-        .insights-header h4 {
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--dourado);
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .post-it {
-            background: #FFF9C4;
-            color: #333;
-            padding: 25px;
-            min-height: 300px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
-            transform: rotate(-1deg);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            position: relative;
-            border-radius: 2px;
-        }
-
-        .post-it::after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 10px;
-            background: rgba(255,0,0,0.3);
-            border-radius: 5px;
-        }
-
-        .post-it textarea {
-            width: 100%;
-            height: 250px;
-            background: transparent;
-            border: none;
-            outline: none;
-            resize: none;
-            font-family: inherit;
-            font-size: inherit;
-            color: inherit;
-            line-height: 1.6;
-        }
-
-        .btn-sync {
-            background: transparent;
-            border: 1px solid var(--dourado);
-            color: var(--dourado);
-            padding: 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            width: 100%;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-sync:hover {
-            background: var(--dourado);
-            color: #000;
-        }
-
-        /* Seletor de Curso Superior */
-        .curso-selector-top {
-            background: var(--card);
-            padding: 10px 30px;
-            border-bottom: 1px solid var(--bordas);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .curso-selector-top select {
-            background: #0E1E30;
-            border: 1px solid var(--dourado);
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 4px;
-            outline: none;
-            font-size: 13px;
-            min-width: 300px;
-        }
-
-        .btn-status-curso {
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .status-adquirido {
-            background: rgba(196, 151, 74, 0.2);
-            color: var(--dourado);
-            border: 1px solid var(--dourado);
-        }
-
-        .status-bloqueado {
-            background: var(--dourado);
-            color: #000;
-            cursor: pointer;
-            border: none;
-        }
-
-        /* Overlay de Bloqueio */
-        #bloqueioOverlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(6, 14, 24, 0.95);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            text-align: center;
+            border: 1px solid var(--bordas);
             padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
-        /* Estilização de Tabelas e Imagens no Conteúdo */
-        #conteudo-aula table {
-            width: 100% !important;
-            border-collapse: collapse !important;
-            margin: 20px 0 !important;
-        }
+        .login-card h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 32px; margin-bottom: 10px; }
+        .login-card p { color: var(--texto-secundario); font-size: 14px; margin-bottom: 30px; }
 
-        #conteudo-aula th {
-            background: var(--dourado) !important;
-            color: #000 !important;
-            padding: 12px !important;
-        }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; color: var(--dourado); font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .input-group input { width: 100%; background: #0D1B2B; border: 1px solid rgba(196, 151, 74, 0.3); padding: 12px 15px; border-radius: 6px; color: #fff; outline: none; box-sizing: border-box; }
 
-        #conteudo-aula td {
-            padding: 10px !important;
-            border: 1px solid #eee !important;
-        }
+        .btn-login-submit { width: 100%; background: var(--dourado); color: #000; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-login-submit:hover { background: var(--dourado-hover); transform: translateY(-2px); }
 
-        #conteudo-aula img {
-            max-width: 100% !important;
-            height: auto !important;
-            border-radius: 8px !important;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
-        }
+        /* TELA DO PAINEL */
+        #tela-painel { display: none; flex-direction: column; flex: 1; }
 
-        /* Responsividade */
-        @media (max-width: 1200px) {
-            .insights-panel { display: none; }
-        }
+        .header { background: var(--card); border-bottom: 1px solid var(--bordas); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--dourado); text-decoration: none; font-weight: bold; }
+        .user-info { display: flex; align-items: center; gap: 15px; font-size: 13px; }
+        .btn-header { background: transparent; border: 1px solid var(--dourado); color: var(--dourado); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .btn-logout { border-color: #ff4444; color: #ff4444; }
 
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .header { padding: 10px 15px; }
-            .folha-caderno { padding: 30px; }
-        }
+        .layout { display: grid; grid-template-columns: 320px 1fr 350px; flex: 1; width: 100%; }
+        .sidebar { background: var(--card); border-right: 1px solid var(--bordas); height: calc(100vh - 70px); position: sticky; top: 70px; overflow-y: auto; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--bordas); }
+        .progresso-container { background: rgba(255,255,255,0.05); height: 6px; border-radius: 3px; margin-bottom: 8px; overflow: hidden; }
+        .progresso-barra { background: var(--dourado); height: 100%; width: 0%; transition: 0.5s; }
 
-        .carregando { text-align: center; padding: 50px; color: var(--dourado); }
-        .erro { color: #ff4444; text-align: center; padding: 50px; background: rgba(255,0,0,0.05); border-radius: 8px; }
+        .item-aula { padding: 15px 20px; border-bottom: 1px solid rgba(196, 151, 74, 0.05); cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--texto-secundario); }
+        .item-aula.ativa { background: rgba(196, 151, 74, 0.1); color: var(--dourado); border-left: 4px solid var(--dourado); }
+        .item-aula.concluida i { color: var(--sucesso); }
+
+        .conteudo { padding: 40px; background: #EAEFF4; min-height: 100vh; overflow-y: auto; }
+        .folha-caderno { max-width: 850px; margin: 0 auto; background: #fff; padding: 60px; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; border-left: 2px solid #FF8585; background-image: linear-gradient(rgba(196, 209, 223, 0.35) 1px, transparent 1px); background-size: 100% 28px; line-height: 28px; }
+        .conteudo-aula-dinamico { font-family: 'Lora', serif; font-size: 16px; color: #1A2430; text-align: justify; line-height: 1.8; }
+        .conteudo-aula-dinamico img { max-width: 100% !important; height: auto !important; margin: 20px auto; display: block; border-radius: 5px; box-shadow: 0 7px 22px rgba(15,32,51,0.16); }
+        .conteudo-aula-dinamico table { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #CBD5E1; }
+        .conteudo-aula-dinamico th, .conteudo-aula-dinamico td { padding: 12px; border: 1px solid #D8E0E8; text-align: left; }
+        .conteudo-aula-dinamico tr:first-child td, .conteudo-aula-dinamico th { background: #0E1E30 !important; color: #F7E5BF !important; font-weight: bold !important; }
+
+        .insights-panel { background: var(--card); border-left: 1px solid var(--bordas); padding: 25px; height: calc(100vh - 70px); position: sticky; top: 70px; }
+        .post-it { background: #FFF9C4; color: #333; padding: 20px; min-height: 250px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); transform: rotate(-1deg); margin-bottom: 20px; border-radius: 2px; }
+        .post-it textarea { width: 100%; height: 200px; background: transparent; border: none; outline: none; resize: none; font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.6; }
+
+        .curso-selector-top { background: var(--card); padding: 10px 30px; border-bottom: 1px solid var(--bordas); display: flex; align-items: center; justify-content: center; gap: 20px; }
+        .curso-selector-top select { background: #0E1E30; border: 1px solid var(--dourado); color: #fff; padding: 8px 15px; border-radius: 4px; min-width: 300px; outline: none; }
+
+        #bloqueioOverlay { position: absolute; inset: 0; background: rgba(6, 14, 24, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 40px; }
+
+        @media (max-width: 1200px) { .layout { grid-template-columns: 280px 1fr; } .insights-panel { display: none; } }
+        @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <a href="#" class="logo">EU⁺ Saber</a>
-        <div class="user-info">
-            <span id="display-usuario" style="color: var(--texto-secundario)">Carregando...</span>
-            <button class="btn-senha" onclick="abrirModalSenha()"><i class="fas fa-key"></i> Senha</button>
-        </div>
-    </header>
-
-    <div class="curso-selector-top">
-        <small style="color: var(--dourado); text-transform: uppercase; font-weight: bold; font-size: 10px;">Selecione o Curso</small>
-        <select id="select-curso" onchange="trocarCurso(this.value)">
-            <option value="">Carregando catálogo...</option>
-        </select>
-        <div id="status-container"></div>
-    </div>
-
-    <div class="layout">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>Cronograma do Curso</h3>
-                <div class="progresso-container">
-                    <div id="barra-progresso" class="progresso-barra"></div>
-                </div>
-                <div class="progresso-texto">
-                    <span id="percentual-progresso">0%</span>
-                    <span id="contagem-aulas">0 de 0 min</span>
-                </div>
-            </div>
-            <div id="lista-aulas" class="lista-aulas">
-                <!-- Aulas via JS -->
-            </div>
-        </aside>
-
-        <main class="conteudo">
-            <div id="bloqueioOverlay">
-                <i class="fas fa-lock" style="font-size: 50px; color: var(--dourado); margin-bottom: 20px;"></i>
-                <h2 style="font-family: 'Cormorant Garamond'; color: var(--dourado);">Conteúdo Exclusivo</h2>
-                <p style="color: var(--texto-secundario); max-width: 400px; margin-bottom: 30px;">
-                    Este curso ainda não faz parte da sua jornada executiva. Desbloqueie agora para ter acesso imediato a todo o material e insights.
-                </p>
-                <button id="btn-desbloquear" class="btn btn-primary" style="padding: 15px 40px; font-size: 14px;">
-                    DESBLOQUEAR ACESSO IMEDIATO
-                </button>
-            </div>
-
-            <article class="folha-caderno">
-                <div id="conteudo-aula">
-                    <div class="carregando">Selecione uma aula no cronograma para iniciar</div>
-                </div>
-            </article>
-        </main>
-
-        <aside class="insights-panel">
-            <div class="insights-header">
-                <h4><i class="fas fa-lightbulb"></i> Caderno de Insights</h4>
-                <small style="color: var(--texto-secundario); font-size: 10px;">Sincronização em nuvem ativa</small>
+    <!-- SEÇÃO DE LOGIN -->
+    <div id="tela-login">
+        <div class="login-card">
+            <h1>EU⁺ Saber</h1>
+            <p>Ambiente de Aprendizagem Executiva</p>
+            
+            <div class="input-group">
+                <label>E-mail de Acesso</label>
+                <input type="email" id="login-email" placeholder="seu@email.com">
             </div>
             
-            <div class="post-it">
-                <textarea id="anotacoes-aluno" placeholder="Digite aqui seus insights e reflexões executivas..."></textarea>
-                <div style="position: absolute; bottom: 10px; right: 10px; font-size: 9px; color: rgba(0,0,0,0.3);">
-                    <i class="fas fa-cloud-upload-alt"></i> Conectado à Nuvem
-                </div>
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="login-senha" placeholder="••••••">
             </div>
+            
+            <button class="btn-login-submit" onclick="fazerLogin()" id="btn-entrar">Acessar Ambiente</button>
+            
+            <div style="margin-top: 20px; font-size: 11px;">
+                <a href="javascript:void(0)" onclick="esqueciSenha()" style="color: var(--texto-secundario); text-decoration: none;">Esqueci minha senha</a>
+            </div>
+            <div style="margin-top: 15px; font-size: 12px;">
+                <a href="../cadastro/" style="color: var(--dourado); text-decoration: none;">Não tem acesso? <strong>Crie sua conta aqui</strong></a>
+            </div>
+        </div>
+    </div>
 
-            <button class="btn-sync" onclick="salvarAnotacao()">SINCRONIZAR AGORA</button>
-        </aside>
+    <!-- SEÇÃO DO PAINEL -->
+    <div id="tela-painel">
+        <header class="header">
+            <a href="#" class="logo">EU⁺ Saber</a>
+            <div class="user-info">
+                <span id="display-usuario" style="color: var(--texto-secundario)"></span>
+                <button class="btn-header" onclick="abrirModalSenha()"><i class="fas fa-key"></i> Senha</button>
+                <button class="btn-header btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+            </div>
+        </header>
+
+        <div class="curso-selector-top">
+            <small style="color: var(--dourado); text-transform: uppercase; font-weight: bold; font-size: 10px;">Selecione o Curso</small>
+            <select id="select-curso" onchange="trocarCurso(this.value)">
+                <option value="">Carregando catálogo...</option>
+            </select>
+            <div id="status-container"></div>
+        </div>
+
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0 0 10px 0; font-size:16px;">Cronograma</h3>
+                    <div class="progresso-container"><div id="barra-progresso" class="progresso-barra"></div></div>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--texto-secundario);">
+                        <span id="percentual-progresso">0%</span>
+                        <span id="contagem-aulas">0 de 0 aulas</span>
+                    </div>
+                </div>
+                <div id="lista-aulas" class="lista-aulas"></div>
+            </aside>
+
+            <main class="conteudo">
+                <div id="bloqueioOverlay">
+                    <i class="fas fa-lock" style="font-size: 50px; color: var(--dourado); margin-bottom: 20px;"></i>
+                    <h2 style="font-family: 'Cormorant Garamond'; color: var(--dourado);">Conteúdo Exclusivo</h2>
+                    <p style="color: var(--texto-secundario); max-width: 400px; margin-bottom: 30px;">Desbloqueie este curso para ter acesso imediato.</p>
+                    <button id="btn-desbloquear" class="btn-header" style="background:var(--dourado); color:#000; padding:15px 40px; border:none;">DESBLOQUEAR AGORA</button>
+                </div>
+
+                <article class="folha-caderno">
+                    <div id="conteudo-aula">
+                        <div style="text-align:center; padding:50px; color:var(--dourado);">Selecione uma aula no cronograma para iniciar</div>
+                    </div>
+                </article>
+            </main>
+
+            <aside class="insights-panel">
+                <div style="text-align:center; border-bottom:1px solid var(--bordas); padding-bottom:15px;">
+                    <h4 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0;">Caderno de Insights</h4>
+                    <small style="color:var(--texto-secundario); font-size:10px;">Sincronização em nuvem ativa</small>
+                </div>
+                <div class="post-it"><textarea id="anotacoes-aluno" placeholder="Suas reflexões executivas..."></textarea></div>
+                <button class="btn-header" onclick="salvarAnotacao()" style="width:100%">SINCRONIZAR AGORA</button>
+            </aside>
+        </div>
     </div>
 
     <!-- Modal de Senha -->
     <div id="modalSenha" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
-        <div class="card-table" style="background:var(--card); padding:30px; border-radius:8px; border:1px solid var(--dourado); width:320px;">
+        <div style="background:var(--card); padding:30px; border-radius:8px; border:1px solid var(--dourado); width:320px;">
             <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0;">Alterar Senha</h3>
-            <input type="password" id="senhaAtual" placeholder="Senha Atual" style="margin-bottom:10px;">
-            <input type="password" id="novaSenha" placeholder="Nova Senha" style="margin-bottom:20px;">
+            <input type="password" id="senhaAtual" placeholder="Senha Atual" style="width:100%; background:#0E1E30; border:1px solid var(--bordas); color:#fff; padding:10px; margin-bottom:10px; border-radius:4px;">
+            <input type="password" id="novaSenha" placeholder="Nova Senha" style="width:100%; background:#0E1E30; border:1px solid var(--bordas); color:#fff; padding:10px; margin-bottom:20px; border-radius:4px;">
             <div style="display:flex; gap:10px;">
-                <button class="btn btn-primary" style="flex:1" onclick="processarTrocaSenha()">SALVAR</button>
-                <button class="btn" style="flex:1" onclick="fecharModalSenha()">CANCELAR</button>
+                <button class="btn-header" style="flex:1" onclick="processarTrocaSenha()">SALVAR</button>
+                <button class="btn-header" style="flex:1; border-color:#666; color:#666;" onclick="fecharModalSenha()">CANCELAR</button>
             </div>
         </div>
-    </div>
-
-    <!-- Botões Flutuantes (Mobile) -->
-    <div style="position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000;">
-        <a href="https://wa.me/5527998131806" target="_blank" style="background: #25D366; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3 ); text-decoration: none;">
-            <i class="fab fa-whatsapp" style="font-size: 20px;"></i>
-        </a>
-        <a href="https://www.linkedin.com/company/133754181/" target="_blank" style="background: #0077B5; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.3 ); text-decoration: none;">
-            <i class="fab fa-linkedin-in" style="font-size: 20px;"></i>
-        </a>
     </div>
 
     <script>
@@ -494,197 +211,142 @@
         let cursoAtual = null;
         let aulaAtiva = null;
 
-        // Inicialização
-        window.onload = () => {
-            if (!idAmbiente) { window.location.href = '../login/'; return; }
+        window.onload = () => { if (idAmbiente) mostrarPainel(); else mostrarLogin(); };
+
+        function mostrarLogin() {
+            document.getElementById('tela-login').style.display = 'flex';
+            document.getElementById('tela-painel').style.display = 'none';
+        }
+
+        function mostrarPainel() {
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('tela-painel').style.display = 'flex';
             document.getElementById('display-usuario').innerText = `Usuário: ${nomeUsuario} (${idAmbiente})`;
             carregarCatalogo();
-        };
+        }
+
+        async function fazerLogin() {
+            const email = document.getElementById('login-email').value, senha = document.getElementById('login-senha').value, btn = document.getElementById('btn-entrar');
+            if (!email || !senha) return alert("Preencha todos os campos.");
+            btn.disabled = true; btn.innerText = "VALIDANDO...";
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`);
+                const res = await r.json();
+                if (res.autorizado) {
+                    localStorage.setItem('ails_idAmbiente', res.idAmbiente);
+                    localStorage.setItem('ails_nome', res.nome);
+                    idAmbiente = res.idAmbiente; nomeUsuario = res.nome;
+                    mostrarPainel();
+                } else alert("Erro: " + res.error);
+            } catch (e) { alert("Falha na comunicação."); } finally { btn.disabled = false; btn.innerText = "ACESSAR AMBIENTE"; }
+        }
+
+        async function esqueciSenha() {
+            const email = document.getElementById('login-email').value;
+            if (!email) return alert("Digite seu e-mail para recuperar a senha.");
+            if (!confirm("Deseja resetar sua senha?")) return;
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=esqueciSenha&email=${encodeURIComponent(email)}`);
+                const res = await r.json();
+                if (res.success) {
+                    if (res.fallback) alert("Sua nova senha temporária é: " + res.senha);
+                    else alert(res.message);
+                } else alert("Erro: " + res.error);
+            } catch (e) { alert("Erro na comunicação."); }
+        }
+
+        function logout() { localStorage.clear(); idAmbiente = null; nomeUsuario = null; mostrarLogin(); }
 
         async function carregarCatalogo() {
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=carregarMenu&idAmbiente=${idAmbiente}`);
                 const res = await r.json();
-                if (res.success) {
-                    dbCursos = res.cursos;
-                    popularSeletorCursos();
-                } else {
-                    document.getElementById('conteudo-aula').innerHTML = `<div class="erro">Não foi possível carregar o catálogo de cursos.  
-<small>${res.error}</small></div>`;
-                }
-            } catch (e) {
-                document.getElementById('conteudo-aula').innerHTML = `<div class="erro">Erro de comunicação com o ecossistema central.</div>`;
-            }
+                if (res.success) { dbCursos = res.cursos; popularSeletorCursos(); }
+                else document.getElementById('conteudo-aula').innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro: ${res.error}</div>`;
+            } catch (e) { document.getElementById('conteudo-aula').innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro de comunicação.</div>`; }
         }
 
         function popularSeletorCursos() {
             const sel = document.getElementById('select-curso');
             sel.innerHTML = dbCursos.map(c => `<option value="${c.idCurso}">${c.nomeCurso}</option>`).join('');
-            
-            // Seleciona o primeiro curso por padrão
             if (dbCursos.length > 0) trocarCurso(dbCursos[0].idCurso);
         }
 
         function trocarCurso(id) {
             cursoAtual = dbCursos.find(c => c.idCurso === id);
             if (!cursoAtual) return;
-
-            // Atualiza Status e Overlay
             const statusContainer = document.getElementById('status-container');
-            const overlay = document.getElementById('bloqueioOverlay');
-            const btnDesbloqueio = document.getElementById('btn-desbloquear');
-
             if (cursoAtual.comprado) {
-                statusContainer.innerHTML = `<button class="btn-status-curso status-adquirido"><i class="fas fa-check"></i> Curso Adquirido</button>`;
-                overlay.style.display = 'none';
+                statusContainer.innerHTML = `<button class="btn-header" style="background:rgba(37,211,102,0.1); color:var(--sucesso); border-color:var(--sucesso); cursor:default;"><i class="fas fa-check"></i> Adquirido</button>`;
             } else {
-                // CORREÇÃO CRÍTICA AQUI: Proteção contra split de undefined ou number
-                let precoFormatado = "Consulte";
-                if (cursoAtual.preco) {
-                    const precoStr = String(cursoAtual.preco);
-                    precoFormatado = precoStr.includes(',') ? precoStr.split(',')[0] : precoStr;
-                }
-                
-                statusContainer.innerHTML = `<button class="btn-status-curso status-bloqueado" onclick="registrarInteresse()">Desbloquear R$ ${precoFormatado}</button>`;
-                overlay.style.display = 'flex';
-                btnDesbloqueio.onclick = registrarInteresse;
+                let preco = "Consulte";
+                if (cursoAtual.preco) { const p = String(cursoAtual.preco); preco = p.includes(',') ? p.split(',')[0] : p; }
+                statusContainer.innerHTML = `<button class="btn-header" style="background:var(--dourado); color:#000;" onclick="registrarInteresse()">Desbloquear R$ ${preco}</button>`;
             }
-
             renderizarCronograma();
-            
-            // Carrega a primeira aula se for comprado ou se tiver degustação
-            const primeiraAula = cursoAtual.aulas[0];
-            if (primeiraAula) carregarAula(cursoAtual.idCurso, primeiraAula.idAula, primeiraAula.idDoc || primeiraAula.idDocumento);
+            const primeira = cursoAtual.aulas[0];
+            if (primeira) carregarAula(cursoAtual.idCurso, primeira.idAula, primeira.idDocumento || primeira.idDoc);
         }
 
         function renderizarCronograma() {
             const lista = document.getElementById('lista-aulas');
             lista.innerHTML = cursoAtual.aulas.map((a, idx) => `
-                <div class="item-aula ${aulaAtiva === a.idAula ? 'ativa' : ''}" onclick="carregarAula('${cursoAtual.idCurso}', '${a.idAula}', '${a.idDoc || a.idDocumento}')">
+                <div class="item-aula ${aulaAtiva === a.idAula ? 'ativa' : ''} ${a.concluida ? 'concluida' : ''}" onclick="carregarAula('${cursoAtual.idCurso}', '${a.idAula}', '${a.idDocumento || a.idDoc}')">
                     <i class="fas ${a.concluida ? 'fa-check-circle' : 'fa-play-circle'}"></i>
                     <span>(${idx+1}/${cursoAtual.aulas.length}) ${a.tituloAula}</span>
                 </div>
             `).join('');
-
-            // Atualiza contagem
-            document.getElementById('contagem-aulas').innerText = `${cursoAtual.aulas.filter(a => a.concluida).length} de ${cursoAtual.aulas.length} aulas`;
-            const pct = (cursoAtual.aulas.filter(a => a.concluida).length / cursoAtual.aulas.length) * 100;
+            const concluidas = cursoAtual.aulas.filter(a => a.concluida).length, pct = (concluidas / cursoAtual.aulas.length) * 100;
+            document.getElementById('contagem-aulas').innerText = `${concluidas} de ${cursoAtual.aulas.length} aulas`;
             document.getElementById('barra-progresso').style.width = `${pct}%`;
             document.getElementById('percentual-progresso').innerText = `${Math.round(pct)}%`;
         }
 
         async function carregarAula(idCurso, idAula, idDoc) {
-            // Se o curso não é comprado e a aula não é degustação, bloqueia
             const aula = cursoAtual.aulas.find(a => a.idAula === idAula);
-            if (!cursoAtual.comprado && (!aula || !aula.degustacao)) {
-                document.getElementById('bloqueioOverlay').style.display = 'flex';
-                return;
-            }
+            const overlay = document.getElementById('bloqueioOverlay');
+            if (!cursoAtual.comprado && (!aula || !aula.degustacao)) { overlay.style.display = 'flex'; return; }
+            else { overlay.style.display = 'none'; }
 
-            aulaAtiva = idAula;
-            renderizarCronograma();
-
+            aulaAtiva = idAula; renderizarCronograma();
             const area = document.getElementById('conteudo-aula');
-            area.innerHTML = '<div class="carregando"><i class="fas fa-spinner fa-spin"></i> Abrindo pergaminho executivo...</div>';
-            
+            area.innerHTML = '<div style="text-align:center; padding:50px; color:var(--dourado);"><i class="fas fa-spinner fa-spin"></i> Abrindo pergaminho...</div>';
             try {
-                // CORREÇÃO: Envia tanto idDoc quanto idDocumento para o Script
-                const r = await fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${idCurso}&idAula=${idAula}&idDoc=${idDoc}&idDocumento=${idDoc}`);
-                const res = await r.json();
-                
+                const url = `${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${idCurso}&idAula=${idAula}&idDoc=${idDoc}&idDocumento=${idDoc}`;
+                const r = await fetch(url), res = await r.json();
                 if (res.success) {
-                    area.innerHTML = `
-                        <h2 class="titulo-aula-doc">${aula.tituloAula}</h2>
-                        <div style="font-size:12px; color:#999; margin-bottom:20px;">
-                            <i class="fas fa-stopwatch"></i> Leitura: -- min
-                            <button class="btn" style="float:right; font-size:10px; padding:5px 10px;" onclick="marcarConcluida('${idCurso}', '${idAula}')">✓ Marcar Concluído</button>
-                        </div>
-                        <div class="texto-aula-render">${res.html}</div>
-                    `;
+                    area.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:20px;"><h2 style="font-family:'Cormorant Garamond'; color:#0A3663; margin:0;">${aula.tituloAula}</h2><button class="btn-header" style="font-size:10px; color:#475569; border-color:#CBD5E1;" onclick="marcarConcluida('${idCurso}', '${idAula}')">✓ Marcar Concluído</button></div><div class="conteudo-aula-dinamico">${res.html}</div>`;
                     document.getElementById('anotacoes-aluno').value = res.anotacao || "";
-                } else {
-                    area.innerHTML = `<div class="erro">
-                        <h3 style="margin-top:0">Acesso Restrito</h3>
-                        <p>${res.error}</p>
-                        <small>Certifique-se de que o curso está ativo no seu painel.</small>
-                    </div>`;
-                }
-            } catch (e) {
-                area.innerHTML = '<div class="erro">Erro de comunicação com o ecossistema central.</div>';
-            }
+                } else area.innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro: ${res.error}</div>`;
+            } catch (e) { area.innerHTML = '<div style="color:#ff4444; text-align:center; padding:50px;">Erro de comunicação.</div>'; }
+        }
+
+        async function marcarConcluida(idCurso, idAula) {
+            try { await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarProgresso', idAmbiente: idAmbiente, idCurso: idCurso, idAula: idAula, status: 'CONCLUIDO' }) }); const aula = cursoAtual.aulas.find(a => a.idAula === idAula); if (aula) aula.concluida = true; renderizarCronograma(); }
+            catch (e) { alert("Erro ao salvar progresso."); }
         }
 
         async function registrarInteresse() {
-            if (!cursoAtual) return;
-            const btn = document.getElementById('btn-desbloquear');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSANDO...';
-            
-            try {
-                const r = await fetch(`${SCRIPT_URL}?action=registrarInteresseCompra&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&origem=PAINEL_ALUNO`);
-                const res = await r.json();
-                
-                // Redireciona para o WhatsApp do gestor com a mensagem de interesse
-                const msg = encodeURIComponent(`Olá! Tenho interesse em desbloquear o curso *${cursoAtual.nomeCurso}* no meu painel (ID: ${idAmbiente}). Como posso proceder com o pagamento?`);
-                window.open(`https://wa.me/5527998131806?text=${msg}`, '_blank' );
-                
-                alert("Solicitação enviada! O gestor entrará em contato via WhatsApp para liberar seu acesso.");
-            } catch(e) {
-                alert("Erro ao registrar interesse. Tente novamente.");
-            } finally {
-                btn.innerHTML = 'DESBLOQUEAR ACESSO IMEDIATO';
-            }
+            const btn = document.getElementById('btn-desbloquear'); btn.innerHTML = 'PROCESSANDO...';
+            try { await fetch(`${SCRIPT_URL}?action=registrarInteresseCompra&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&origem=PAINEL_ALUNO`); const msg = encodeURIComponent(`Olá! Tenho interesse no curso *${cursoAtual.nomeCurso}* (ID: ${idAmbiente}).`); window.open(`https://wa.me/5527998131806?text=${msg}`, '_blank' ); alert("Solicitação enviada!"); }
+            catch(e) { alert("Erro ao solicitar."); } finally { btn.innerHTML = 'DESBLOQUEAR AGORA'; }
         }
 
         async function salvarAnotacao() {
-            if (!aulaAtiva) { alert("Selecione uma aula primeiro."); return; }
+            if (!aulaAtiva) return alert("Selecione uma aula.");
             const texto = document.getElementById('anotacoes-aluno').value;
-            const btn = document.querySelector('.btn-sync');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SALVANDO...';
-
-            try {
-                const r = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'salvarAnotacao',
-                        idAmbiente: idAmbiente,
-                        idCurso: cursoAtual.idCurso,
-                        idAula: aulaAtiva,
-                        texto: texto
-                    })
-                });
-                const res = await r.json();
-                if (res.success) alert("Insights sincronizados com sucesso!");
-            } catch (e) { alert("Erro ao sincronizar anotações."); }
-            btn.innerHTML = 'SINCRONIZAR AGORA';
+            try { const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarAnotacao', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, texto: texto }) }); const res = await r.json(); if (res.success) alert("Sincronizado!"); }
+            catch (e) { alert("Erro ao sincronizar."); }
         }
 
-        // Funções de Modal e Senha
         function abrirModalSenha() { document.getElementById('modalSenha').style.display = 'flex'; }
         function fecharModalSenha() { document.getElementById('modalSenha').style.display = 'none'; }
 
         async function processarTrocaSenha() {
-            const atual = document.getElementById('senhaAtual').value;
-            const nova = document.getElementById('novaSenha').value;
-            if (!atual || !nova) { alert("Preencha todos os campos."); return; }
-
-            try {
-                const r = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'alterarSenha',
-                        idAmbiente: idAmbiente,
-                        senhaAtual: atual,
-                        novaSenha: nova
-                    })
-                });
-                const res = await r.json();
-                if (res.success) {
-                    alert("Senha alterada com sucesso!");
-                    fecharModalSenha();
-                } else {
-                    alert("Erro: " + res.error);
-                }
-            } catch (e) { alert("Erro na comunicação."); }
+            const atual = document.getElementById('senhaAtual').value, nova = document.getElementById('novaSenha').value;
+            if (!atual || !nova) return alert("Preencha os campos.");
+            try { const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'alterarSenha', idAmbiente: idAmbiente, senhaAtual: atual, novaSenha: nova }) }); const res = await r.json(); if (res.success) { alert("Senha alterada!"); fecharModalSenha(); } else alert("Erro: " + res.error); }
+            catch (e) { alert("Erro na comunicação."); }
         }
     </script>
 </body>
