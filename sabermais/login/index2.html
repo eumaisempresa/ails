@@ -7,39 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap' );
-        
-        :root {
-            --fundo: #060E18;
-            --card: #0A1624;
-            --dourado: #C4974A;
-            --dourado-hover: #D4A75A;
-            --texto: #EEF0F2;
-            --texto-secundario: #7A8FA3;
-            --bordas: rgba(196, 151, 74, 0.2);
-            --sucesso: #25D366;
-        }
-
+        :root { --fundo: #060E18; --card: #0A1624; --dourado: #C4974A; --dourado-hover: #D4A75A; --texto: #EEF0F2; --texto-secundario: #7A8FA3; --bordas: rgba(196, 151, 74, 0.2); --sucesso: #25D366; }
         body { background-color: var(--fundo); color: var(--texto); font-family: 'DM Sans', sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-
-        /* LOGIN */
         #tela-login { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; background: radial-gradient(circle at 18% 0%, rgba(196, 151, 74, 0.1), transparent 40rem), var(--fundo); }
         .login-card { background: var(--card); border: 1px solid var(--bordas); padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; }
         .login-card h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 32px; margin-bottom: 10px; }
-        .login-card p { color: var(--texto-secundario); font-size: 14px; margin-bottom: 30px; }
         .input-group { text-align: left; margin-bottom: 20px; }
-        .input-group label { display: block; color: var(--dourado); font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .input-group label { display: block; color: var(--dourado); font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
         .input-group input { width: 100%; background: #0D1B2B; border: 1px solid rgba(196, 151, 74, 0.3); padding: 12px 15px; border-radius: 6px; color: #fff; outline: none; box-sizing: border-box; }
-        .btn-login-submit { width: 100%; background: var(--dourado); color: #000; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
-        .btn-login-submit:hover { background: var(--dourado-hover); transform: translateY(-2px); }
-
-        /* PAINEL */
+        .btn-login-submit { width: 100%; background: var(--dourado); color: #000; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
         #tela-painel { display: none; flex-direction: column; flex: 1; }
         .header { background: var(--card); border-bottom: 1px solid var(--bordas); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
         .logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--dourado); text-decoration: none; font-weight: bold; }
-        .user-info { display: flex; align-items: center; gap: 15px; font-size: 13px; }
         .btn-header { background: transparent; border: 1px solid var(--dourado); color: var(--dourado); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .btn-logout { border-color: #ff4444; color: #ff4444; }
-
         .layout { display: grid; grid-template-columns: 320px 1fr 350px; flex: 1; width: 100%; }
         .sidebar { background: var(--card); border-right: 1px solid var(--bordas); height: calc(100vh - 70px); position: sticky; top: 70px; overflow-y: auto; }
         .sidebar-header { padding: 20px; border-bottom: 1px solid var(--bordas); }
@@ -47,31 +27,21 @@
         .progresso-barra { background: var(--dourado); height: 100%; width: 0%; transition: 0.5s; }
         .item-aula { padding: 15px 20px; border-bottom: 1px solid rgba(196, 151, 74, 0.05); cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--texto-secundario); }
         .item-aula.ativa { background: rgba(196, 151, 74, 0.1); color: var(--dourado); border-left: 4px solid var(--dourado); }
-        .item-aula.concluida i { color: var(--sucesso); }
-
         .conteudo { padding: 40px; background: #EAEFF4; min-height: 100vh; overflow-y: auto; position: relative; }
         .folha-caderno { max-width: 850px; margin: 0 auto; background: #fff; padding: 60px; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; border-left: 2px solid #FF8585; background-image: linear-gradient(rgba(196, 209, 223, 0.35) 1px, transparent 1px); background-size: 100% 28px; line-height: 28px; }
         .conteudo-aula-dinamico { font-family: 'Lora', serif; font-size: 16px; color: #1A2430; text-align: justify; line-height: 1.8; }
-        .conteudo-aula-dinamico img { max-width: 100% !important; height: auto !important; margin: 20px auto; display: block; border-radius: 5px; box-shadow: 0 7px 22px rgba(15,32,51,0.16); }
-        .conteudo-aula-dinamico table { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #CBD5E1; }
-        .conteudo-aula-dinamico th, .conteudo-aula-dinamico td { padding: 12px; border: 1px solid #D8E0E8; text-align: left; }
-        .conteudo-aula-dinamico tr:first-child td, .conteudo-aula-dinamico th { background: #0E1E30 !important; color: #F7E5BF !important; font-weight: bold !important; }
-
+        .conteudo-aula-dinamico img { max-width: 100% !important; height: auto !important; margin: 20px auto; display: block; border-radius: 5px; }
         .insights-panel { background: var(--card); border-left: 1px solid var(--bordas); padding: 25px; height: calc(100vh - 70px); position: sticky; top: 70px; }
-        .post-it { background: #FFF9C4; color: #333; padding: 20px; min-height: 250px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); transform: rotate(-1deg); margin-bottom: 20px; border-radius: 2px; }
-        .post-it textarea { width: 100%; height: 200px; background: transparent; border: none; outline: none; resize: none; font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.6; }
-
+        .post-it { background: #FFF9C4; color: #333; padding: 20px; min-height: 250px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); transform: rotate(-1deg); margin-bottom: 20px; }
+        .post-it textarea { width: 100%; height: 200px; background: transparent; border: none; outline: none; resize: none; font-family: 'DM Sans', sans-serif; font-size: 14px; }
         .curso-selector-top { background: var(--card); padding: 10px 30px; border-bottom: 1px solid var(--bordas); display: flex; align-items: center; justify-content: center; gap: 20px; }
         .curso-selector-top select { background: #0E1E30; border: 1px solid var(--dourado); color: #fff; padding: 8px 15px; border-radius: 4px; min-width: 300px; outline: none; }
-
         #bloqueioOverlay { position: absolute; inset: 0; background: rgba(6, 14, 24, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 40px; }
-
         @media (max-width: 1200px) { .layout { grid-template-columns: 280px 1fr; } .insights-panel { display: none; } }
         @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
     </style>
 </head>
 <body>
-
     <div id="tela-login">
         <div class="login-card">
             <h1>EU⁺ Saber</h1>
@@ -83,33 +53,29 @@
             <div style="margin-top: 15px; font-size: 12px;"><a href="../cadastro/" style="color: var(--dourado); text-decoration: none;">Não tem acesso? <strong>Crie sua conta aqui</strong></a></div>
         </div>
     </div>
-
     <div id="tela-painel">
         <header class="header">
             <a href="#" class="logo">EU⁺ Saber</a>
             <div class="user-info">
                 <span id="display-usuario" style="color: var(--texto-secundario)"></span>
                 <button class="btn-header" onclick="abrirModalSenha()"><i class="fas fa-key"></i> Senha</button>
-                <button class="btn-header btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+                <button class="btn-header" onclick="logout()" style="border-color:#ff4444; color:#ff4444;"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
         </header>
-
         <div class="curso-selector-top">
             <small style="color: var(--dourado); text-transform: uppercase; font-weight: bold; font-size: 10px;">Selecione o Curso</small>
             <select id="select-curso" onchange="trocarCurso(this.value)"><option value="">Carregando catálogo...</option></select>
             <div id="status-container"></div>
         </div>
-
         <div class="layout">
             <aside class="sidebar">
                 <div class="sidebar-header">
                     <h3 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0 0 10px 0; font-size:16px;">Cronograma</h3>
                     <div class="progresso-container"><div id="barra-progresso" class="progresso-barra"></div></div>
-                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--texto-secundario);"><span id="percentual-progresso">0%</span><span id="contagem-aulas">0 de 0 aulas</span></div>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--texto-secundario);"><span id="percentual-progresso">0%</span><span id="contagem-aulas">0 aulas</span></div>
                 </div>
                 <div id="lista-aulas" class="lista-aulas"></div>
             </aside>
-
             <main class="conteudo">
                 <div id="bloqueioOverlay">
                     <i class="fas fa-lock" style="font-size: 50px; color: var(--dourado); margin-bottom: 20px;"></i>
@@ -119,15 +85,13 @@
                 </div>
                 <article class="folha-caderno"><div id="conteudo-aula"><div style="text-align:center; padding:50px; color:var(--dourado);">Selecione uma aula no cronograma para iniciar</div></div></article>
             </main>
-
             <aside class="insights-panel">
-                <div style="text-align:center; border-bottom:1px solid var(--bordas); padding-bottom:15px;"><h4 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0;">Caderno de Insights</h4><small style="color:var(--texto-secundario); font-size:10px;">Sincronização em nuvem ativa</small></div>
+                <div style="text-align:center; border-bottom:1px solid var(--bordas); padding-bottom:15px;"><h4 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0;">Caderno de Insights</h4></div>
                 <div class="post-it"><textarea id="anotacoes-aluno" placeholder="Suas reflexões executivas..."></textarea></div>
                 <button class="btn-header" onclick="salvarAnotacao()" style="width:100%">SINCRONIZAR AGORA</button>
             </aside>
         </div>
     </div>
-
     <div id="modalSenha" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
         <div style="background:var(--card); padding:30px; border-radius:8px; border:1px solid var(--dourado); width:320px;">
             <h3 style="color:var(--dourado); font-family:'Cormorant Garamond'; margin-top:0;">Alterar Senha</h3>
@@ -136,15 +100,12 @@
             <div style="display:flex; gap:10px;"><button class="btn-header" style="flex:1" onclick="processarTrocaSenha()">SALVAR</button><button class="btn-header" style="flex:1; border-color:#666; color:#666;" onclick="fecharModalSenha()">CANCELAR</button></div>
         </div>
     </div>
-
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwEwvmfIS7cWhkh35Mi8mRNGaVpbz-9wJWZYS6QOa9cmudlRemNvCXfq0iHAR-tD1yE/exec";
         let idAmbiente = localStorage.getItem('ails_idAmbiente' ), nomeUsuario = localStorage.getItem('ails_nome'), dbCursos = [], cursoAtual = null, aulaAtiva = null;
-
         window.onload = () => { if (idAmbiente) mostrarPainel(); else mostrarLogin(); };
         function mostrarLogin() { document.getElementById('tela-login').style.display = 'flex'; document.getElementById('tela-painel').style.display = 'none'; }
         function mostrarPainel() { document.getElementById('tela-login').style.display = 'none'; document.getElementById('tela-painel').style.display = 'flex'; document.getElementById('display-usuario').innerText = `Usuário: ${nomeUsuario} (${idAmbiente})`; carregarCatalogo(); }
-
         async function fazerLogin() {
             const email = document.getElementById('login-email').value, senha = document.getElementById('login-senha').value, btn = document.getElementById('btn-entrar');
             if (!email || !senha) return alert("Preencha todos os campos.");
@@ -156,36 +117,29 @@
                 else alert("Erro: " + res.error);
             } catch (e) { alert("Falha na comunicação."); } finally { btn.disabled = false; btn.innerText = "ACESSAR AMBIENTE"; }
         }
-
         async function esqueciSenha() {
             const email = document.getElementById('login-email').value;
-            if (!email) return alert("Digite seu e-mail para recuperar a senha.");
-            if (!confirm("Deseja resetar sua senha?")) return;
+            if (!email) return alert("Digite seu e-mail.");
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=esqueciSenha&email=${encodeURIComponent(email)}`);
                 const res = await r.json();
-                if (res.success) { if (res.fallback) alert("Sua nova senha temporária é: " + res.senha); else alert(res.message); }
+                if (res.success) alert(res.fallback ? "Nova senha: " + res.senha : res.message);
                 else alert("Erro: " + res.error);
             } catch (e) { alert("Erro na comunicação."); }
         }
-
-        function logout() { localStorage.clear(); idAmbiente = null; nomeUsuario = null; mostrarLogin(); }
-
+        function logout() { localStorage.clear(); idAmbiente = null; mostrarLogin(); }
         async function carregarCatalogo() {
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=carregarMenu&idAmbiente=${idAmbiente}`);
                 const res = await r.json();
                 if (res.success) { dbCursos = res.cursos; popularSeletorCursos(); }
-                else document.getElementById('conteudo-aula').innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro: ${res.error}</div>`;
-            } catch (e) { document.getElementById('conteudo-aula').innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro de comunicação.</div>`; }
+            } catch (e) { console.error(e); }
         }
-
         function popularSeletorCursos() {
             const sel = document.getElementById('select-curso');
             sel.innerHTML = dbCursos.map(c => `<option value="${c.idCurso}">${c.nomeCurso}</option>`).join('');
             if (dbCursos.length > 0) trocarCurso(dbCursos[0].idCurso);
         }
-
         function trocarCurso(id) {
             cursoAtual = dbCursos.find(c => c.idCurso === id);
             if (!cursoAtual) return;
@@ -198,75 +152,56 @@
                 statusContainer.innerHTML = `<button class="btn-header" style="background:var(--dourado); color:#000;" onclick="registrarInteresse()">Desbloquear R$ ${preco}</button>`;
             }
             renderizarCronograma();
-            const primeira = cursoAtual.aulas[0];
-            if (primeira) carregarAula(cursoAtual.idCurso, primeira.idAula, primeira.idDocumento || primeira.idDoc);
+            if (cursoAtual.aulas.length > 0) carregarAula(cursoAtual.idCurso, cursoAtual.aulas[0].idAula, cursoAtual.aulas[0].idDoc);
         }
-
         function renderizarCronograma() {
             const lista = document.getElementById('lista-aulas');
             lista.innerHTML = cursoAtual.aulas.map((a, idx) => `
-                <div class="item-aula ${aulaAtiva === a.idAula ? 'ativa' : ''} ${a.concluida ? 'concluida' : ''}" onclick="carregarAula('${cursoAtual.idCurso}', '${a.idAula}', '${a.idDocumento || a.idDoc}')">
-                    <i class="fas ${a.concluida ? 'fa-check-circle' : 'fa-play-circle'}"></i>
+                <div class="item-aula ${aulaAtiva === a.idAula ? 'ativa' : ''}" onclick="carregarAula('${cursoAtual.idCurso}', '${a.idAula}', '${a.idDoc}')">
+                    <i class="fas fa-play-circle"></i>
                     <span>(${idx+1}/${cursoAtual.aulas.length}) ${a.tituloAula}</span>
                 </div>
             `).join('');
-            const concluidas = cursoAtual.aulas.filter(a => a.concluida).length, pct = (concluidas / cursoAtual.aulas.length) * 100;
-            document.getElementById('contagem-aulas').innerText = `${concluidas} de ${cursoAtual.aulas.length} aulas`;
-            document.getElementById('barra-progresso').style.width = `${pct}%`;
-            document.getElementById('percentual-progresso').innerText = `${Math.round(pct)}%`;
         }
-
         async function carregarAula(idCurso, idAula, idDoc) {
             const aula = cursoAtual.aulas.find(a => a.idAula === idAula);
             const overlay = document.getElementById('bloqueioOverlay');
+            const isPrimeiraAula = cursoAtual.aulas[0] && cursoAtual.aulas[0].idAula === idAula;
             
-            // CORRECAO DEGUSTACAO: Se comprou OU se a aula for degustacao, esconde o overlay
-            if (cursoAtual.comprado || (aula && aula.degustacao)) {
+            // REGRA DE OURO: Libera se comprou OU se for marcada como degustacao OU se for a primeira aula
+            if (cursoAtual.comprado || (aula && aula.degustacao) || isPrimeiraAula) {
                 overlay.style.display = 'none';
             } else {
                 overlay.style.display = 'flex';
                 return;
             }
-
             aulaAtiva = idAula; renderizarCronograma();
             const area = document.getElementById('conteudo-aula');
-            area.innerHTML = '<div style="text-align:center; padding:50px; color:var(--dourado);"><i class="fas fa-spinner fa-spin"></i> Abrindo pergaminho...</div>';
+            area.innerHTML = '<div style="text-align:center; padding:50px; color:var(--dourado);"><i class="fas fa-spinner fa-spin"></i> Abrindo...</div>';
             try {
-                const url = `${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${idCurso}&idAula=${idAula}&idDoc=${idDoc}&idDocumento=${idDoc}`;
-                const r = await fetch(url), res = await r.json();
-                if (res.success) {
-                    area.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:20px;"><h2 style="font-family:'Cormorant Garamond'; color:#0A3663; margin:0;">${aula.tituloAula}</h2><button class="btn-header" style="font-size:10px; color:#475569; border-color:#CBD5E1;" onclick="marcarConcluida('${idCurso}', '${idAula}')">✓ Marcar Concluído</button></div><div class="conteudo-aula-dinamico">${res.html}</div>`;
-                    document.getElementById('anotacoes-aluno').value = res.anotacao || "";
-                } else area.innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro: ${res.error}</div>`;
-            } catch (e) { area.innerHTML = '<div style="color:#ff4444; text-align:center; padding:50px;">Erro de comunicação.</div>'; }
+                const r = await fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${idCurso}&idAula=${idAula}&idDoc=${idDoc}`);
+                const res = await r.json();
+                if (res.success) area.innerHTML = `<h2 style="font-family:'Cormorant Garamond'; color:#0A3663; border-bottom:1px solid #eee; padding-bottom:10px;">${aula.tituloAula}</h2><div class="conteudo-aula-dinamico">${res.html}</div>`;
+                else area.innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro: ${res.error}</div>`;
+            } catch (e) { area.innerHTML = '<div style="color:#ff4444; text-align:center; padding:50px;">Erro de conexão.</div>'; }
         }
-
-        async function marcarConcluida(idCurso, idAula) {
-            try { await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarProgresso', idAmbiente: idAmbiente, idCurso: idCurso, idAula: idAula, status: 'CONCLUIDO' }) }); const aula = cursoAtual.aulas.find(a => a.idAula === idAula); if (aula) aula.concluida = true; renderizarCronograma(); }
-            catch (e) { alert("Erro ao salvar progresso."); }
-        }
-
         async function registrarInteresse() {
-            const btn = document.getElementById('btn-desbloquear'); btn.innerHTML = 'PROCESSANDO...';
-            try { await fetch(`${SCRIPT_URL}?action=registrarInteresseCompra&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&origem=PAINEL_ALUNO`); const msg = encodeURIComponent(`Olá! Tenho interesse no curso *${cursoAtual.nomeCurso}* (ID: ${idAmbiente}).`); window.open(`https://wa.me/5527998131806?text=${msg}`, '_blank' ); alert("Solicitação enviada!"); }
-            catch(e) { alert("Erro ao solicitar."); } finally { btn.innerHTML = 'DESBLOQUEAR AGORA'; }
+            try { await fetch(`${SCRIPT_URL}?action=registrarInteresseCompra&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&origem=PAINEL`); window.open(`https://wa.me/5527998131806?text=Interesse no curso ${cursoAtual.nomeCurso}`, '_blank' ); }
+            catch(e) { alert("Erro ao solicitar."); }
         }
-
         async function salvarAnotacao() {
             if (!aulaAtiva) return alert("Selecione uma aula.");
-            const texto = document.getElementById('anotacoes-aluno').value;
-            try { const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarAnotacao', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, texto: texto }) }); const res = await r.json(); if (res.success) alert("Sincronizado!"); }
+            try { await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarAnotacao', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, texto: document.getElementById('anotacoes-aluno').value }) }); alert("Sincronizado!"); }
             catch (e) { alert("Erro ao sincronizar."); }
         }
-
         function abrirModalSenha() { document.getElementById('modalSenha').style.display = 'flex'; }
         function fecharModalSenha() { document.getElementById('modalSenha').style.display = 'none'; }
-
         async function processarTrocaSenha() {
-            const atual = document.getElementById('senhaAtual').value, nova = document.getElementById('novaSenha').value;
-            if (!atual || !nova) return alert("Preencha os campos.");
-            try { const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'alterarSenha', idAmbiente: idAmbiente, senhaAtual: atual, novaSenha: nova }) }); const res = await r.json(); if (res.success) { alert("Senha alterada!"); fecharModalSenha(); } else alert("Erro: " + res.error); }
-            catch (e) { alert("Erro na comunicação."); }
+            try {
+                const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'alterarSenha', idAmbiente: idAmbiente, senhaAtual: document.getElementById('senhaAtual').value, novaSenha: document.getElementById('novaSenha').value }) });
+                const res = await r.json();
+                if (res.success) { alert("Senha alterada!"); fecharModalSenha(); } else alert("Erro: " + res.error);
+            } catch (e) { alert("Erro na comunicação."); }
         }
     </script>
 </body>
