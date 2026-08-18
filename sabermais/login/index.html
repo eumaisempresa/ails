@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Executivo AILS⁺ | Saber⁺</title>
+    <title>Saber+ | EU⁺ Empresa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap' );
@@ -25,380 +25,165 @@
             font-family: 'DM Sans', sans-serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* Header Executivo */
-        .header {
-            background: var(--card);
-            border-bottom: 1px solid var(--bordas);
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            color: var(--dourado);
-            text-decoration: none;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 13px;
-        }
-
-        .btn-header {
-            background: transparent;
-            border: 1px solid var(--dourado);
-            color: var(--dourado);
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-
-        .btn-header:hover {
-            background: var(--dourado);
-            color: #000;
-        }
-
-        .btn-logout { border-color: #ff4444; color: #ff4444; }
-        .btn-logout:hover { background: #ff4444; color: #fff; }
-
-        /* Layout Principal */
-        .layout {
-            display: grid;
-            grid-template-columns: 320px 1fr 350px;
+        /* TELA DE LOGIN */
+        #tela-login {
             flex: 1;
-            width: 100%;
-        }
-
-        /* Sidebar - Cronograma */
-        .sidebar {
-            background: var(--card);
-            border-right: 1px solid var(--bordas);
-            height: calc(100vh - 70px);
-            position: sticky;
-            top: 70px;
-            overflow-y: auto;
-        }
-
-        .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid var(--bordas);
-        }
-
-        .sidebar-header h3 {
-            font-family: 'Cormorant Garamond', serif;
-            color: var(--dourado);
-            margin: 0 0 15px 0;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .progresso-container {
-            background: rgba(255,255,255,0.05);
-            height: 6px;
-            border-radius: 3px;
-            margin-bottom: 8px;
-            overflow: hidden;
-        }
-
-        .progresso-barra {
-            background: var(--dourado);
-            height: 100%;
-            width: 0%;
-            transition: 0.5s;
-        }
-
-        .progresso-texto {
-            font-size: 11px;
-            color: var(--texto-secundario);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .lista-aulas {
-            padding: 10px 0;
-        }
-
-        .item-aula {
-            padding: 15px 20px;
-            border-bottom: 1px solid rgba(196, 151, 74, 0.05);
-            cursor: pointer;
-            transition: 0.2s;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            color: var(--texto-secundario);
+            justify-content: center;
+            padding: 20px;
+            background: radial-gradient(circle at 18% 0%, rgba(196, 151, 74, 0.1), transparent 40rem), var(--fundo);
         }
 
-        .item-aula:hover, .item-aula.ativa {
-            background: rgba(196, 151, 74, 0.1);
-            color: var(--dourado);
+        .login-card {
+            background: var(--card);
+            border: 1px solid var(--bordas);
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
-        .item-aula.ativa { border-left: 4px solid var(--dourado); }
+        .login-card h1 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); font-size: 32px; margin-bottom: 10px; }
+        .login-card p { color: var(--texto-secundario); font-size: 14px; margin-bottom: 30px; }
+
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; color: var(--dourado); font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .input-group input { width: 100%; background: #0D1B2B; border: 1px solid rgba(196, 151, 74, 0.3); padding: 12px 15px; border-radius: 6px; color: #fff; outline: none; box-sizing: border-box; }
+
+        .btn-login-submit { width: 100%; background: var(--dourado); color: #000; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-login-submit:hover { background: var(--dourado-hover); transform: translateY(-2px); }
+
+        /* TELA DO PAINEL (DASHBOARD) */
+        #tela-painel { display: none; flex-direction: column; flex: 1; }
+
+        .header { background: var(--card); border-bottom: 1px solid var(--bordas); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; }
+        .logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--dourado); text-decoration: none; font-weight: bold; }
+        .user-info { display: flex; align-items: center; gap: 15px; font-size: 13px; }
+        .btn-header { background: transparent; border: 1px solid var(--dourado); color: var(--dourado); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .btn-logout { border-color: #ff4444; color: #ff4444; }
+
+        .layout { display: grid; grid-template-columns: 320px 1fr 350px; flex: 1; width: 100%; }
+        .sidebar { background: var(--card); border-right: 1px solid var(--bordas); height: calc(100vh - 70px); position: sticky; top: 70px; overflow-y: auto; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--bordas); }
+        .progresso-container { background: rgba(255,255,255,0.05); height: 6px; border-radius: 3px; margin-bottom: 8px; overflow: hidden; }
+        .progresso-barra { background: var(--dourado); height: 100%; width: 0%; transition: 0.5s; }
+
+        .item-aula { padding: 15px 20px; border-bottom: 1px solid rgba(196, 151, 74, 0.05); cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--texto-secundario); }
+        .item-aula.ativa { background: rgba(196, 151, 74, 0.1); color: var(--dourado); border-left: 4px solid var(--dourado); }
         .item-aula.concluida i { color: var(--sucesso); }
 
-        /* Conteúdo Central */
-        .conteudo {
-            padding: 40px;
-            background: #EAEFF4;
-            min-height: 100vh;
-            position: relative;
-            overflow-y: auto;
-        }
+        .conteudo { padding: 40px; background: #EAEFF4; min-height: 100vh; overflow-y: auto; }
+        .folha-caderno { max-width: 850px; margin: 0 auto; background: #fff; padding: 60px; min-height: 1000px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; border-left: 2px solid #FF8585; background-image: linear-gradient(rgba(196, 209, 223, 0.35) 1px, transparent 1px); background-size: 100% 28px; line-height: 28px; }
+        .conteudo-aula-dinamico { font-family: 'Lora', serif; font-size: 16px; color: #1A2430; text-align: justify; line-height: 1.8; }
+        .conteudo-aula-dinamico img { max-width: 100% !important; height: auto !important; margin: 20px auto; display: block; border-radius: 5px; box-shadow: 0 7px 22px rgba(15,32,51,0.16); }
+        .conteudo-aula-dinamico table { width: 100%; border-collapse: collapse; margin: 20px 0; border: 1px solid #CBD5E1; }
+        .conteudo-aula-dinamico th, .conteudo-aula-dinamico td { padding: 12px; border: 1px solid #D8E0E8; text-align: left; }
+        .conteudo-aula-dinamico tr:first-child td, .conteudo-aula-dinamico th { background: #0E1E30 !important; color: #F7E5BF !important; font-weight: bold !important; }
 
-        /* Papel Almaço Estilizado */
-        .folha-caderno {
-            max-width: 850px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 60px;
-            min-height: 1000px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            position: relative;
-            background-image: linear-gradient(rgba(196, 209, 223, 0.35) 1px, transparent 1px);
-            background-size: 100% 28px;
-            line-height: 28px;
-            border-left: 2px solid #FF8585;
-        }
+        .insights-panel { background: var(--card); border-left: 1px solid var(--bordas); padding: 25px; height: calc(100vh - 70px); position: sticky; top: 70px; }
+        .post-it { background: #FFF9C4; color: #333; padding: 20px; min-height: 250px; box-shadow: 5px 5px 15px rgba(0,0,0,0.2); transform: rotate(-1deg); margin-bottom: 20px; border-radius: 2px; }
+        .post-it textarea { width: 100%; height: 200px; background: transparent; border: none; outline: none; resize: none; font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.6; }
 
-        .folha-caderno::before {
-            content: '';
-            position: absolute;
-            left: 50px;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: rgba(255, 0, 0, 0.1);
-        }
+        .curso-selector-top { background: var(--card); padding: 10px 30px; border-bottom: 1px solid var(--bordas); display: flex; align-items: center; justify-content: center; gap: 20px; }
+        .curso-selector-top select { background: #0E1E30; border: 1px solid var(--dourado); color: #fff; padding: 8px 15px; border-radius: 4px; min-width: 300px; outline: none; }
 
-        .conteudo-aula-dinamico {
-            font-family: 'Lora', serif;
-            font-size: 16px;
-            color: #1A2430;
-            text-align: justify;
-            line-height: 1.8;
-        }
+        #bloqueioOverlay { position: absolute; inset: 0; background: rgba(6, 14, 24, 0.95); display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 100; text-align: center; padding: 40px; }
 
-        .conteudo-aula-dinamico h1, .conteudo-aula-dinamico h2 {
-            font-family: 'Cormorant Garamond', serif;
-            color: #0A3663;
-            margin-top: 24px;
-            margin-bottom: 12px;
-        }
-
-        /* Tabelas Responsivas */
-        .table-container-responsive {
-            width: 100%;
-            overflow-x: auto;
-            margin: 28px 0;
-            border: 1px solid #CBD5E1;
-            border-radius: 7px;
-            box-shadow: 0 7px 18px rgba(15, 32, 51, 0.09);
-        }
-
-        .conteudo-aula-dinamico table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-        }
-
-        .conteudo-aula-dinamico th, .conteudo-aula-dinamico td {
-            padding: 12px;
-            border: 1px solid #D8E0E8;
-            text-align: left;
-        }
-
-        .conteudo-aula-dinamico tr:first-child td, .conteudo-aula-dinamico th {
-            background: #0E1E30 !important;
-            color: #F7E5BF !important;
-            font-weight: bold !important;
-        }
-
-        .conteudo-aula-dinamico img {
-            max-width: 100% !important;
-            height: auto !important;
-            margin: 26px auto;
-            display: block;
-            border-radius: 5px;
-            box-shadow: 0 7px 22px rgba(15, 32, 51, 0.16);
-        }
-
-        /* Painel Lateral - Insights */
-        .insights-panel {
-            background: var(--card);
-            border-left: 1px solid var(--bordas);
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            height: calc(100vh - 70px);
-            position: sticky;
-            top: 70px;
-        }
-
-        .post-it {
-            background: #FFF9C4;
-            color: #333;
-            padding: 25px;
-            min-height: 300px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
-            transform: rotate(-1deg);
-            border-radius: 2px;
-        }
-
-        .post-it textarea {
-            width: 100%;
-            height: 250px;
-            background: transparent;
-            border: none;
-            outline: none;
-            resize: none;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Seletor de Curso Superior */
-        .curso-selector-top {
-            background: var(--card);
-            padding: 10px 30px;
-            border-bottom: 1px solid var(--bordas);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .curso-selector-top select {
-            background: #0E1E30;
-            border: 1px solid var(--dourado);
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 4px;
-            min-width: 300px;
-        }
-
-        .btn-status-curso {
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-            border: 1px solid var(--dourado);
-        }
-
-        .status-adquirido { background: rgba(196, 151, 74, 0.2); color: var(--dourado); }
-        .status-bloqueado { background: var(--dourado); color: #000; cursor: pointer; }
-
-        #bloqueioOverlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(6, 14, 24, 0.95);
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            text-align: center;
-            padding: 40px;
-        }
-
-        @media (max-width: 1200px) {
-            .layout { grid-template-columns: 280px 1fr; }
-            .insights-panel { display: none; }
-        }
-
-        @media (max-width: 768px) {
-            .layout { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
+        @media (max-width: 1200px) { .layout { grid-template-columns: 280px 1fr; } .insights-panel { display: none; } }
+        @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar { display: none; } }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <a href="#" class="logo">EU⁺ Saber</a>
-        <div class="user-info">
-            <span id="display-usuario" style="color: var(--texto-secundario)">Carregando...</span>
-            <button class="btn-header" onclick="abrirModalSenha()"><i class="fas fa-key"></i> Senha</button>
-            <button class="btn-header btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+    <!-- SEÇÃO DE LOGIN -->
+    <div id="tela-login">
+        <div class="login-card">
+            <h1>EU⁺ Saber</h1>
+            <p>Ambiente de Aprendizagem Executiva</p>
+            
+            <div class="input-group">
+                <label>E-mail de Acesso</label>
+                <input type="email" id="login-email" placeholder="seu@email.com">
+            </div>
+            
+            <div class="input-group">
+                <label>Senha</label>
+                <input type="password" id="login-senha" placeholder="••••••">
+            </div>
+            
+            <button class="btn-login-submit" onclick="fazerLogin()" id="btn-entrar">Acessar Ambiente</button>
+            
+            <div style="margin-top: 25px; font-size: 12px;">
+                <a href="../cadastro/" style="color: var(--dourado); text-decoration: none;">Não tem acesso? <strong>Crie sua conta aqui</strong></a>
+            </div>
         </div>
-    </header>
-
-    <div class="curso-selector-top">
-        <small style="color: var(--dourado); text-transform: uppercase; font-weight: bold; font-size: 10px;">Selecione o Curso</small>
-        <select id="select-curso" onchange="trocarCurso(this.value)">
-            <option value="">Carregando catálogo...</option>
-        </select>
-        <div id="status-container"></div>
     </div>
 
-    <div class="layout">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h3>Cronograma do Curso</h3>
-                <div class="progresso-container">
-                    <div id="barra-progresso" class="progresso-barra"></div>
-                </div>
-                <div class="progresso-texto">
-                    <span id="percentual-progresso">0%</span>
-                    <span id="contagem-aulas">0 de 0 aulas</span>
-                </div>
+    <!-- SEÇÃO DO PAINEL (DASHBOARD) -->
+    <div id="tela-painel">
+        <header class="header">
+            <a href="#" class="logo">EU⁺ Saber</a>
+            <div class="user-info">
+                <span id="display-usuario" style="color: var(--texto-secundario)"></span>
+                <button class="btn-header" onclick="abrirModalSenha()"><i class="fas fa-key"></i> Senha</button>
+                <button class="btn-header btn-logout" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
             </div>
-            <div id="lista-aulas" class="lista-aulas"></div>
-        </aside>
+        </header>
 
-        <main class="conteudo">
-            <div id="bloqueioOverlay">
-                <i class="fas fa-lock" style="font-size: 50px; color: var(--dourado); margin-bottom: 20px;"></i>
-                <h2 style="font-family: 'Cormorant Garamond'; color: var(--dourado);">Conteúdo Exclusivo</h2>
-                <p style="color: var(--texto-secundario); max-width: 400px; margin-bottom: 30px;">
-                    Este curso ainda não faz parte da sua jornada executiva. Desbloqueie agora para ter acesso imediato.
-                </p>
-                <button id="btn-desbloquear" class="btn btn-status-curso status-bloqueado" style="padding: 15px 40px;">
-                    DESBLOQUEAR ACESSO IMEDIATO
-                </button>
-            </div>
+        <div class="curso-selector-top">
+            <small style="color: var(--dourado); text-transform: uppercase; font-weight: bold; font-size: 10px;">Selecione o Curso</small>
+            <select id="select-curso" onchange="trocarCurso(this.value)">
+                <option value="">Carregando catálogo...</option>
+            </select>
+            <div id="status-container"></div>
+        </div>
 
-            <article class="folha-caderno">
-                <div id="conteudo-aula">
-                    <div style="text-align:center; padding:50px; color:var(--dourado);">Selecione uma aula no cronograma para iniciar</div>
+        <div class="layout">
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0 0 10px 0; font-size:16px;">Cronograma</h3>
+                    <div class="progresso-container"><div id="barra-progresso" class="progresso-barra"></div></div>
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--texto-secundario);">
+                        <span id="percentual-progresso">0%</span>
+                        <span id="contagem-aulas">0 de 0 aulas</span>
+                    </div>
                 </div>
-            </article>
-        </main>
+                <div id="lista-aulas" class="lista-aulas"></div>
+            </aside>
 
-        <aside class="insights-panel">
-            <div style="text-align:center; border-bottom:1px solid var(--bordas); padding-bottom:15px;">
-                <h4 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0;">Caderno de Insights</h4>
-                <small style="color:var(--texto-secundario); font-size:10px;">Sincronização em nuvem ativa</small>
-            </div>
-            <div class="post-it">
-                <textarea id="anotacoes-aluno" placeholder="Digite aqui seus insights executivos..."></textarea>
-            </div>
-            <button class="btn-header" onclick="salvarAnotacao()" style="width:100%">SINCRONIZAR AGORA</button>
-        </aside>
+            <main class="conteudo">
+                <div id="bloqueioOverlay">
+                    <i class="fas fa-lock" style="font-size: 50px; color: var(--dourado); margin-bottom: 20px;"></i>
+                    <h2 style="font-family: 'Cormorant Garamond'; color: var(--dourado);">Conteúdo Exclusivo</h2>
+                    <p style="color: var(--texto-secundario); max-width: 400px; margin-bottom: 30px;">Desbloqueie este curso para ter acesso imediato.</p>
+                    <button id="btn-desbloquear" class="btn-header" style="background:var(--dourado); color:#000; padding:15px 40px; border:none;">DESBLOQUEAR AGORA</button>
+                </div>
+
+                <article class="folha-caderno">
+                    <div id="conteudo-aula">
+                        <div style="text-align:center; padding:50px; color:var(--dourado);">Selecione uma aula no cronograma para iniciar</div>
+                    </div>
+                </article>
+            </main>
+
+            <aside class="insights-panel">
+                <div style="text-align:center; border-bottom:1px solid var(--bordas); padding-bottom:15px;">
+                    <h4 style="font-family:'Cormorant Garamond'; color:var(--dourado); margin:0;">Caderno de Insights</h4>
+                    <small style="color:var(--texto-secundario); font-size:10px;">Sincronização em nuvem ativa</small>
+                </div>
+                <div class="post-it"><textarea id="anotacoes-aluno" placeholder="Suas reflexões executivas..."></textarea></div>
+                <button class="btn-header" onclick="salvarAnotacao()" style="width:100%">SINCRONIZAR AGORA</button>
+            </aside>
+        </div>
     </div>
 
     <!-- Modal de Senha -->
@@ -424,14 +209,57 @@
         let aulaAtiva = null;
 
         window.onload = () => {
-            if (!idAmbiente) { logout(); return; }
+            if (idAmbiente) { mostrarPainel(); } else { mostrarLogin(); }
+        };
+
+        function mostrarLogin() {
+            document.getElementById('tela-login').style.display = 'flex';
+            document.getElementById('tela-painel').style.display = 'none';
+        }
+
+        function mostrarPainel() {
+            document.getElementById('tela-login').style.display = 'none';
+            document.getElementById('tela-painel').style.display = 'flex';
             document.getElementById('display-usuario').innerText = `Usuário: ${nomeUsuario} (${idAmbiente})`;
             carregarCatalogo();
-        };
+        }
+
+        async function fazerLogin() {
+            const email = document.getElementById('login-email').value;
+            const senha = document.getElementById('login-senha').value;
+            const btn = document.getElementById('btn-entrar');
+
+            if (!email || !senha) return alert("Preencha todos os campos.");
+
+            btn.disabled = true;
+            btn.innerText = "VALIDANDO...";
+
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`);
+                const res = await r.json();
+
+                if (res.autorizado) {
+                    localStorage.setItem('ails_idAmbiente', res.idAmbiente);
+                    localStorage.setItem('ails_nome', res.nome);
+                    idAmbiente = res.idAmbiente;
+                    nomeUsuario = res.nome;
+                    mostrarPainel();
+                } else {
+                    alert("Erro: " + res.error);
+                }
+            } catch (e) {
+                alert("Falha na comunicação com o servidor.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "ACESSAR AMBIENTE";
+            }
+        }
 
         function logout() {
             localStorage.clear();
-            window.location.href = '../login/';
+            idAmbiente = null;
+            nomeUsuario = null;
+            mostrarLogin();
         }
 
         async function carregarCatalogo() {
@@ -445,7 +273,7 @@
                     document.getElementById('conteudo-aula').innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro: ${res.error}</div>`;
                 }
             } catch (e) {
-                document.getElementById('conteudo-aula').innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro de comunicação com o ecossistema central.</div>`;
+                document.getElementById('conteudo-aula').innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro de comunicação.</div>`;
             }
         }
 
@@ -463,7 +291,7 @@
             const overlay = document.getElementById('bloqueioOverlay');
 
             if (cursoAtual.comprado) {
-                statusContainer.innerHTML = `<button class="btn-status-curso status-adquirido"><i class="fas fa-check"></i> Curso Adquirido</button>`;
+                statusContainer.innerHTML = `<button class="btn-header" style="background:rgba(37,211,102,0.1); color:var(--sucesso); border-color:var(--sucesso); cursor:default;"><i class="fas fa-check"></i> Adquirido</button>`;
                 overlay.style.display = 'none';
             } else {
                 let preco = "Consulte";
@@ -471,20 +299,20 @@
                     const p = String(cursoAtual.preco);
                     preco = p.includes(',') ? p.split(',')[0] : p;
                 }
-                statusContainer.innerHTML = `<button class="btn-status-curso status-bloqueado" onclick="registrarInteresse()">Desbloquear R$ ${preco}</button>`;
+                statusContainer.innerHTML = `<button class="btn-header" style="background:var(--dourado); color:#000;" onclick="registrarInteresse()">Desbloquear R$ ${preco}</button>`;
                 overlay.style.display = 'flex';
                 document.getElementById('btn-desbloquear').onclick = registrarInteresse;
             }
 
             renderizarCronograma();
             const primeira = cursoAtual.aulas[0];
-            if (primeira) carregarAula(cursoAtual.idCurso, primeira.idAula, primeira.idDoc || primeira.idDocumento);
+            if (primeira) carregarAula(cursoAtual.idCurso, primeira.idAula, primeira.idDocumento || primeira.idDoc);
         }
 
         function renderizarCronograma() {
             const lista = document.getElementById('lista-aulas');
             lista.innerHTML = cursoAtual.aulas.map((a, idx) => `
-                <div class="item-aula ${aulaAtiva === a.idAula ? 'ativa' : ''} ${a.concluida ? 'concluida' : ''}" onclick="carregarAula('${cursoAtual.idCurso}', '${a.idAula}', '${a.idDoc || a.idDocumento}')">
+                <div class="item-aula ${aulaAtiva === a.idAula ? 'ativa' : ''} ${a.concluida ? 'concluida' : ''}" onclick="carregarAula('${cursoAtual.idCurso}', '${a.idAula}', '${a.idDocumento || a.idDoc}')">
                     <i class="fas ${a.concluida ? 'fa-check-circle' : 'fa-play-circle'}"></i>
                     <span>(${idx+1}/${cursoAtual.aulas.length}) ${a.tituloAula}</span>
                 </div>
@@ -527,27 +355,37 @@
                     area.innerHTML = `<div style="color:#ff4444; text-align:center; padding:50px;">Erro: ${res.error}</div>`;
                 }
             } catch (e) {
-                area.innerHTML = '<div style="color:#ff4444; text-align:center; padding:50px;">Erro de comunicação com o ecossistema central.</div>';
+                area.innerHTML = '<div style="color:#ff4444; text-align:center; padding:50px;">Erro de comunicação.</div>';
             }
+        }
+
+        async function marcarConcluida(idCurso, idAula) {
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'salvarProgresso', idAmbiente: idAmbiente, idCurso: idCurso, idAula: idAula, status: 'CONCLUIDO' })
+                });
+                const aula = cursoAtual.aulas.find(a => a.idAula === idAula);
+                if (aula) aula.concluida = true;
+                renderizarCronograma();
+            } catch (e) { alert("Erro ao salvar progresso."); }
         }
 
         async function registrarInteresse() {
             const btn = document.getElementById('btn-desbloquear');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> PROCESSANDO...';
+            btn.innerHTML = 'PROCESSANDO...';
             try {
                 await fetch(`${SCRIPT_URL}?action=registrarInteresseCompra&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&origem=PAINEL_ALUNO`);
                 const msg = encodeURIComponent(`Olá! Tenho interesse no curso *${cursoAtual.nomeCurso}* (ID: ${idAmbiente}).`);
                 window.open(`https://wa.me/5527998131806?text=${msg}`, '_blank' );
-                alert("Solicitação enviada! O gestor entrará em contato.");
-            } catch(e) { alert("Erro ao solicitar. Tente novamente."); }
-            btn.innerHTML = 'DESBLOQUEAR ACESSO IMEDIATO';
+                alert("Solicitação enviada!");
+            } catch(e) { alert("Erro ao solicitar."); }
+            btn.innerHTML = 'DESBLOQUEAR AGORA';
         }
 
         async function salvarAnotacao() {
-            if (!aulaAtiva) { alert("Selecione uma aula."); return; }
+            if (!aulaAtiva) return alert("Selecione uma aula.");
             const texto = document.getElementById('anotacoes-aluno').value;
-            const btn = document.querySelector('.btn-sync');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> SALVANDO...';
             try {
                 const r = await fetch(SCRIPT_URL, {
                     method: 'POST',
@@ -556,7 +394,6 @@
                 const res = await r.json();
                 if (res.success) alert("Insights sincronizados!");
             } catch (e) { alert("Erro ao sincronizar."); }
-            btn.innerHTML = 'SINCRONIZAR AGORA';
         }
 
         function abrirModalSenha() { document.getElementById('modalSenha').style.display = 'flex'; }
@@ -565,7 +402,7 @@
         async function processarTrocaSenha() {
             const atual = document.getElementById('senhaAtual').value;
             const nova = document.getElementById('novaSenha').value;
-            if (!atual || !nova) { alert("Preencha os campos."); return; }
+            if (!atual || !nova) return alert("Preencha os campos.");
             try {
                 const r = await fetch(SCRIPT_URL, {
                     method: 'POST',
