@@ -75,12 +75,6 @@
                 </select>
             </div>
             <div class="filter-group">
-                <label>Categoria de Interesse</label>
-                <select id="filterCategoria" onchange="aplicarFiltros()">
-                    <option value="todas">Todas as Categorias</option>
-                </select>
-            </div>
-            <div class="filter-group">
                 <label>Profissão/Empresa</label>
                 <select id="filterProfissao" onchange="aplicarFiltros()">
                     <option value="todas">Todas as Profissões</option>
@@ -108,7 +102,7 @@
         <div class="footer-logo">EU⁺ Empresa</div>
         <div class="footer-links">
             <a href="https://wa.me/5527998131806" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-            <a href="https://www.linkedin.com/company/133754181/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            <a href="https://www.linkedin.com/company/eumaisexecutivo/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
             <a href="https://instagram.com/eumaisempresa" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
         </div>
         <p style="color: #444; font-size: 10px; margin-top: 30px;">© 2026 AILS - Ambientes Inteligentes Leves</p>
@@ -119,13 +113,17 @@
         let dbAlunos = [];
         let dbCatalogo = [];
 
-        function autenticarGestor( ) {
+        function autenticarGestor() {
             const pass = document.getElementById('masterPass').value;
             fetch(`${SCRIPT_URL}?action=validarAdmin&senha=${encodeURIComponent(pass)}`)
                 .then(r => r.json()).then(res => {
-                    if(res.autorizado) { document.getElementById('authOverlay').style.display = 'none'; carregarDados(); } 
-                    else { alert("Senha incorreta!"); }
-                });
+                    if(res.autorizado) { 
+                        document.getElementById('authOverlay').style.display = 'none'; 
+                        carregarDados(); 
+                    } else { 
+                        alert("Senha incorreta!"); 
+                    }
+                }).catch(e => alert("Erro ao autenticar. Verifique o SCRIPT_URL."));
         }
 
         async function carregarDados() {
@@ -135,45 +133,39 @@
                 const r = await fetch(`${SCRIPT_URL}?action=carregarPainelGestor`);
                 const res = await r.json();
                 if(res.success) {
-                    dbAlunos = res.data.alunos;
-                    dbCatalogo = res.data.catalogo;
+                    dbAlunos = res.data.alunos || [];
+                    dbCatalogo = res.data.catalogo || [];
                     popularFiltros();
                     aplicarFiltros();
+                } else {
+                    alert("Erro do Servidor: " + res.error);
                 }
-            } catch(e) { alert("Erro ao carregar dados."); }
+            } catch(e) { 
+                alert("Erro de conexão ao carregar dados."); 
+            }
             btn.innerHTML = '<i class="fas fa-sync-alt"></i> ATUALIZAR';
         }
 
         function popularFiltros() {
-            const cats = [...new Set(dbCatalogo.map(c => c.categoria))];
-            const profs = [...new Set(dbAlunos.map(a => a.profissao))].filter(p => p);
-            const selCat = document.getElementById('filterCategoria');
-            selCat.innerHTML = '<option value="todas">Todas as Categorias</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            const profs = [...new Set(dbAlunos.map(a => a.status))].filter(p => p);
             const selProf = document.getElementById('filterProfissao');
-            selProf.innerHTML = '<option value="todas">Todas as Profissões</option>' + profs.map(p => `<option value="${p}">${p}</option>`).join('');
+            selProf.innerHTML = '<option value="todas">Todos os Status</option>' + profs.map(p => `<option value="${p}">${p}</option>`).join('');
         }
 
         function aplicarFiltros() {
             const busca = document.getElementById('filterBusca').value.toLowerCase();
             const status = document.getElementById('filterStatus').value;
-            const cat = document.getElementById('filterCategoria').value;
             const prof = document.getElementById('filterProfissao').value;
 
             const filtrados = dbAlunos.filter(a => {
-                const matchBusca = !busca || a.nome.toLowerCase().includes(busca) || a.email.toLowerCase().includes(busca) || a.idAmbiente.toLowerCase().includes(busca);
-                const matchProf = prof === 'todas' || a.profissao === prof;
+                const matchBusca = !busca || (a.nome && a.nome.toLowerCase().includes(busca)) || (a.email && a.email.toLowerCase().includes(busca)) || (a.idAmbiente && a.idAmbiente.toLowerCase().includes(busca));
+                const matchProf = prof === 'todas' || a.status === prof;
                 let matchStatus = true;
-                if(status === 'comprador') matchStatus = a.cursos.length > 0;
-                else if(status === 'interessado') matchStatus = a.interesses.length > 0;
-                else if(status === 'degustacao') matchStatus = a.cursos.length === 0 && a.interesses.length === 0;
-                let matchCat = cat === 'todas';
-                if(!matchCat) {
-                    matchCat = a.cursos.some(c => c.categoria === cat) || a.interesses.some(i => {
-                        const curso = dbCatalogo.find(cc => cc.id === i.cursoId);
-                        return curso && curso.categoria === cat;
-                    });
-                }
-                return matchBusca && matchStatus && matchCat && matchProf;
+                if(status === 'comprador') matchStatus = a.cursos && a.cursos.length > 0;
+                else if(status === 'interessado') matchStatus = a.interesses && a.interesses.length > 0;
+                else if(status === 'degustacao') matchStatus = (!a.cursos || a.cursos.length === 0) && (!a.interesses || a.interesses.length === 0);
+                
+                return matchBusca && matchStatus && matchProf;
             });
             renderizarTabela(filtrados);
         }
@@ -182,23 +174,26 @@
             const tbody = document.querySelector('#tabelaAlunos tbody');
             tbody.innerHTML = "";
             document.getElementById('countAlunos').innerText = alunos.length;
+            
             alunos.forEach((aluno, index) => {
                 const tr = document.createElement('tr');
-                const tagsCursos = aluno.cursos.map(c => `<span class="tag tag-paid">${c.nome}</span>`).join('');
-                const tagsInteresses = aluno.interesses.map(i => {
+                const tagsCursos = (aluno.cursos || []).map(c => `<span class="tag tag-paid">${c.nome}</span>`).join('');
+                const tagsInteresses = (aluno.interesses || []).map(i => {
                     const c = dbCatalogo.find(cc => cc.id === i.cursoId);
                     return `<span class="tag tag-interest">Interesse: ${c ? c.nome : i.cursoId}</span>`;
                 }).join('');
-                const sugestoes = aluno.ofertas.map(o => `<option value="${o.id}" data-preco="${o.preco}">[${o.categoria}] ${o.nome} - R$ ${o.preco}</option>`).join('');
+                
+                const sugestoes = dbCatalogo.map(c => `<option value="${c.id}" data-preco="${c.preco}">${c.nome} - R$ ${c.preco}</option>`).join('');
+                
                 tr.innerHTML = `
-                    <td><div style="font-weight:bold">${aluno.nome}</div><div style="font-size:10px; color:var(--texto-secundario)">${aluno.profissao} • ${aluno.idAmbiente}</div></td>
+                    <td><div style="font-weight:bold">${aluno.nome}</div><div style="font-size:10px; color:var(--texto-secundario)">${aluno.status} • ${aluno.idAmbiente}</div></td>
                     <td><div style="font-size:11px">${aluno.whatsapp}</div><div style="font-size:10px; color:var(--texto-secundario)">${aluno.email}</div></td>
-                    <td>${tagsCursos} ${tagsInteresses || (aluno.cursos.length === 0 ? '<small style="color:#444">Apenas Degustação</small>' : '')}</td>
+                    <td>${tagsCursos} ${tagsInteresses || ((!aluno.cursos || aluno.cursos.length === 0) ? '<small style="color:#444">Apenas Degustação</small>' : '')}</td>
                     <td>
                         <select id="sel-oferta-${index}" onchange="atualizarBotaoWA(${index})"><option value="">Sugerir curso...</option>${sugestoes}</select>
                         <div class="promo-box"><input type="text" id="promo-${index}" class="promo-input" placeholder="R$ Promo" oninput="atualizarBotaoWA(${index})"><small style="font-size:9px; color:var(--texto-secundario); align-self:center">Preço Custom</small></div>
                     </td>
-                    <td><a id="btn-wa-${index}" class="btn btn-wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WHATSAPP</a><button class="btn" onclick="liberarManual('${aluno.idAmbiente}', ${index})" style="border-color:#7A8FA3; color:#7A8FA3; margin-top:5px; width:100%">+ LIBERAR MANUAL</button></td>
+                    <td><a id="btn-wa-${index}" class="btn btn-wa" href="#" target="_blank"><i class="fab fa-whatsapp"></i> WHATSAPP</a><button class="btn" onclick="liberarManual('${aluno.idAmbiente}', '${aluno.cursos && aluno.cursos.length > 0 ? aluno.cursos[0].id : ""}', ${index})" style="border-color:#7A8FA3; color:#7A8FA3; margin-top:5px; width:100%">+ LIBERAR MANUAL</button></td>
                 `;
                 tbody.appendChild(tr);
                 atualizarBotaoWA(index);
@@ -210,35 +205,40 @@
             const sel = document.getElementById(`sel-oferta-${idx}`);
             const promo = document.getElementById(`promo-${idx}`).value;
             const btn = document.getElementById(`btn-wa-${idx}`);
+            if(!aluno || !btn) return;
+
             let msg = `Olá ${aluno.nome}! Notamos seu interesse no Saber⁺. `;
-            if(sel.value) {
+            if(sel && sel.value) {
                 const cursoNome = sel.options[sel.selectedIndex].text.split(' - ')[0];
                 const preco = promo || sel.options[sel.selectedIndex].getAttribute('data-preco');
                 msg += `Preparamos uma oferta especial para o curso *${cursoNome}* por apenas *R$ ${preco}*.\n\nPodemos fechar agora?`;
-            } else { msg += `Como está sendo sua experiência na plataforma? Estamos à disposição para ajudar em sua jornada executiva!`; }
-            btn.href = `https://wa.me/55${aluno.whatsapp.toString( ).replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`;
+            } else { 
+                msg += `Como está sendo sua experiência na plataforma? Estamos à disposição para ajudar em sua jornada executiva!`; 
+            }
+            btn.href = `https://wa.me/55${aluno.whatsapp.toString().replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`;
+        }
+
+        async function liberarManual(idAmb, idCur, idx) {
+            const cursoId = idCur || prompt("Digite o ID do Curso para liberar:");
+            if(!cursoId) return;
+            if(!confirm(`Deseja liberar o curso ${cursoId} para o aluno ${idAmb}?`)) return;
+            
+            try {
+                const r = await fetch(`${SCRIPT_URL}?action=liberarCurso&idAmbiente=${idAmb}&idCurso=${cursoId}`);
+                const res = await r.json();
+                if(res.success) { alert("Curso liberado com sucesso!"); carregarDados(); }
+                else alert("Erro: " + res.error);
+            } catch(e) { alert("Erro de conexão."); }
         }
 
         function exportarCSV() {
-            let csv = "Nome;Email;WhatsApp;Profissao;Status;Cursos\n";
-            dbAlunos.forEach(a => { csv += `${a.nome};${a.email};${a.whatsapp};${a.profissao};${a.status};${a.cursos.map(c => c.nome).join(" | ")}\n`; });
+            let csv = "Nome;Email;WhatsApp;Status;Cursos\n";
+            dbAlunos.forEach(a => { csv += `${a.nome};${a.email};${a.whatsapp};${a.status};${(a.cursos || []).map(c => c.nome).join(" | ")}\n`; });
             const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", "leads_ails.csv");
-            document.body.appendChild(link);
+            link.download = "leads_ails.csv";
             link.click();
-            document.body.removeChild(link);
-        }
-
-        async function liberarManual(idAmb, idx) {
-            const sel = document.getElementById(`sel-oferta-${idx}`);
-            if(!sel.value) return alert("Selecione um curso na lista de sugestões.");
-            if(confirm(`Confirmar liberação manual do curso para ${idAmb}?`)) {
-                const r = await fetch(`${SCRIPT_URL}?action=liberarCurso&idAmbiente=${idAmb}&idCurso=${sel.value}`);
-                const res = await r.json();
-                if(res.success) { alert("Curso liberado com sucesso!"); carregarDados(); }
-            }
         }
     </script>
 </body>
