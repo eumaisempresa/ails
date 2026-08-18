@@ -29,6 +29,7 @@
             font-weight: 300;
             line-height: 1.6;
             overflow-x: hidden;
+            width: 100vw;
         }
 
         .brand-title, #aulaTitulo, h2, h3 { font-family: 'Cormorant Garamond', serif; color: var(--dourado-principal); }
@@ -111,6 +112,7 @@
             overflow-y: auto; 
             background-color: #EAEFF4; 
             display: block;
+            width: 100%;
         }
 
         .notes-panel { 
@@ -121,6 +123,7 @@
             flex-direction: column; 
             align-items: center;
             overflow-y: auto;
+            z-index: 2000;
         }
 
         .progress-container {
@@ -193,6 +196,7 @@
             background-size: 100% 28px;
             line-height: 28px;
             display: block;
+            overflow-x: hidden; /* CRÍTICO: Não deixa nada vazar da folha */
         }
 
         .meta-leitura {
@@ -236,6 +240,7 @@
             line-height: 1.8;
             word-break: break-word;
             animation: fadeInConteudo 0.4s ease-out;
+            width: 100%;
         }
 
         .conteudo-aula-dinamico h1, .conteudo-aula-dinamico h2, .conteudo-aula-dinamico h3 {
@@ -254,23 +259,30 @@
             margin-bottom: 24px;
         }
 
-        /* IMAGENS E TABELAS: Garantindo que nada transborda a folha */
+        /* CONTAINER DE ROLAGEM BLINDADO - SÓ ROLA DENTRO DO PAPEL */
         .media-scroll-container {
-            width: 100%;
-            overflow-x: auto;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
             margin: 25px 0;
             border-radius: 6px;
             -webkit-overflow-scrolling: touch;
+            display: block !important;
+            position: relative;
         }
 
         .conteudo-aula-dinamico img {
-            display: block;
-            max-width: 100%;
+            display: block !important;
+            max-width: 100% !important;
             height: auto !important;
-            object-fit: contain;
             margin: 0 auto;
             border-radius: 4px;
-            box-shadow: 0 4px 15px rgba(15, 32, 51, 0.12);
+        }
+
+        /* Força a imagem a ser maior que o container para permitir o scroll se necessário */
+        .media-scroll-container img {
+            max-width: none !important; 
+            min-width: 100% !important;
         }
 
         .conteudo-aula-dinamico table {
@@ -300,14 +312,9 @@
             font-weight: 700 !important;
         }
 
-        .conteudo-aula-dinamico tr:first-child td *, 
-        .conteudo-aula-dinamico tr:first-child th * {
-            color: #F7E5BF !important;
-        }
-
         .conteudo-aula-dinamico tr:nth-child(even) td { background-color: #F8FAFC; }
 
-        /* OVERLAY DE BLOQUEIO - MODAL FLUTUANTE CENTRALIZADO */
+        /* OVERLAY DE BLOQUEIO */
         #bloqueioOverlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -403,7 +410,7 @@
             border-radius: 6px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             width: 280px;
-            z-index: 1000;
+            z-index: 2000;
         }
         .wa-box-modal.open { display: block; }
 
@@ -418,7 +425,7 @@
             .sidebar { position: fixed; top: 0; left: -100%; width: 85%; height: 100%; z-index: 2000; transition: 0.3s; box-shadow: 10px 0 30px rgba(0,0,0,0.5); }
             .sidebar.open { left: 0; }
             
-            .content-body { padding: 15px 10px; background-color: #EAEFF4; }
+            .content-body { padding: 15px 10px; background-color: #EAEFF4; width: 100vw; }
             .folha-caderno { padding: 25px 15px 30px 20px; border-left-width: 2px; line-height: 24px; background-size: 100% 24px; width: 100% !important; max-width: none !important; }
             
             .notes-panel { 
@@ -487,10 +494,8 @@
 </head>
 <body>
 
-    <!-- OVERLAY PARA FECHAR MENUS AO CLICAR FORA -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharTodosMenus()"></div>
 
-    <!-- TELA DE LOGIN -->
     <div id="loginOverlay">
         <div class="card-login" id="boxLogin">
             <h2 style="text-align: center; margin-bottom: 10px;">EU⁺ Saber</h2>
@@ -533,7 +538,6 @@
     <div class="painel-wrapper">
         <aside class="sidebar" id="sidebar">
             <h4 style="color: var(--texto-secundario); font-size: 12px; text-transform: uppercase; margin-bottom: 15px;">Cronograma do Curso</h4>
-            
             <div class="progress-container">
                 <div class="progress-info">
                     <span id="lblPorcentagem" style="font-weight: bold; color: var(--dourado-principal);">0%</span>
@@ -543,13 +547,11 @@
                     <div class="progress-bar-fill" id="barFill"></div>
                 </div>
             </div>
-
             <div id="listaAulas"></div>
         </aside>
 
         <main class="content-body">
             <div class="folha-caderno">
-                <!-- MODAL DE BLOQUEIO FLUTUANTE CENTRALIZADO -->
                 <div id="bloqueioOverlay">
                     <div class="modal-bloqueio-card">
                         <div class="lock-icon">🔒</div>
@@ -578,43 +580,34 @@
         <aside class="notes-panel" id="notesPanel">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 5px;">
                 <h4 style="color: var(--dourado-principal); font-family: 'Cormorant Garamond', serif; font-size: 22px;">✍️ Caderno de Insights</h4>
-                <button onclick="toggleNotes()" style="display: none; background: transparent; border: none; color: white; font-size: 18px;" id="btnCloseNotes">✕</button>
+                <button onclick="fecharTodosMenus()" style="display: none; background: transparent; border: none; color: white; font-size: 18px;" id="btnCloseNotes">✕</button>
             </div>
             <p style="font-size: 10px; color: var(--texto-secundario); margin-bottom: 20px; width: 100%;">Sincronização em nuvem ativa</p>
-            
             <textarea id="txtAnotacoes" style="width: 100%; height: 320px; background: #FFF9C4; border: none; padding: 20px; font-family: 'Kalam', cursive; font-size: 16px; color: #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); border-radius: 2px;" placeholder="Digite aqui seus insights e reflexões executivas..."></textarea>
-            
             <button style="width: 100%; margin-top: 20px;" onclick="salvarNota()">SINCRONIZAR AGORA</button>
             <div id="statusSalvar" style="font-size: 10px; margin-top: 10px; color: var(--sucesso);"></div>
         </aside>
     </div>
 
-    <!-- BOTÕES FLUTUANTES MOBILE -->
-    <button class="floating-menu-btn" onclick="toggleSidebar()" id="btnMobileMenu">
-        <i class="fas fa-bars"></i> CURSOS
-    </button>
-    <button class="floating-notes-btn" onclick="toggleNotes()" id="btnMobileNotes">
-        <i class="fas fa-pen-nib"></i> INSIGHTS
-    </button>
+    <button class="floating-menu-btn" onclick="toggleSidebar()" id="btnMobileMenu"><i class="fas fa-bars"></i> CURSOS</button>
+    <button class="floating-notes-btn" onclick="toggleNotes()" id="btnMobileNotes"><i class="fas fa-pen-nib"></i> INSIGHTS</button>
 
-    <!-- REDES SOCIAIS -->
     <div class="social-floating-dock">
         <div class="wa-box-modal" id="waModal">
             <h4 style="color: var(--dourado-principal); margin-bottom: 10px;">Suporte Executivo</h4>
-            <select id="waTipo" class="wa-field">
+            <select id="waTipo" class="wa-field" style="width:100%; background:#0E1E30; color:white; border:1px solid var(--bordas); padding:5px; margin-bottom:10px;">
                 <option value="Dúvida">Dúvida sobre o conteúdo</option>
                 <option value="Sugestão">Sugestão de melhoria</option>
                 <option value="Suporte">Problema técnico</option>
             </select>
-            <textarea id="waMensagem" class="wa-field" style="height: 80px;" placeholder="Como podemos ajudar?"></textarea>
-            <button class="wa-btn-submit" onclick="enviarWA()">Enviar via WhatsApp</button>
+            <textarea id="waMensagem" class="wa-field" style="width:100%; height: 80px; background:#0E1E30; color:white; border:1px solid var(--bordas); padding:5px; margin-bottom:10px;" placeholder="Como podemos ajudar?"></textarea>
+            <button style="width:100%; background: var(--dourado-principal); color: #000; border: none; padding: 10px; font-weight: bold; cursor: pointer;" onclick="enviarWA()">Enviar via WhatsApp</button>
         </div>
         <button class="social-btn btn-whatsapp" onclick="toggleWA()"><i class="fab fa-whatsapp"></i></button>
         <a href="https://www.linkedin.com/company/eumaisexecutivo/" target="_blank" class="social-btn btn-linkedin"><i class="fab fa-linkedin-in"></i></a>
         <a href="https://www.instagram.com/eumaisempresa/" target="_blank" class="social-btn btn-instagram"><i class="fab fa-instagram"></i></a>
     </div>
 
-    <!-- MODAL SENHA -->
     <div class="modal-senha" id="modalSenha">
         <div class="card-login" style="max-width: 400px;">
             <h3>Alterar Senha</h3>
@@ -649,10 +642,8 @@
             const senha = document.getElementById('loginSenha').value;
             const btn = document.getElementById('btnLogin');
             if (!email || !senha) return alert("Preencha todos os campos.");
-            
             btn.innerText = "AUTENTICANDO...";
             btn.disabled = true;
-
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=validarAcesso&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`);
                 const res = await r.json();
@@ -661,9 +652,7 @@
                     localStorage.setItem('ails_idAmbiente', res.idAmbiente);
                     localStorage.setItem('ails_nome', res.nome);
                     location.reload();
-                } else {
-                    alert(res.error || "Credenciais inválidas.");
-                }
+                } else alert(res.error || "Credenciais inválidas.");
             } catch (e) { alert("Erro de conexão."); }
             finally { btn.innerText = "ACESSAR AMBIENTE"; btn.disabled = false; }
         }
@@ -684,10 +673,7 @@
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=carregarMenu&idAmbiente=${idAmbiente}`);
                 const res = await r.json();
-                if (res.success) {
-                    dbCursos = res.cursos;
-                    renderizarSeletor();
-                }
+                if (res.success) { dbCursos = res.cursos; renderizarSeletor(); }
             } catch (e) { console.error(e); }
         }
 
@@ -707,7 +693,6 @@
         function mudarCurso() {
             const idC = document.getElementById('selectCurso').value;
             cursoAtual = dbCursos.find(c => c.idCurso === idC);
-            
             const container = document.getElementById('statusContainer');
             if (cursoAtual && cursoAtual.comprado) {
                 container.innerHTML = `<span style="color: var(--sucesso); font-size: 11px; font-weight: bold; border: 1px solid var(--sucesso); padding: 5px 10px; border-radius: 4px;">✓ CURSO ADQUIRIDO</span>`;
@@ -715,11 +700,8 @@
                 const preco = (cursoAtual && cursoAtual.preco) ? formatarMoeda(cursoAtual.preco) : "0,00";
                 container.innerHTML = `<button class="btn-upgrade-global" onclick="registrarInteresse()">DESBLOQUEAR R$ ${preco}</button>`;
             }
-            
             renderizarCronograma();
-            if (cursoAtual && cursoAtual.aulas.length > 0) {
-                carregarAula(cursoAtual.aulas[0].idAula, cursoAtual.aulas[0].idDoc || cursoAtual.aulas[0].idDocumento);
-            }
+            if (cursoAtual && cursoAtual.aulas.length > 0) carregarAula(cursoAtual.aulas[0].idAula, cursoAtual.aulas[0].idDoc || cursoAtual.aulas[0].idDocumento);
         }
 
         function renderizarCronograma() {
@@ -734,7 +716,6 @@
                     </div>
                 `;
             }).join('');
-            
             const concluidas = cursoAtual.aulas.filter(a => a.concluida).length;
             const perc = Math.round((concluidas / cursoAtual.aulas.length) * 100) || 0;
             document.getElementById('lblPorcentagem').innerText = `${perc}%`;
@@ -745,53 +726,40 @@
         async function carregarAula(idA, idD) {
             const aula = cursoAtual.aulas.find(a => a.idAula === idA);
             const overlay = document.getElementById('bloqueioOverlay');
-            
-            if (!cursoAtual.comprado && !aula.degustacao) {
-                overlay.style.display = 'flex';
-                if (window.innerWidth <= 900) fecharTodosMenus();
-                return;
-            }
-            
+            if (!cursoAtual.comprado && !aula.degustacao) { overlay.style.display = 'flex'; if (window.innerWidth <= 900) fecharTodosMenus(); return; }
             overlay.style.display = 'none';
             aulaAtiva = idA;
             renderizarCronograma();
-            
             document.getElementById('aulaTituloPagina').innerText = aula.tituloAula;
             document.getElementById('aulaConteudo').innerHTML = "<em>Carregando conteúdo executivo...</em>";
-            
             const btnConcluir = document.getElementById('btnConcluir');
-            if (aula.concluida) {
-                btnConcluir.classList.add('active');
-                btnConcluir.innerText = "✓ Aula Concluída";
-            } else {
-                btnConcluir.classList.remove('active');
-                btnConcluir.innerText = "✓ Marcar Concluído";
-            }
-
+            if (aula.concluida) { btnConcluir.classList.add('active'); btnConcluir.innerText = "✓ Aula Concluída"; }
+            else { btnConcluir.classList.remove('active'); btnConcluir.innerText = "✓ Marcar Concluído"; }
             if (window.innerWidth <= 900) fecharTodosMenus();
-
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=carregarAula&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&idAula=${idA}&idDoc=${idD}&idDocumento=${idD}`);
                 const res = await r.json();
                 if (res.success) {
-                    let htmlConteudo = res.html || res.conteudo;
-                    
-                    // Envolve tabelas E imagens em containers de scroll para evitar quebra no mobile
-                    htmlConteudo = htmlConteudo.replace(/<table/g, '<div class="media-scroll-container"><table').replace(/<\/table>/g, '</table></div>');
-                    htmlConteudo = htmlConteudo.replace(/<img/g, '<div class="media-scroll-container"><img').replace(/\/>/g, '/></div>');
-                    
-                    document.getElementById('aulaConteudo').innerHTML = htmlConteudo;
+                    let html = res.html || res.conteudo;
+                    html = html.replace(/<table/g, '<div class="media-scroll-container"><table').replace(/<\/table>/g, '</table></div>');
+                    document.getElementById('aulaConteudo').innerHTML = html;
                     document.getElementById('txtAnotacoes').value = res.anotacao || "";
                     
+                    // Blindagem Absoluta de Imagens
                     document.querySelectorAll('#aulaConteudo img').forEach(img => {
-                        img.style.maxWidth = "100%";
-                        img.style.height = "auto";
-                        img.style.display = "block";
+                        if (!img.parentElement.classList.contains('media-scroll-container')) {
+                            const wrapper = document.createElement('div');
+                            wrapper.className = 'media-scroll-container';
+                            img.parentNode.insertBefore(wrapper, img);
+                            wrapper.appendChild(img);
+                        }
+                        img.style.maxWidth = "none"; 
+                        img.style.minWidth = "100%"; 
+                        img.style.height = "auto"; 
+                        img.style.display = "block"; 
                         img.style.margin = "0 auto";
                     });
-                } else {
-                    document.getElementById('aulaConteudo').innerHTML = `<div style="color:red; padding:20px;">Erro: ${res.error}</div>`;
-                }
+                } else document.getElementById('aulaConteudo').innerHTML = `<div style="color:red; padding:20px;">Erro: ${res.error}</div>`;
             } catch (e) { alert("Erro ao carregar aula."); }
         }
 
@@ -799,80 +767,42 @@
             if (!aulaAtiva) return;
             const aula = cursoAtual.aulas.find(a => a.idAula === aulaAtiva);
             const novoStatus = !aula.concluida;
-            
             try {
-                const r = await fetch(SCRIPT_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ 
-                        action: 'salvarProgresso', 
-                        idAmbiente: idAmbiente, 
-                        idCurso: cursoAtual.idCurso, 
-                        idAula: aulaAtiva, 
-                        status: novoStatus ? 'CONCLUIDA' : 'PENDENTE' 
-                    }) 
-                });
+                const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarProgresso', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, status: novoStatus ? 'CONCLUIDA' : 'PENDENTE' }) });
                 const res = await r.json();
-                if (res.success) {
-                    aula.concluida = novoStatus;
-                    carregarAula(aulaAtiva, aula.idDoc || aula.idDocumento);
-                }
+                if (res.success) { aula.concluida = novoStatus; carregarAula(aulaAtiva, aula.idDoc || aula.idDocumento); }
             } catch (e) { alert("Erro ao salvar progresso."); }
         }
 
         async function registrarInteresse() {
             const btn = document.getElementById('btnDesbloquearOverlay');
-            const original = btn.innerText;
-            btn.innerText = "PROCESSANDO...";
-            btn.disabled = true;
-            
+            btn.innerText = "PROCESSANDO..."; btn.disabled = true;
             try {
                 const r = await fetch(`${SCRIPT_URL}?action=registrarInteresseCompra&idAmbiente=${idAmbiente}&idCurso=${cursoAtual.idCurso}&origem=PAINEL_ALUNO`);
                 const res = await r.json();
-                if (res.success && res.linkAsaas) {
-                    window.open(res.linkAsaas, '_blank');
-                    alert("O checkout foi aberto em uma nova guia. Após o pagamento, faça novo login para liberar.");
-                } else { alert("Erro ao gerar link de pagamento."); }
+                if (res.success && res.linkAsaas) { window.open(res.linkAsaas, '_blank'); alert("O checkout foi aberto em uma nova guia. Após o pagamento, faça novo login para liberar."); }
+                else alert("Erro ao gerar link de pagamento.");
             } catch (e) { alert("Erro de conexão."); }
-            finally { btn.innerText = original; btn.disabled = false; }
+            finally { btn.innerText = "DESBLOQUEAR AGORA"; btn.disabled = false; }
         }
 
         function voltarDegustacao() {
             document.getElementById('bloqueioOverlay').style.display = 'none';
-            const primeiraDegustacao = cursoAtual.aulas.find(a => a.degustacao) || cursoAtual.aulas[0];
-            if (primeiraDegustacao) {
-                carregarAula(primeiraDegustacao.idAula, primeiraDegustacao.idDoc || primeiraDegustacao.idDocumento);
-            }
+            const p = cursoAtual.aulas.find(a => a.degustacao) || cursoAtual.aulas[0];
+            if (p) carregarAula(p.idAula, p.idDoc || p.idDocumento);
         }
 
-        function toggleSidebar() { 
-            const sidebar = document.getElementById('sidebar');
-            const isOpen = sidebar.classList.contains('open');
-            fecharTodosMenus();
-            if (!isOpen) {
-                sidebar.classList.add('open');
-                document.getElementById('sidebarOverlay').style.display = 'block';
-            }
-        }
+        function toggleSidebar() { const s = document.getElementById('sidebar'); const open = s.classList.contains('open'); fecharTodosMenus(); if (!open) { s.classList.add('open'); document.getElementById('sidebarOverlay').style.display = 'block'; } }
+        function toggleNotes() { const p = document.getElementById('notesPanel'); const open = p.classList.contains('open'); fecharTodosMenus(); if (!open) { p.classList.add('open'); document.getElementById('btnCloseNotes').style.display = 'block'; document.getElementById('sidebarOverlay').style.display = 'block'; } }
         
-        function toggleNotes() { 
-            const panel = document.getElementById('notesPanel');
-            const isOpen = panel.classList.contains('open');
-            fecharTodosMenus();
-            if (!isOpen) {
-                panel.classList.add('open');
-                document.getElementById('btnCloseNotes').style.display = 'block';
-                document.getElementById('sidebarOverlay').style.display = 'block';
-            }
-        }
-
         function toggleWA() { 
-            const modal = document.getElementById('waModal');
-            const isOpen = modal.classList.contains('open');
-            fecharTodosMenus();
-            if (!isOpen) {
-                modal.classList.add('open');
-                document.getElementById('sidebarOverlay').style.display = 'block';
-            }
+            const m = document.getElementById('waModal'); 
+            const open = m.classList.contains('open'); 
+            fecharTodosMenus(); 
+            if (!open) { 
+                m.classList.add('open'); 
+                document.getElementById('sidebarOverlay').style.display = 'block'; 
+            } 
         }
 
         function fecharTodosMenus() {
@@ -884,50 +814,23 @@
         }
 
         function logout() { localStorage.clear(); location.reload(); }
-
-        async function enviarWA() {
-            const tipo = document.getElementById('waTipo').value;
-            const msg = document.getElementById('waMensagem').value;
-            const url = `https://wa.me/5527998131806?text=${encodeURIComponent(`[${tipo}] ${msg}`)}`;
-            window.open(url, '_blank');
-            fecharTodosMenus();
-        }
-
+        async function enviarWA() { window.open(`https://wa.me/5527998131806?text=${encodeURIComponent(`[${document.getElementById('waTipo').value}] ${document.getElementById('waMensagem').value}`)}`, '_blank'); fecharTodosMenus(); }
         function abrirModalSenha() { document.getElementById('modalSenha').classList.add('open'); }
         function fecharModalSenha() { document.getElementById('modalSenha').classList.remove('open'); }
-        
         async function processarTrocaSenha() {
-            const atual = document.getElementById('senhaAtual').value;
-            const nova = document.getElementById('novaSenha').value;
             try {
-                const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'alterarSenha', idAmbiente: idAmbiente, senhaAtual: atual, novaSenha: nova }) });
+                const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'alterarSenha', idAmbiente: idAmbiente, senhaAtual: document.getElementById('senhaAtual').value, novaSenha: document.getElementById('novaSenha').value }) });
                 const res = await r.json();
                 if (res.success) { alert("Senha alterada!"); fecharModalSenha(); } else alert(res.error);
             } catch (e) { alert("Erro de conexão."); }
         }
-
         async function salvarNota() {
-            const texto = document.getElementById('txtAnotacoes').value;
-            const status = document.getElementById('statusSalvar');
-            status.innerText = "Sincronizando...";
+            const s = document.getElementById('statusSalvar'); s.innerText = "Sincronizando...";
             try {
-                const r = await fetch(SCRIPT_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ 
-                        action: 'salvarAnotacao', 
-                        idAmbiente: idAmbiente, 
-                        idCurso: cursoAtual.idCurso, 
-                        idAula: aulaAtiva, 
-                        texto: texto 
-                    }) 
-                });
+                const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'salvarAnotacao', idAmbiente: idAmbiente, idCurso: cursoAtual.idCurso, idAula: aulaAtiva, texto: document.getElementById('txtAnotacoes').value }) });
                 const res = await r.json();
-                if (res.success) {
-                    status.innerText = "✓ Sincronizado";
-                } else {
-                    status.innerText = "Erro ao salvar";
-                }
-            } catch (e) { status.innerText = "Erro ao salvar"; }
+                if (res.success) s.innerText = "✓ Sincronizado"; else s.innerText = "Erro ao salvar";
+            } catch (e) { s.innerText = "Erro ao salvar"; }
         }
     </script>
 </body>
