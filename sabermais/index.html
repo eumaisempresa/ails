@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Saber+ é uma AILs para estruturar experiências de aprendizagem, biblioteca de conhecimento, caderno de insights e gestão de comunidades em um ambiente executivo personalizado."
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#07111f" />
+    <link rel="canonical" href="https://ails.eumaisempresa.com.br/sabermais/" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AILs · Ambientes Inteligentes Leves" />
+    <meta property="og:title" content="Saber+ | Plataforma executiva de conhecimento" />
+    <meta
+      property="og:description"
+      content="Conhecimento, estrutura e experiências de aprendizagem organizados em um ambiente personalizado para a sua operação."
+    />
+    <meta property="og:url" content="https://ails.eumaisempresa.com.br/sabermais/" />
+    <meta property="og:image" content="https://ails.eumaisempresa.com.br/sabermais/assets/sabermais-hero.jpeg" />
+    <meta property="og:image:alt" content="Demonstração visual de uma plataforma AILs Saber+ em notebook." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Saber+ | Plataforma executiva de conhecimento" />
+    <meta
+      name="twitter:description"
+      content="Uma AILs personalizada para conhecimento, experiências de aprendizagem e gestão de comunidades."
+    />
+    <meta name="twitter:image" content="https://ails.eumaisempresa.com.br/sabermais/assets/sabermais-hero.jpeg" />
+    <title>Saber+ | Plataforma executiva de conhecimento · AILs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Saber+",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web",
+        "url": "https://ails.eumaisempresa.com.br/sabermais/",
+        "description": "Ambiente Inteligente Leve personalizado para estruturar experiências de aprendizagem, conhecimento e gestão de comunidades.",
+        "provider": {
+          "@type": "Organization",
+          "name": "Ecossistema EU+",
+          "url": "https://eumaisempresa.com.br/"
+        }
+      }
+    </script>
+    <style>
+      :root {
+        --ink: #07111f;
+        --deep: #0b1829;
+        --panel: #0f2137;
+        --panel-2: #132b46;
+        --line: rgba(211, 168, 74, 0.23);
+        --gold: #d9ad57;
+        --gold-soft: #f0d18f;
+        --paper: #f7f2e8;
+        --muted: #afbdca;
+        --white: #f8fbff;
+        --serif: "Playfair Display", Georgia, serif;
+        --sans: "Manrope", Arial, sans-serif;
+        --mono: "DM Mono", monospace;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; background: var(--ink); color: var(--white); font-family: var(--sans); line-height: 1.6; }
+      a { color: inherit; text-decoration: none; }
+      img { display: block; max-width: 100%; }
+      .skip-link { position: fixed; top: -4rem; left: 1rem; z-index: 20; background: var(--paper); color: var(--ink); padding: .65rem 1rem; border-radius: .35rem; font-weight: 800; }
+      .skip-link:focus { top: 1rem; }
+      .shell { width: min(1160px, calc(100% - 3rem)); margin: 0 auto; }
+      .eyebrow { margin: 0; color: var(--gold-soft); font: 500 .7rem/1.4 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+      .topbar { min-height: 5.2rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,.1); }
+      .brand { display: inline-flex; align-items: center; gap: .75rem; font-weight: 800; letter-spacing: .02em; }
+      .brand-mark { display: grid; place-items: center; width: 2rem; height: 2rem; border: 1px dotted var(--gold); border-radius: 50%; color: var(--gold); font: 600 1.2rem/1 var(--serif); }
+      .brand small { display: block; font: 500 .58rem/1.2 var(--mono); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: .15rem; }
+      .back-link { font: 600 .72rem var(--mono); color: var(--muted); letter-spacing: .04em; transition: color .18s ease; }
+      .back-link:hover, .back-link:focus { color: var(--gold-soft); }
+      .hero { position: relative; overflow: hidden; padding: 5.7rem 0 4rem; border-bottom: 1px solid var(--line); }
+      .hero::before { content: ""; position: absolute; width: 48rem; height: 48rem; border: 1px solid rgba(217,173,87,.15); border-radius: 50%; top: -29rem; right: -17rem; }
+      .hero-grid { position: relative; display: grid; grid-template-columns: 1.04fr .96fr; gap: clamp(2.2rem, 7vw, 6rem); align-items: center; }
+      h1 { margin: .85rem 0 1.25rem; max-width: 13ch; font: 500 clamp(3rem, 6.3vw, 5.9rem)/.99 var(--serif); letter-spacing: -.055em; }
+      h1 em { color: var(--gold-soft); font-weight: 500; }
+      .hero-copy { max-width: 38rem; margin: 0; color: #d2dce5; font-size: clamp(1rem, 1.4vw, 1.13rem); }
+      .actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2rem; }
+      .button { display: inline-flex; align-items: center; justify-content: center; gap: .6rem; min-height: 3.2rem; padding: .9rem 1.15rem; border: 1px solid var(--gold); font: 700 .71rem var(--mono); letter-spacing: .07em; text-transform: uppercase; transition: transform .16s cubic-bezier(.23,1,.32,1), background .16s ease, color .16s ease; }
+      .button:hover, .button:focus { transform: translateY(-2px); }
+      .button:active { transform: scale(.97); }
+      .button-primary { background: var(--gold); color: var(--ink); }
+      .button-primary:hover, .button-primary:focus { background: var(--gold-soft); }
+      .button-quiet { border-color: rgba(255,255,255,.27); color: var(--white); }
+      .button-quiet:hover, .button-quiet:focus { border-color: var(--gold); color: var(--gold-soft); }
+      .hero-media { position: relative; }
+      .hero-media::after { content: "Cenário ilustrativo"; position: absolute; right: 1rem; bottom: 1rem; padding: .38rem .55rem; background: rgba(7,17,31,.84); color: var(--gold-soft); font: 500 .58rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+      .hero-media img { width: 100%; aspect-ratio: 1.79; object-fit: cover; border: 1px solid var(--line); box-shadow: 0 1.2rem 4rem rgba(0,0,0,.35); }
+      .proof { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 3rem; border-top: 1px solid rgba(255,255,255,.12); }
+      .proof div { padding: 1.25rem 1.4rem 0 0; }
+      .proof div + div { border-left: 1px solid rgba(255,255,255,.12); padding-left: 1.4rem; }
+      .proof strong { display: block; font: 600 1.08rem/1.2 var(--serif); color: var(--gold-soft); }
+      .proof span { display: block; margin-top: .38rem; color: var(--muted); font-size: .79rem; }
+      section { padding: 6.5rem 0; }
+      .section-heading { display: grid; grid-template-columns: .75fr 1.25fr; gap: 2rem; align-items: start; margin-bottom: 2.5rem; }
+      h2 { margin: .6rem 0 0; font: 500 clamp(2rem,4vw,3.5rem)/1.08 var(--serif); letter-spacing: -.04em; }
+      .lead { margin: 0; color: #c5d1dc; font-size: 1.08rem; max-width: 48rem; }
+      .light { background: var(--paper); color: var(--ink); }
+      .light .eyebrow { color: #76541c; }
+      .light .lead { color: #465464; }
+      .problem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #ded4c2; border: 1px solid #ded4c2; }
+      .problem { min-height: 13rem; padding: 1.7rem; background: #fcfaf5; }
+      .problem-index { color: #8d6a2c; font: 500 .68rem var(--mono); letter-spacing: .1em; }
+      .problem h3 { margin: 1.8rem 0 .5rem; font: 600 1.23rem/1.2 var(--serif); }
+      .problem p { margin: 0; color: #536170; font-size: .91rem; }
+      .architecture { position: relative; overflow: hidden; background: linear-gradient(137deg, var(--deep), #102944); }
+      .architecture::after { content: "SABER+"; position: absolute; right: -1.2rem; bottom: -3rem; color: rgba(255,255,255,.025); font: 800 clamp(8rem,21vw,18rem)/1 var(--sans); letter-spacing: -.09em; pointer-events: none; }
+      .columns { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .stack { border: 1px solid var(--line); padding: 1.7rem; background: rgba(7,17,31,.32); }
+      .stack-label { display: inline-flex; align-items: center; min-height: 1.6rem; padding: 0 .55rem; color: var(--gold-soft); border: 1px solid var(--line); font: 500 .6rem var(--mono); letter-spacing: .09em; text-transform: uppercase; }
+      .stack h3 { margin: 1rem 0 .6rem; font: 500 1.65rem/1.15 var(--serif); }
+      .stack p { margin: 0; color: var(--muted); font-size: .9rem; }
+      .stack ul { margin: 1.25rem 0 0; padding: 0; list-style: none; border-top: 1px solid rgba(255,255,255,.12); }
+      .stack li { padding: .68rem 0 .68rem 1.2rem; border-bottom: 1px solid rgba(255,255,255,.12); color: #dce6ed; font-size: .86rem; position: relative; }
+      .stack li::before { content: "+"; position: absolute; left: 0; color: var(--gold); }
+      .gallery { display: grid; grid-template-columns: .8fr 1.2fr; gap: 1rem; align-items: stretch; }
+      .gallery-card { position: relative; min-height: 24rem; overflow: hidden; background: var(--panel); border: 1px solid var(--line); }
+      .gallery-card img { width: 100%; height: 100%; object-fit: cover; }
+      .gallery-card .caption { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.2rem; background: linear-gradient(transparent, rgba(2,8,16,.95)); }
+      .caption span { color: var(--gold-soft); font: 500 .61rem var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+      .caption h3 { margin: .4rem 0 0; font: 500 1.45rem/1.1 var(--serif); }
+      .gallery-right { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .gallery-right .gallery-card:last-child { grid-column: 1 / -1; min-height: 16rem; }
+      .configuration { background: #0b1726; }
+      .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; counter-reset: step; }
+      .step { min-height: 14.5rem; padding: 1.5rem; border-top: 1px solid var(--gold); background: rgba(255,255,255,.035); }
+      .step::before { counter-increment: step; content: "0" counter(step); color: var(--gold-soft); font: 500 .66rem var(--mono); letter-spacing: .09em; }
+      .step h3 { margin: 1.6rem 0 .6rem; font: 500 1.35rem/1.1 var(--serif); }
+      .step p { margin: 0; color: var(--muted); font-size: .86rem; }
+      .clarity { width: min(820px,100%); margin: 3rem auto 0; padding: 1rem 1.2rem; border-left: 2px solid var(--gold); color: #d5dee5; background: rgba(255,255,255,.04); font-size: .87rem; }
+      .final { padding: 7rem 0; background: radial-gradient(circle at 84% 12%, rgba(217,173,87,.16), transparent 22rem), var(--ink); text-align: center; }
+      .final h2 { max-width: 18ch; margin: .8rem auto 1rem; }
+      .final .lead { margin: 0 auto; }
+      .final .actions { justify-content: center; }
+      footer { padding: 2rem 0; border-top: 1px solid rgba(255,255,255,.1); color: var(--muted); font-size: .72rem; }
+      .footer-inner { display: flex; justify-content: space-between; gap: 1rem; align-items: center; }
+      .footer-inner a { color: var(--gold-soft); }
+      @media (max-width: 820px) {
+        .shell { width: min(100% - 2rem, 680px); }
+        .topbar { min-height: 4.5rem; }
+        .hero { padding: 3.6rem 0 3rem; }
+        .hero-grid, .section-heading, .columns, .gallery { grid-template-columns: 1fr; }
+        .hero-media { max-width: 37rem; }
+        .proof { grid-template-columns: 1fr; }
+        .proof div + div { border-left: 0; border-top: 1px solid rgba(255,255,255,.12); padding-left: 0; padding-top: 1rem; margin-top: 1rem; }
+        section { padding: 4.5rem 0; }
+        .problem-grid, .steps { grid-template-columns: 1fr 1fr; }
+        .gallery-right { grid-template-columns: 1fr 1fr; }
+        .gallery-card { min-height: 20rem; }
+      }
+      @media (max-width: 540px) {
+        .brand small { display: none; }
+        .back-link { font-size: .61rem; }
+        h1 { font-size: clamp(2.8rem, 15vw, 4.25rem); }
+        .actions { flex-direction: column; }
+        .button { width: 100%; }
+        .problem-grid, .steps, .gallery-right { grid-template-columns: 1fr; }
+        .gallery-right .gallery-card:last-child { grid-column: auto; }
+        .gallery-card, .gallery-right .gallery-card:last-child { min-height: 17rem; }
+        .footer-inner { align-items: flex-start; flex-direction: column; }
+      }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="shell">
+      <nav class="topbar" aria-label="Navegação principal">
+        <a class="brand" href="https://ails.eumaisempresa.com.br/" aria-label="Voltar para AILs">
+          <span class="brand-mark" aria-hidden="true">+</span>
+          <span>AILs <small>Ambientes Inteligentes Leves</small></span>
+        </a>
+        <a class="back-link" href="https://ails.eumaisempresa.com.br/">← AILs conceitual</a>
+      </nav>
+    </header>
+
+    <main id="conteudo">
+      <section class="hero">
+        <div class="shell hero-grid">
+          <div>
+            <p class="eyebrow">AILs para experiências de conhecimento</p>
+            <h1>Seu conhecimento, <em>sua estrutura.</em></h1>
+            <p class="hero-copy">Saber+ é uma plataforma educacional personalizada para transformar conteúdos, métodos e repertório em uma experiência de aprendizagem consistente — com identidade, organização e continuidade.</p>
+            <div class="actions">
+              <a class="button button-primary" href="https://eumaisempresa.com.br/faleconosco/">Conversar sobre o Saber+ <span aria-hidden="true">→</span></a>
+              <a class="button button-quiet" href="#arquitetura">Entender a arquitetura <span aria-hidden="true">↓</span></a>
+            </div>
+          </div>
+          <div class="hero-media">
+            <img src="assets/sabermais-hero.jpeg" alt="Cenário ilustrativo de acesso a uma plataforma AILs personalizada em notebook." />
+          </div>
+        </div>
+        <div class="shell proof" aria-label="Princípios do Saber+">
+          <div><strong>Conteúdo que ganha forma</strong><span>Bibliotecas, trilhas, materiais e experiências organizados para o seu método.</span></div>
+          <div><strong>Experiência sob sua identidade</strong><span>Design, linguagem e jornadas construídos para a comunidade que você atende.</span></div>
+          <div><strong>Gestão que acompanha o contexto</strong><span>Visibilidade para operação, alunos, sinais e possibilidades de evolução.</span></div>
+        </div>
+      </section>
+
+      <section class="light">
+        <div class="shell">
+          <div class="section-heading">
+            <div><p class="eyebrow">O desafio</p><h2>Conhecimento não deveria se perder em uma área de membros genérica.</h2></div>
+            <p class="lead">Quando método, conteúdo, comunidade e operação são tratados como partes isoladas, a experiência perde coerência. O Saber+ nasce para estruturar um ambiente proporcional àquilo que a sua organização ensina — e à forma como quer ser percebida.</p>
+          </div>
+          <div class="problem-grid">
+            <article class="problem"><span class="problem-index">01 / Fragmentação</span><h3>Materiais espalhados</h3><p>Vídeos, PDFs, links, anotações e comunicações deixam de formar um percurso de aprendizagem claro.</p></article>
+            <article class="problem"><span class="problem-index">02 / Padronização</span><h3>Experiência sem identidade</h3><p>Ambientes prontos podem cumprir uma função técnica, mas raramente traduzem método, cultura e proposta de valor.</p></article>
+            <article class="problem"><span class="problem-index">03 / Operação</span><h3>Gestão sem contexto</h3><p>Sem uma visão adequada da jornada, acompanhar acesso, relacionamento e evolução exige esforço manual excessivo.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="arquitetura" class="architecture">
+        <div class="shell">
+          <div class="section-heading">
+            <div><p class="eyebrow">Não é um modelo fechado</p><h2>Uma arquitetura que parte do seu modo de ensinar.</h2></div>
+            <p class="lead">O Saber+ não impõe uma plataforma idêntica para todos. A AILs é desenhada a partir da natureza do conteúdo, da jornada desejada, do nível de acompanhamento e dos recursos que fazem sentido para a sua operação.</p>
+          </div>
+          <div class="columns">
+            <article class="stack">
+              <span class="stack-label">Para quem aprende</span>
+              <h3>Um ambiente para ler, registrar, avançar e retornar.</h3>
+              <p>A experiência pode combinar conteúdo estruturado, materiais de apoio e uma camada pessoal de reflexão, sem reduzir aprendizagem a uma lista de aulas.</p>
+              <ul>
+                <li>Percursos por temas, módulos ou níveis</li>
+                <li>Caderno de insights conectado à experiência</li>
+                <li>Leitura confortável em desktop e mobile</li>
+                <li>Acesso organizado aos materiais relevantes</li>
+              </ul>
+            </article>
+            <article class="stack">
+              <span class="stack-label">Para quem conduz</span>
+              <h3>Uma visão operacional que respeita a realidade da comunidade.</h3>
+              <p>A gestão pode reunir sinais de relacionamento, cursos, acessos e ações de comunicação em uma camada adequada à escala do projeto.</p>
+              <ul>
+                <li>Visão de alunos, turmas, conteúdos e interesses</li>
+                <li>Leituras de engajamento e oportunidades de contato</li>
+                <li>Apoio à organização de promoções e jornadas</li>
+                <li>Integrações definidas conforme a operação</li>
+              </ul>
+            </article>
+          </div>
+          <p class="clarity">Os recursos são possibilidades de desenvolvimento, não uma promessa de funcionalidades idênticas em todo projeto. A configuração final é definida após a leitura do contexto, das regras de acesso e da experiência que se pretende construir.</p>
+        </div>
+      </section>
+
+      <section>
+        <div class="shell">
+          <div class="section-heading">
+            <div><p class="eyebrow">Demonstrações de experiência</p><h2>Um ambiente leve, executivo e reconhecível.</h2></div>
+            <p class="lead">As imagens abaixo apresentam cenários visuais de uma AILs Saber+. Elas ilustram direções de design e possibilidades de arquitetura, não telas de uma solução já contratada ou resultados de clientes.</p>
+          </div>
+          <div class="gallery">
+            <figure class="gallery-card"><img src="assets/sabermais-mobile.jpeg" alt="Cenário ilustrativo de uma experiência Saber+ em tela de celular." /><figcaption class="caption"><span>Experiência mobile</span><h3>O conteúdo acompanha a rotina.</h3></figcaption></figure>
+            <div class="gallery-right">
+              <figure class="gallery-card"><img src="assets/sabermais-insights.jpeg" alt="Cenário ilustrativo de leitura de conteúdo e caderno de insights em tablet." /><figcaption class="caption"><span>Aprendizagem e registro</span><h3>O insight encontra lugar.</h3></figcaption></figure>
+              <figure class="gallery-card"><img src="assets/sabermais-console.jpeg" alt="Cenário ilustrativo de console de gestão de alunos e cursos." /><figcaption class="caption"><span>Console de gestão</span><h3>Operação com contexto.</h3></figcaption></figure>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="configuration">
+        <div class="shell">
+          <div class="section-heading">
+            <div><p class="eyebrow">Construção responsável</p><h2>Antes da plataforma, uma boa leitura da operação.</h2></div>
+            <p class="lead">Uma AILs de conhecimento começa pelo que precisa ser sustentado: conteúdo, método, pessoas, regras de acesso, operação e continuidade. A tecnologia vem para servir essa arquitetura.</p>
+          </div>
+          <div class="steps">
+            <article class="step"><h3>Contexto</h3><p>Mapeamos o conhecimento, os públicos e o papel que o ambiente precisa cumprir.</p></article>
+            <article class="step"><h3>Jornada</h3><p>Definimos como a pessoa entra, aprende, registra, retorna e avança.</p></article>
+            <article class="step"><h3>Configuração</h3><p>Priorizamos módulos, integrações e níveis de gestão proporcionais ao projeto.</p></article>
+            <article class="step"><h3>Evolução</h3><p>O ambiente pode amadurecer conforme surgem evidências de uso e novas necessidades.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="final">
+        <div class="shell">
+          <p class="eyebrow">Saber+ · AILs</p>
+          <h2>Quando seu conhecimento é próprio, sua estrutura também pode ser.</h2>
+          <p class="lead">Vamos entender se uma AILs Saber+ faz sentido para a sua proposta de educação, comunidade, formação ou desenvolvimento profissional.</p>
+          <div class="actions">
+            <a class="button button-primary" href="https://eumaisempresa.com.br/faleconosco/">Iniciar uma conversa <span aria-hidden="true">→</span></a>
+            <a class="button button-quiet" href="mailto:contato@eumaisempresa.com.br?subject=Interesse%20em%20AILs%20Saber%2B">Enviar e-mail <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="shell footer-inner">
+        <span>AILs · Ambientes Inteligentes Leves · Ecossistema EU+</span>
+        <a href="https://eumaisempresa.com.br/">Conhecer o Ecossistema EU+ →</a>
+      </div>
+    </footer>
+  </body>
+</html>
