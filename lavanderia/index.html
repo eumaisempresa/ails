@@ -265,9 +265,12 @@ a{color:inherit;}
 =================================================================== */
 const API_URL = "https://script.google.com/macros/s/AKfycbzqcoUP0WltvaT6wzg7l8ZDNJsTai5nButUWu6tt9h5J25HGDRt-NkiqIjUmtu35xg5/exec";
 
+let usuarioSalvo = null;
+try { usuarioSalvo = JSON.parse(localStorage.getItem('lav_usuario') || 'null'); } catch (e) {}
+
 const ESTADO = {
   token: localStorage.getItem('lav_token') || null,
-  usuario: JSON.parse(localStorage.getItem('lav_usuario') || 'null'),
+  usuario: usuarioSalvo,
   telaAtual: 'dashboard',
   cache: { clientes: [], produtos: [], producao: [] }
 };
@@ -277,13 +280,28 @@ const ESTADO = {
 =================================================================== */
 async function api(action, params = {}) {
   const corpo = Object.assign({ action, token: ESTADO.token }, params);
-  const resp = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(corpo)
-  });
-  const json = await resp.json();
-  if (!json.ok) throw new Error(json.erro || 'Erro desconhecido');
+  let resp;
+  try {
+    resp = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(corpo)
+    });
+  } catch (err) {
+    throw new Error('Não foi possível conectar ao servidor. Verifique a publicação do Web App e sua internet.');
+  }
+
+  const texto = await resp.text();
+  let json;
+  try { json = JSON.parse(texto); } catch (err) {
+    throw new Error('O servidor retornou uma resposta inválida. Reimplante o Web App e tente novamente.');
+  }
+  if (!resp.ok) throw new Error('Servidor indisponível (HTTP ' + resp.status + ')');
+  if (!json.ok) {
+    const mensagem = json.erro || 'Erro desconhecido';
+    if (/sessão inválida|sessão expirada/i.test(mensagem)) limparSessaoLocal();
+    throw new Error(mensagem);
+  }
   return json.dados;
 }
 
@@ -307,12 +325,26 @@ function formatarMoeda(v) {
   return Number(v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
+function dataLocalISO(data = new Date()) {
+  const dt = new Date(data);
+  const ano = dt.getFullYear();
+  const mes = String(dt.getMonth() + 1).padStart(2, '0');
+  const dia = String(dt.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
 function formatarData(d) {
   if (!d) return '—';
-  const dt = new Date(d);
+  const dt = new Date(/^\d{4}-\d{2}-\d{2}$/.test(String(d)) ? String(d) + 'T12:00:00' : d);
   if (isNaN(dt)) return '—';
   return dt.toLocaleDateString('pt-BR');
 }
+
+function esc(valor) {
+  return String(valor ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function escAttr(valor) { return esc(valor); }
 
 function linkWhats(numero, msg) {
   const limpo = String(numero || '').replace(/\D/g, '');
@@ -388,17 +420,24 @@ document.getElementById('form-recuperar').addEventListener('submit', async (e) =
   }
 });
 
-function sair() {
+function limparSessaoLocal() {
   localStorage.removeItem('lav_token');
   localStorage.removeItem('lav_usuario');
-  ESTADO.token = null; ESTADO.usuario = null;
+  ESTADO.token = null;
+  ESTADO.usuario = null;
+  document.getElementById('app-shell').classList.add('hidden');
+  document.getElementById('tela-login').classList.remove('hidden');
+}
+
+function sair() {
+  limparSessaoLocal();
   location.reload();
 }
 
 function abrirPerfil() {
   abrirModal('Sua conta', `
-    <div class="item-linha"><span class="k">Nome</span><span class="v">${ESTADO.usuario.nome}</span></div>
-    <div class="item-linha"><span class="k">E-mail</span><span class="v">${ESTADO.usuario.email}</span></div>
+    <div class="item-linha"><span class="k">Nome</span><span class="v">${esc(ESTADO.usuario.nome)}</span></div>
+    <div class="item-linha"><span class="k">E-mail</span><span class="v">${esc(ESTADO.usuario.email)}</span></div>
     <div class="item-linha"><span class="k">Perfil</span><span class="v">${ESTADO.usuario.perfil === 'DONO' ? 'Dono(a)' : 'Atendente'}</span></div>
     <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
       <button class="btn secundario" onclick="abrirAlterarSenha()">Alterar senha</button>
@@ -458,9 +497,11 @@ function renderNav() {
 }
 
 function irPara(tela) {
+  const TELAS = { dashboard: telaDashboard, clientes: telaClientes, producao: telaProducao, produtos: telaProdutos, financeiro: telaFinanceiro };
+  if (!TELAS[tela]) return;
+  if (['produtos', 'financeiro'].includes(tela) && ESTADO.usuario?.perfil !== 'DONO') tela = 'dashboard';
   ESTADO.telaAtual = tela;
   renderNav();
-  const TELAS = { dashboard: telaDashboard, clientes: telaClientes, producao: telaProducao, produtos: telaProdutos, financeiro: telaFinanceiro };
   document.getElementById('topo-sub').textContent = menuPorPerfil().find(m => m.id === tela)?.label || '';
   TELAS[tela]();
 }
@@ -533,7 +574,7 @@ async function telaClientes(termo) {
     ESTADO.cache.clientes = lista;
     conteudo(`
       <div class="busca-wrap">
-        <input id="busca-clientes" placeholder="Buscar por nome ou WhatsApp" value="${termo || ''}">
+        <input id="busca-clientes" placeholder="Buscar por nome ou WhatsApp" value="${escAttr(termo || '')}">
       </div>
       <div id="lista-clientes">${renderListaClientes(lista)}</div>
     `);
@@ -553,10 +594,9 @@ function renderListaClientes(lista) {
     <div class="cartao" onclick="abrirDetalheCliente(${c.ID_Cliente})">
       <div class="cartao-linha">
         <div>
-          <h3>${c.Nome}</h3>
-          <div class="meta">${c.WhatsApp || 'sem WhatsApp'}</div>
+          <h3>${esc(c.Nome)}</h3><div class="meta">${esc(c.WhatsApp || 'sem WhatsApp')}</div>
         </div>
-        <span class="badge ${statusPlanoClasse(c.Status_Plano)}">${c.Status_Plano}</span>
+        <span class="badge ${statusPlanoClasse(c.Status_Plano)}">${esc(c.Status_Plano)}</span>
       </div>
       <div class="item-linha" style="margin-top:8px;">
         <span class="k">Saldo disponível</span><span class="v">${c.Saldo_Disponivel} peças</span>
@@ -607,8 +647,8 @@ async function abrirDetalheCliente(id) {
   } catch (e) {}
 
   abrirModal(c.Nome, `
-    <div class="item-linha"><span class="k">WhatsApp</span><span class="v">${c.WhatsApp || '—'}</span></div>
-    <div class="item-linha"><span class="k">E-mail</span><span class="v">${c.Email || '—'}</span></div>
+<div class="item-linha"><span class="k">WhatsApp</span><span class="v">${esc(c.WhatsApp || '—')}</span></div>
+    <div class="item-linha"><span class="k">E-mail</span><span class="v">${esc(c.Email || '—')}</span></div>
     <div class="item-linha"><span class="k">Cadastro</span><span class="v">${formatarData(c.Data_Cadastro)}</span></div>
     <div class="item-linha"><span class="k">Saldo disponível</span><span class="v">${c.Saldo_Disponivel} peças</span></div>
     <div class="item-linha"><span class="k">Em produção</span><span class="v">${c.Saldo_Em_Producao} peças</span></div>
@@ -676,7 +716,7 @@ function renderListaProducao(lista) {
     return `
       <div class="cartao">
         <div class="cartao-linha">
-          <div><h3>#${p.ID_Pedido} · ${p.Nome_Cliente}</h3><div class="meta">${p.Qtd_Pecas} peças · ${p.Origem === 'AVULSO' ? 'Avulso' : 'Plano'}</div></div>
+          <div><h3>#${esc(p.ID_Pedido)} · ${esc(p.Nome_Cliente)}</h3><div class="meta">${esc(p.Qtd_Pecas)} peças · ${p.Origem === 'AVULSO' ? 'Avulso' : 'Plano'}</div></div>
           <span class="badge ${p.Status === 'Cancelado' ? 'cancelado' : classeBadge}">${p.Status === 'Cancelado' ? 'Cancelado' : rotulos[p.Status]}</span>
         </div>
         ${p.Status !== 'Cancelado' ? `<div class="varal"><div class="varal-corda"></div><div class="varal-etapas">${varal}</div></div>` : ''}
@@ -776,7 +816,7 @@ function renderListaProdutos(lista) {
   return lista.map(p => `
     <div class="cartao" onclick="abrirEditarProduto(${p.ID_Produto})">
       <div class="cartao-linha">
-        <div><h3>${p.Nome}</h3><div class="meta">${p.Tipo === 'PACOTE' ? p.Qtd_Pecas + ' peças' : 'Unitário'} ${p.Promocao ? '· ' + p.Promocao : ''}</div></div>
+        <div><h3>${esc(p.Nome)}</h3><div class="meta">${p.Tipo === 'PACOTE' ? esc(p.Qtd_Pecas) + ' peças' : 'Unitário'} ${p.Promocao ? '· ' + esc(p.Promocao) : ''}</div></div>
         <div style="font-family:var(--font-display); font-weight:600; font-size:16px;">${formatarMoeda(p.Preco)}</div>
       </div>
     </div>`).join('');
@@ -785,7 +825,7 @@ function renderListaProdutos(lista) {
 function formularioProduto(p) {
   return `
     <form id="form-produto">
-      <div class="campo"><label>Nome</label><input id="pr-nome" required value="${p?.Nome || ''}"></div>
+      <div class="campo"><label>Nome</label><input id="pr-nome" required value="${escAttr(p?.Nome || '')}"></div>
       <div class="linha-2">
         <div class="campo"><label>Tipo</label>
           <select id="pr-tipo">
@@ -796,7 +836,7 @@ function formularioProduto(p) {
         <div class="campo"><label>Qtd. peças</label><input type="number" id="pr-qtd" min="1" value="${p?.Qtd_Pecas || 1}"></div>
       </div>
       <div class="campo"><label>Preço (R$)</label><input type="number" step="0.01" id="pr-preco" required value="${p?.Preco || ''}"></div>
-      <div class="campo"><label>Promoção (opcional)</label><input id="pr-promo" value="${p?.Promocao || ''}" placeholder="Ex: 10% off no primeiro pacote"></div>
+      <div class="campo"><label>Promoção (opcional)</label><input id="pr-promo" value="${escAttr(p?.Promocao || '')}" placeholder="Ex: 10% off no primeiro pacote"></div>
       <button class="btn" type="submit">${p ? 'Salvar alterações' : 'Cadastrar produto'}</button>
     </form>`;
 }
@@ -849,7 +889,7 @@ async function telaFinanceiro(tipo) {
   financeiroFiltro = tipo !== undefined ? tipo : financeiroFiltro;
   carregando();
   try {
-    const mesAtual = new Date().toISOString().slice(0,7);
+    const mesAtual = dataLocalISO().slice(0,7);
     const lista = await api('listarFinanceiro', Object.assign({ mes: mesAtual }, financeiroFiltro ? { tipo: financeiroFiltro } : {}));
     const receitas = lista.filter(l => l.Tipo === 'RECEITA').reduce((a,l) => a + Number(l.Valor), 0);
     const despesas = lista.filter(l => l.Tipo === 'DESPESA').reduce((a,l) => a + Number(l.Valor), 0);
@@ -873,7 +913,7 @@ function renderListaFinanceiro(lista) {
   if (!lista.length) return `<div class="vazio"><h3>Nada lançado neste mês</h3><p>Toque em "+" para lançar uma receita ou despesa.</p></div>`;
   return lista.slice().reverse().map(l => `
     <div class="cartao cartao-linha">
-      <div><h3>${l.Descricao}</h3><div class="meta">${l.Categoria} ${l.Fornecedor ? '· ' + l.Fornecedor : ''} · ${formatarData(l.Data)}</div></div>
+      <div><h3>${esc(l.Descricao)}</h3><div class="meta">${esc(l.Categoria)} ${l.Fornecedor ? '· ' + esc(l.Fornecedor) : ''} · ${formatarData(l.Data)}</div></div>
       <div style="font-family:var(--font-display); font-weight:600; color:${l.Tipo === 'RECEITA' ? 'var(--success)' : 'var(--danger)'}">
         ${l.Tipo === 'RECEITA' ? '+' : '−'} ${formatarMoeda(l.Valor)}
       </div>
@@ -899,7 +939,7 @@ function abrirNovoLancamento() {
       <div class="campo"><label>Forma de pagamento</label>
         <select id="ln-forma"><option value="Dinheiro">Dinheiro</option><option value="PIX">PIX</option><option value="Cartão">Cartão</option></select>
       </div>
-      <div class="campo"><label>Data</label><input type="date" id="ln-data" value="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="campo"><label>Data</label><input type="date" id="ln-data" value="${dataLocalISO()}"></div>
       <button class="btn" type="submit">Lançar</button>
     </form>
   `);
@@ -925,11 +965,20 @@ function abrirNovoLancamento() {
 /* ===================================================================
    BOOT
 =================================================================== */
-(function boot() {
-  if (ESTADO.token && ESTADO.usuario) {
+async function boot() {
+  if (!ESTADO.token || !ESTADO.usuario) return;
+  try {
+    // Valida o token antes de exibir o painel; evita tela quebrada por sessão expirada.
+    await api('dashboard');
     entrarNoApp();
+  } catch (err) {
+    limparSessaoLocal();
+    const erroBox = document.getElementById('login-erro');
+    erroBox.textContent = 'Sua sessão expirou. Entre novamente.';
+    erroBox.classList.remove('hidden');
   }
-})();
+}
+boot();
 </script>
 </body>
 </html>
