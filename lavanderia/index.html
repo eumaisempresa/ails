@@ -93,6 +93,22 @@ a{color:inherit;}
 .topo-titulo{font-family:var(--font-display); font-size:18px; font-weight:600;}
 .topo-titulo span{display:block; font-family:var(--font-body); font-size:11px; font-weight:500; color:rgba(255,255,255,.72); text-transform:capitalize;}
 .avatar-btn{width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.16); border:none; color:#fff; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center;}
+.linha-datas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px;margin-top:10px;color:var(--ink-soft);font-size:11px;}
+.linha-datas span{padding:5px 7px;background:var(--surface-soft);border-radius:8px;}
+.comparacao-despesas{margin-top:16px;}
+.comparacao-despesas .tabela-scroll{overflow-x:auto;}
+.comparacao-despesas table{width:100%;border-collapse:collapse;font-size:12px;}
+.comparacao-despesas th,.comparacao-despesas td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line);white-space:nowrap;}
+.comparacao-despesas th{color:var(--ink-soft);font-weight:700;}
+@media print{
+  .sem-impressao,.nav-inferior,.fab,.modal-fundo,#toast{display:none!important;}
+  body{background:#fff!important;color:#111!important;}
+  #app-shell{display:block!important;min-height:0!important;}
+  .topo{position:static!important;background:#fff!important;color:#111!important;border-bottom:1px solid #ccc;}
+  .topo-titulo,.topo-titulo span{color:#111!important;}
+  #conteudo{overflow:visible!important;padding:12px!important;}
+  .cartao,.stat-card{break-inside:avoid;box-shadow:none!important;border:1px solid #ccc!important;}
+}
 
 #conteudo{flex:1; padding:18px 16px 90px; overflow-y:auto;}
 .tela{animation:surgir .25s ease;}
@@ -249,7 +265,7 @@ a{color:inherit;}
 
   <!-- ================= APP ================= -->
   <div id="app-shell" class="hidden">
-    <header class="topo">
+    <header class="topo sem-impressao">
       <div class="topo-titulo" id="topo-titulo">Painel<span id="topo-sub">—</span></div>
       <button class="avatar-btn" onclick="abrirPerfil()" id="avatar-iniciais">–</button>
     </header>
@@ -446,6 +462,7 @@ function abrirPerfil() {
     <div class="item-linha"><span class="k">Perfil</span><span class="v">${ESTADO.usuario.perfil === 'DONO' ? 'Dono(a)' : 'Atendente'}</span></div>
     <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
       <button class="btn secundario" onclick="abrirAlterarSenha()">Alterar senha</button>
+      ${ESTADO.usuario.perfil === 'DONO' ? '<button class="btn secundario" onclick="abrirNovoUsuarioOperacao()">Criar usuário de operação</button>' : ''}
       <button class="btn perigo" onclick="sair()">Sair</button>
     </div>
   `, { centro: true });
@@ -466,6 +483,11 @@ function abrirAlterarSenha() {
       fecharModal();
     } catch (err) { toast(err.message, 'erro'); }
   });
+}
+
+async function abrirNovoUsuarioOperacao() {
+  abrirModal('Novo usuário de operação', `<form id="form-usuario-operacao"><div class="campo"><label>Nome</label><input id="uo-nome" required></div><div class="campo"><label>E-mail</label><input type="email" id="uo-email" required></div><p class="meta">A senha inicial será gerada e enviada para o e-mail. O usuário poderá receber peças, avançar lavagem, passagem, pronto e retirada, sem acesso ao Financeiro, Produtos ou configurações do Dono.</p><button class="btn" type="submit">Criar usuário</button></form>`);
+  document.getElementById('form-usuario-operacao').addEventListener('submit', async e => { e.preventDefault(); try { await api('cadastrarUsuario', { nome: document.getElementById('uo-nome').value, email: document.getElementById('uo-email').value, perfil: 'ATENDENTE' }); toast('Usuário criado e senha enviada por e-mail'); fecharModal(); } catch (err) { toast(err.message, 'erro'); } });
 }
 
 /* ===================================================================
@@ -556,13 +578,41 @@ async function telaDashboard(mes) {
     const financeiroHtml = `<div class="eyebrow" style="margin:18px 0 10px;">Financeiro de ${esc(ESTADO.dashboardMes)}</div>
       <div class="grid-stats"><div class="stat-card"><div class="num" style="color:var(--success)">${formatarMoeda(d.financeiroMes.receitas)}</div><div class="lbl">Receitas</div></div><div class="stat-card"><div class="num" style="color:var(--danger)">${formatarMoeda(d.financeiroMes.despesas)}</div><div class="lbl">Despesas</div></div></div>
       <div class="cartao" style="text-align:center;"><div class="meta">Saldo do mês</div><div style="font-family:var(--font-display);font-size:24px;font-weight:600;color:${d.financeiroMes.saldo >= 0 ? 'var(--primary-dark)' : 'var(--danger)'}">${formatarMoeda(d.financeiroMes.saldo)}</div></div>`;
-    conteudo(`<div class="dashboard-filtros"><label class="eyebrow">Competência</label><select id="dashboard-mes">${meses}</select></div>
+    conteudo(`<div class="sem-impressao" style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="btn secundario" onclick="exportarPainelPdf()">Exportar painel em PDF</button></div><div class="relatorio-cabecalho"><h1 style="font-family:var(--font-display);font-size:24px;margin:0 0 4px;">Relatório da lavanderia</h1><div class="meta">Competência ${esc(ESTADO.dashboardMes)} · Gerado em ${esc(formatarData(new Date()))}</div></div><div class="dashboard-filtros"><label class="eyebrow">Competência</label><select id="dashboard-mes">${meses}</select></div>
       <div class="eyebrow" style="margin-bottom:10px;">Produção · ${esc(d.pedidosEmAberto)} pedido(s) em aberto</div>
       <div class="grid-stats"><div class="stat-card"><div class="num">${esc(d.clientesAtivos)}</div><div class="lbl">Clientes ativos</div></div><div class="stat-card"><div class="num">${esc(d.clientesInativos)}</div><div class="lbl">Clientes inativos</div></div><div class="stat-card"><div class="num" style="color:var(--danger)">${formatarMoeda(d.saldoTotalEmAberto)}</div><div class="lbl">Saldo total em aberto</div></div><div class="stat-card"><div class="num">${esc(d.saldoTotalPecas)}</div><div class="lbl">Saldo total de peças</div></div></div>
       <div class="grid-stats">${statsHtml}</div>${financeiroHtml}
-      <div class="secao-titulo"><h2 style="font-size:16px;">Todos os clientes</h2></div><div>${clientesHtml}</div>`);
+      <div class="secao-titulo"><h2 style="font-size:16px;">Todos os clientes</h2></div><div>${clientesHtml}</div>
+      <div class="comparacao-despesas"><div class="secao-titulo"><h2 style="font-size:16px;">Comparação de despesas</h2></div>${renderComparacaoDespesas_(d.analiseDespesas || [])}</div>`);
     document.getElementById('dashboard-mes').addEventListener('change', e => telaDashboard(e.target.value));
+    const filtroDespesas = document.getElementById('filtro-despesas');
+    if (filtroDespesas) filtroDespesas.addEventListener('change', e => filtrarComparacaoDespesas(e.target.value));
   } catch (err) { conteudo(`<div class="vazio"><h3>Não foi possível carregar</h3><p>${esc(err.message)}</p></div>`); }
+}
+
+function renderTabelaComparacaoDespesas_(grupos) {
+  if (!grupos.length) return '<div class="vazio"><p>Nenhuma compra encontrada para este filtro.</p></div>';
+  return `<div class="tabela-scroll"><table><thead><tr><th>Produto/categoria</th><th>Últimos preços unitários</th><th>Média</th><th>Última compra</th></tr></thead><tbody>${grupos.map(g => `<tr><td><strong>${esc(g.nome)}</strong></td><td>${g.lancamentos.map(l => `<span title="${escAttr(l.descricao)}">${formatarMoeda(l.precoUnitario)}/${esc(l.unidade)}</span>`).join(' · ')}</td><td>${formatarMoeda(g.mediaUnitario)}</td><td>${g.ultimaCompra ? formatarData(g.ultimaCompra.data) : '—'}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+function renderComparacaoDespesas_(grupos) {
+  if (!grupos.length) return '<div class="vazio"><p>Nenhuma despesa registrada para comparar.</p></div>';
+  ESTADO.cache.analiseDespesas = grupos;
+  return `<div class="cartao"><div class="campo"><label>Filtrar produto ou categoria</label><select id="filtro-despesas"><option value="">Todas as despesas</option>${grupos.map(g => `<option value="${escAttr(g.nome)}">${esc(g.nome)}</option>`).join('')}</select></div><div id="tabela-comparacao-despesas">${renderTabelaComparacaoDespesas_(grupos)}</div></div>`;
+}
+
+function filtrarComparacaoDespesas(nome) {
+  const alvo = document.getElementById('tabela-comparacao-despesas');
+  if (!alvo) return;
+  const grupos = ESTADO.cache.analiseDespesas || [];
+  alvo.innerHTML = renderTabelaComparacaoDespesas_(nome ? grupos.filter(g => g.nome === nome) : grupos);
+}
+
+function exportarPainelPdf() {
+  const tituloOriginal = document.title;
+  document.title = 'Relatorio_Lavanderia_' + (ESTADO.dashboardMes || dataLocalISO().slice(0, 7));
+  window.print();
+  setTimeout(() => { document.title = tituloOriginal; }, 1000);
 }
 
 /* ===================================================================
@@ -730,6 +780,7 @@ function renderListaProducao(lista) {
           <span class="badge ${p.Status === 'Cancelado' ? 'cancelado' : classeBadge}">${p.Status === 'Cancelado' ? 'Cancelado' : rotulos[p.Status]}</span>
         </div>
         ${p.Status !== 'Cancelado' ? `<div class="varal"><div class="varal-corda"></div><div class="varal-etapas">${varal}</div></div>` : ''}
+        <div class="linha-datas"><span>Recebido: ${formatarData(p.Data_Recebido)}</span><span>Lavagem: ${formatarData(p.Data_Em_Lavagem)}</span><span>Passagem: ${formatarData(p.Data_Em_Passagem)}</span><span>Pronto: ${formatarData(p.Data_Pronto)}</span><span>Retirado: ${formatarData(p.Data_Retirado)}</span><span>Registro: ${formatarData(p.Data_Registro)}</span></div>
         <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
           ${p.Status !== 'Cancelado' ? `<button class="btn pequeno secundario" onclick="abrirEditarPedido(${p.ID_Pedido})">Editar lançamento</button>` : ''}
           ${p.Status !== 'Retirado' && p.Status !== 'Cancelado' ? `${idxAtual < ordem.length - 1 ? `<button class="btn pequeno" onclick="avancarStatus(${p.ID_Pedido}, '${ordem[idxAtual+1]}')">Avançar → ${rotulos[ordem[idxAtual+1]]}</button>` : ''}<button class="btn pequeno secundario" onclick="cancelarPedido(${p.ID_Pedido})">Cancelar</button>` : ''}
@@ -789,83 +840,66 @@ async function abrirEditarPedido(id) {
 /* ===================================================================
    PRODUTOS / PLANOS (somente Dono)
 =================================================================== */
-async function telaProdutos() {
+async function telaProdutos(filtro) {
   carregando();
   try {
     const lista = await api('listarProdutos');
     ESTADO.cache.produtos = lista;
-    conteudo(`<div id="lista-produtos">${renderListaProdutos(lista)}</div>`);
+    const filtroAtual = filtro || 'TODOS';
+    const filtrada = filtroAtual === 'TODOS' ? lista : lista.filter(p => filtroAtual === 'DESPESA' ? p.Tipo === 'DESPESA' : p.Tipo !== 'DESPESA');
+    conteudo(`<div class="filtros-chip"><button class="chip ${filtroAtual === 'TODOS' ? 'ativo' : ''}" onclick="telaProdutos('TODOS')">Todos</button><button class="chip ${filtroAtual === 'PLANO' ? 'ativo' : ''}" onclick="telaProdutos('PLANO')">Planos e avulsos</button><button class="chip ${filtroAtual === 'DESPESA' ? 'ativo' : ''}" onclick="telaProdutos('DESPESA')">Produtos de despesa</button></div><div class="eyebrow" style="margin:16px 0 10px;">${filtroAtual === 'DESPESA' ? 'Catálogo de despesas' : 'Planos, pacotes e serviços'}</div><div id="lista-produtos">${renderListaProdutos(filtrada)}</div>`);
     document.getElementById('conteudo').insertAdjacentHTML('beforeend', `<button class="fab" onclick="abrirNovoProduto()">+</button>`);
-  } catch (err) { conteudo(`<div class="vazio"><h3>Erro</h3><p>${err.message}</p></div>`); }
+  } catch (err) { conteudo(`<div class="vazio"><h3>Erro</h3><p>${esc(err.message)}</p></div>`); }
 }
 
 function renderListaProdutos(lista) {
-  if (!lista.length) return `<div class="vazio"><h3>Nenhum produto cadastrado</h3><p>Cadastre planos, pacotes e serviços avulsos.</p></div>`;
+  if (!lista.length) return `<div class="vazio"><h3>Nenhum item cadastrado</h3><p>Cadastre um plano ou um produto comprado para despesas.</p></div>`;
   return lista.map(p => `
     <div class="cartao" onclick="abrirEditarProduto(${p.ID_Produto})">
       <div class="cartao-linha">
-        <div><h3>${esc(p.Nome)}</h3><div class="meta">${p.Tipo === 'PACOTE' ? esc(p.Qtd_Pecas) + ' peças' : 'Unitário'} ${p.Promocao ? '· ' + esc(p.Promocao) : ''}</div></div>
-        <div style="font-family:var(--font-display); font-weight:600; font-size:16px;">${formatarMoeda(p.Preco)}</div>
+        <div><h3>${esc(p.Nome)}</h3><div class="meta">${p.Tipo === 'DESPESA' ? 'Despesa · ' + esc(p.Categoria_Despesa || 'Outros') + ' · ' + esc(p.Unidade || 'un') : (p.Tipo === 'PACOTE' ? esc(p.Qtd_Pecas) + ' peças' : 'Serviço avulso')} ${p.Promocao ? '· ' + esc(p.Promocao) : ''}</div></div>
+        <div style="font-family:var(--font-display);font-weight:600;font-size:16px;">${formatarMoeda(p.Preco)}${p.Tipo === 'DESPESA' ? '<div class="meta">preço padrão</div>' : ''}</div>
       </div>
     </div>`).join('');
 }
 
 function formularioProduto(p) {
-  return `
-    <form id="form-produto">
-      <div class="campo"><label>Nome</label><input id="pr-nome" required value="${escAttr(p?.Nome || '')}"></div>
-      <div class="linha-2">
-        <div class="campo"><label>Tipo</label>
-          <select id="pr-tipo">
-            <option value="AVULSO" ${p?.Tipo === 'AVULSO' ? 'selected' : ''}>Avulso</option>
-            <option value="PACOTE" ${p?.Tipo === 'PACOTE' ? 'selected' : ''}>Pacote</option>
-          </select>
-        </div>
-        <div class="campo"><label>Qtd. peças</label><input type="number" id="pr-qtd" min="1" value="${p?.Qtd_Pecas || 1}"></div>
-      </div>
-      <div class="campo"><label>Preço (R$)</label><input type="number" step="0.01" id="pr-preco" required value="${p?.Preco || ''}"></div>
-      <div class="campo"><label>Promoção (opcional)</label><input id="pr-promo" value="${escAttr(p?.Promocao || '')}" placeholder="Ex: 10% off no primeiro pacote"></div>
-      <button class="btn" type="submit">${p ? 'Salvar alterações' : 'Cadastrar produto'}</button>
-    </form>`;
+  const tipo = p?.Tipo || 'PACOTE';
+  const despesa = tipo === 'DESPESA';
+  return `<form id="form-produto">
+    <div class="campo"><label>Nome</label><input id="pr-nome" required value="${escAttr(p?.Nome || '')}" placeholder="Ex: Plano mensal 30 peças ou Sabão em pó 5 kg"></div>
+    <div class="linha-2"><div class="campo"><label>Tipo</label><select id="pr-tipo"><option value="PACOTE" ${tipo === 'PACOTE' ? 'selected' : ''}>Plano / pacote</option><option value="AVULSO" ${tipo === 'AVULSO' ? 'selected' : ''}>Serviço avulso</option><option value="DESPESA" ${tipo === 'DESPESA' ? 'selected' : ''}>Produto de despesa</option></select></div><div class="campo" id="pr-qtd-wrap"><label>Qtd. peças</label><input type="number" id="pr-qtd" min="1" value="${p?.Qtd_Pecas || 1}"></div></div>
+    <div class="linha-2"><div class="campo"><label>Preço padrão (R$)</label><input type="number" step="0.01" id="pr-preco" required value="${p?.Preco || ''}"></div><div class="campo" id="pr-unidade-wrap"><label>Unidade</label><input id="pr-unidade" value="${escAttr(p?.Unidade || (despesa ? 'un' : 'peças'))}" placeholder="kg, caixa, un"></div></div>
+    <div class="campo" id="pr-cat-wrap"><label>Categoria da despesa</label><input id="pr-categoria" value="${escAttr(p?.Categoria_Despesa || '')}" placeholder="Ex: Sabão em pó"></div>
+    <div class="campo"><label>Observação / promoção</label><input id="pr-promo" value="${escAttr(p?.Promocao || '')}" placeholder="Opcional"></div>
+    <button class="btn" type="submit">${p ? 'Salvar alterações' : 'Cadastrar item'}</button></form>`;
+}
+
+function ajustarFormularioProduto_() {
+  const despesa = document.getElementById('pr-tipo').value === 'DESPESA';
+  document.getElementById('pr-qtd-wrap').classList.toggle('hidden', despesa);
+  document.getElementById('pr-cat-wrap').classList.toggle('hidden', !despesa);
 }
 
 function abrirNovoProduto() {
-  abrirModal('Novo produto/plano', formularioProduto());
+  abrirModal('Novo plano ou produto de despesa', formularioProduto());
+  ajustarFormularioProduto_();
+  document.getElementById('pr-tipo').addEventListener('change', ajustarFormularioProduto_);
   document.getElementById('form-produto').addEventListener('submit', async (e) => {
     e.preventDefault();
-    try {
-      await api('cadastrarProduto', {
-        nome: document.getElementById('pr-nome').value,
-        tipo: document.getElementById('pr-tipo').value,
-        qtdPecas: document.getElementById('pr-qtd').value,
-        preco: document.getElementById('pr-preco').value,
-        promocao: document.getElementById('pr-promo').value
-      });
-      toast('Produto cadastrado');
-      fecharModal();
-      telaProdutos();
-    } catch (err) { toast(err.message, 'erro'); }
+    try { await api('cadastrarProduto', { nome: document.getElementById('pr-nome').value, tipo: document.getElementById('pr-tipo').value, qtdPecas: document.getElementById('pr-qtd').value, preco: document.getElementById('pr-preco').value, promocao: document.getElementById('pr-promo').value, unidade: document.getElementById('pr-unidade').value, categoriaDespesa: document.getElementById('pr-categoria').value }); toast('Cadastro salvo'); fecharModal(); telaProdutos(); } catch (err) { toast(err.message, 'erro'); }
   });
 }
 
 function abrirEditarProduto(id) {
-  const p = ESTADO.cache.produtos.find(x => x.ID_Produto === id);
-  abrirModal('Editar produto', formularioProduto(p));
+  const p = ESTADO.cache.produtos.find(x => String(x.ID_Produto) === String(id));
+  if (!p) return;
+  abrirModal('Editar cadastro', formularioProduto(p));
+  ajustarFormularioProduto_();
+  document.getElementById('pr-tipo').addEventListener('change', ajustarFormularioProduto_);
   document.getElementById('form-produto').addEventListener('submit', async (e) => {
     e.preventDefault();
-    try {
-      await api('editarProduto', {
-        idProduto: id,
-        Nome: document.getElementById('pr-nome').value,
-        Tipo: document.getElementById('pr-tipo').value,
-        Qtd_Pecas: document.getElementById('pr-qtd').value,
-        Preco: document.getElementById('pr-preco').value,
-        Promocao: document.getElementById('pr-promo').value
-      });
-      toast('Produto atualizado');
-      fecharModal();
-      telaProdutos();
-    } catch (err) { toast(err.message, 'erro'); }
+    try { await api('editarProduto', { idProduto: id, Nome: document.getElementById('pr-nome').value, Tipo: document.getElementById('pr-tipo').value, Qtd_Pecas: document.getElementById('pr-qtd').value, Preco: document.getElementById('pr-preco').value, Promocao: document.getElementById('pr-promo').value, Unidade: document.getElementById('pr-unidade').value, Categoria_Despesa: document.getElementById('pr-categoria').value }); toast('Cadastro atualizado'); fecharModal(); telaProdutos(); } catch (err) { toast(err.message, 'erro'); }
   });
 }
 
@@ -893,34 +927,65 @@ async function telaFinanceiro(tipo, mes) {
 
 function renderListaFinanceiro(lista) {
   if (!lista.length) return `<div class="vazio"><h3>Nada lançado neste mês</h3><p>Use os botões para registrar uma receita de cliente ou uma despesa.</p></div>`;
-  return lista.slice().reverse().map(l => `<div class="cartao cartao-linha" onclick="abrirEditarLancamento(${l.ID_Lancamento})"><div><h3>${esc(l.Descricao)}</h3><div class="meta">${esc(l.Categoria)} ${l.Fornecedor ? '· ' + esc(l.Fornecedor) : ''} · ${formatarData(l.Data)}${l.ID_Cliente_Relacionado ? ' · Cliente #' + esc(l.ID_Cliente_Relacionado) : ''}</div>${Number(l.Qtd_Pecas_Liberadas) ? `<div class="meta" style="color:var(--success)">+${esc(l.Qtd_Pecas_Liberadas)} peças liberadas</div>` : ''}</div><div style="font-family:var(--font-display);font-weight:600;color:${l.Tipo === 'RECEITA' ? 'var(--success)' : 'var(--danger)'}">${l.Tipo === 'RECEITA' ? '+' : '−'} ${formatarMoeda(l.Valor)}<div class="meta" style="text-align:right;">Editar</div></div></div>`).join('');
+  return lista.slice().reverse().map(l => `<div class="cartao cartao-linha" onclick="abrirEditarLancamento(${l.ID_Lancamento})"><div><h3>${esc(l.Descricao)}</h3><div class="meta">${esc(l.Categoria)} ${l.Fornecedor ? '· ' + esc(l.Fornecedor) : ''} · ${formatarData(l.Data)}${l.ID_Cliente_Relacionado ? ' · Cliente #' + esc(l.ID_Cliente_Relacionado) : ''}</div>${Number(l.Quantidade) ? `<div class="meta">${esc(l.Quantidade)} ${esc(l.Unidade || 'un')} · ${formatarMoeda(l.Preco_Unitario || (Number(l.Valor) / Number(l.Quantidade)))} por unidade</div>` : ''}${Number(l.Qtd_Pecas_Liberadas) ? `<div class="meta" style="color:var(--success)">+${esc(l.Qtd_Pecas_Liberadas)} peças liberadas</div>` : ''}</div><div style="font-family:var(--font-display);font-weight:600;color:${l.Tipo === 'RECEITA' ? 'var(--success)' : 'var(--danger)'}">${l.Tipo === 'RECEITA' ? '+' : '−'} ${formatarMoeda(l.Valor)}<div class="meta" style="text-align:right;">Editar</div></div></div>`).join('');
 }
 
 async function opcoesClientesProdutos_(clienteSelecionado, produtoSelecionado) {
   const clientes = ESTADO.cache.clientes.length ? ESTADO.cache.clientes : await api('listarClientes');
-  const produtos = ESTADO.cache.produtos.length ? ESTADO.cache.produtos : await api('listarProdutos');
-  ESTADO.cache.clientes = clientes; ESTADO.cache.produtos = produtos;
-  return { clientes: '<option value="">Selecione...</option>' + clientes.map(c => `<option value="${escAttr(c.ID_Cliente)}" ${String(c.ID_Cliente) === String(clienteSelecionado || '') ? 'selected' : ''}>${esc(c.Nome)} · saldo ${esc(c.Saldo_Disponivel)} peças</option>`).join(''), produtos: '<option value="">Sem plano específico</option>' + produtos.map(p => `<option value="${escAttr(p.ID_Produto)}" ${String(p.ID_Produto) === String(produtoSelecionado || '') ? 'selected' : ''}>${esc(p.Nome)} (${esc(p.Qtd_Pecas)} peças)</option>`).join('') };
+  const produtosTodos = ESTADO.cache.produtos.length ? ESTADO.cache.produtos : await api('listarProdutos');
+  const produtos = produtosTodos.filter(p => p.Tipo !== 'DESPESA');
+  ESTADO.cache.clientes = clientes; ESTADO.cache.produtos = produtosTodos;
+  return { clientes: '<option value="">Selecione...</option>' + clientes.map(c => `<option value="${escAttr(c.ID_Cliente)}" ${String(c.ID_Cliente) === String(clienteSelecionado || '') ? 'selected' : ''}>${esc(c.Nome)} · saldo ${esc(c.Saldo_Disponivel)} peças</option>`).join(''), produtos: '<option value="">Sem plano específico</option>' + produtos.map(p => `<option value="${escAttr(p.ID_Produto)}" ${String(p.ID_Produto) === String(produtoSelecionado || '') ? 'selected' : ''}>${esc(p.Nome)} · ${esc(p.Qtd_Pecas)} peças · ${formatarMoeda(p.Preco)}</option>`).join('') };
+}
+
+function opcoesCategoriasDespesas_(selecionada) {
+  const categorias = ['Sabão em pó','Sabão líquido','Amaciante','Alvejante','Água','Energia elétrica','Gás','Salários','Aluguel','Embalagens','Manutenção','Transporte','Impostos','Outros'];
+  return '<option value="">Selecione...</option>' + categorias.map(c => `<option value="${escAttr(c)}" ${c === selecionada ? 'selected' : ''}>${esc(c)}</option>`).join('');
 }
 
 async function abrirNovaReceita() {
   try {
     const op = await opcoesClientesProdutos_();
-    abrirModal('Receita de cliente', `<form id="form-receita-cliente"><div class="campo"><label>Cliente que pagou</label><select id="rc-cliente" required>${op.clientes}</select></div><div class="campo"><label>Plano/produto</label><select id="rc-produto">${op.produtos}</select></div><div class="linha-2"><div class="campo"><label>Valor pago (R$)</label><input type="number" step="0.01" id="rc-valor" required></div><div class="campo"><label>Peças liberadas</label><input type="number" min="1" id="rc-pecas" required></div></div><div class="campo"><label>Forma de pagamento</label><select id="rc-forma"><option>PIX</option><option>Dinheiro</option><option>Cartão</option><option>Transferência</option></select></div><div class="campo"><label>Data</label><input type="date" id="rc-data" value="${dataLocalISO()}"></div><div class="campo"><label>Descrição</label><input id="rc-desc" value="Pagamento de plano"></div><button class="btn" type="submit">Registrar pagamento e liberar peças</button></form>`);
-    document.getElementById('form-receita-cliente').addEventListener('submit', async e => { e.preventDefault(); try { await api('lancarReceitaCliente', { idCliente: document.getElementById('rc-cliente').value, idProdutoPlano: document.getElementById('rc-produto').value, valor: document.getElementById('rc-valor').value, qtdPecas: document.getElementById('rc-pecas').value, formaPagamento: document.getElementById('rc-forma').value, data: document.getElementById('rc-data').value, descricao: document.getElementById('rc-desc').value }); toast('Receita registrada e saldo liberado'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
+    abrirModal('Receita de cliente', `<form id="form-receita-cliente"><div class="campo"><label>Cliente que pagou</label><select id="rc-cliente" required>${op.clientes}</select></div><div class="campo"><label>Plano/produto</label><select id="rc-produto">${op.produtos}</select></div><div class="linha-2"><div class="campo"><label>Valor de tabela (R$)</label><input type="number" step="0.01" id="rc-tabela" required></div><div class="campo"><label>Peças do plano</label><input type="number" min="1" id="rc-pecas" required></div></div><div class="linha-2"><div class="campo"><label>Desconto (%)</label><input type="number" min="0" max="99.99" step="0.01" id="rc-desconto-pct" value="0"></div><div class="campo"><label>Desconto (R$)</label><input type="number" min="0" step="0.01" id="rc-desconto-valor" value="0"></div></div><div class="campo"><label>Valor pago (R$)</label><input type="number" step="0.01" id="rc-valor" required></div><div class="campo"><label>Forma de pagamento</label><select id="rc-forma"><option>PIX</option><option>Dinheiro</option><option>Cartão</option><option>Transferência</option></select></div><div class="campo"><label>Data</label><input type="date" id="rc-data" value="${dataLocalISO()}"></div><div class="campo"><label>Descrição</label><input id="rc-desc" value="Pagamento de plano"></div><button class="btn" type="submit">Registrar pagamento e liberar peças</button></form>`);
+    const produtoEl = document.getElementById('rc-produto');
+    const tabelaEl = document.getElementById('rc-tabela');
+    const pecasEl = document.getElementById('rc-pecas');
+    const descontoPctEl = document.getElementById('rc-desconto-pct');
+    const descontoValorEl = document.getElementById('rc-desconto-valor');
+    const valorEl = document.getElementById('rc-valor');
+    const preencherPlano = () => { const p = ESTADO.cache.produtos.find(x => String(x.ID_Produto) === String(produtoEl.value)); const tabela = p ? Number(p.Preco) || 0 : Number(tabelaEl.value) || 0; tabelaEl.value = tabela ? tabela.toFixed(2) : ''; if (p && Number(p.Qtd_Pecas)) pecasEl.value = p.Qtd_Pecas; const descontoPct = Number(descontoPctEl.value) || 0; const descontoValor = Number(descontoValorEl.value) || 0; const desconto = descontoPct > 0 ? tabela * descontoPct / 100 : descontoValor; valorEl.value = tabela ? Math.max(0, tabela - desconto).toFixed(2) : ''; if (p) document.getElementById('rc-desc').value = 'Pagamento de ' + p.Nome; };
+    produtoEl.addEventListener('change', preencherPlano);
+    descontoPctEl.addEventListener('input', () => { if (Number(descontoPctEl.value) > 0) descontoValorEl.value = '0'; preencherPlano(); });
+    descontoValorEl.addEventListener('input', () => { if (Number(descontoValorEl.value) > 0) descontoPctEl.value = '0'; preencherPlano(); });
+    preencherPlano();
+    document.getElementById('form-receita-cliente').addEventListener('submit', async e => { e.preventDefault(); try { await api('lancarReceitaCliente', { idCliente: document.getElementById('rc-cliente').value, idProdutoPlano: produtoEl.value, valorTabela: tabelaEl.value, descontoPercentual: descontoPctEl.value, descontoValor: descontoValorEl.value, valor: valorEl.value, qtdPecas: pecasEl.value, formaPagamento: document.getElementById('rc-forma').value, data: document.getElementById('rc-data').value, descricao: document.getElementById('rc-desc').value }); toast('Receita registrada e saldo liberado'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
   } catch (err) { toast(err.message, 'erro'); }
 }
 
-function abrirNovaDespesa() {
-  abrirModal('Nova despesa', `<form id="form-despesa"><div class="campo"><label>Descrição</label><input id="de-desc" required placeholder="Ex: Sabão líquido 5L"></div><div class="linha-2"><div class="campo"><label>Categoria</label><input id="de-cat" placeholder="Insumos, energia..."></div><div class="campo"><label>Valor (R$)</label><input type="number" step="0.01" id="de-valor" required></div></div><div class="campo"><label>Fornecedor</label><input id="de-fornecedor"></div><div class="campo"><label>Forma de pagamento</label><select id="de-forma"><option>Dinheiro</option><option>PIX</option><option>Cartão</option></select></div><div class="campo"><label>Data</label><input type="date" id="de-data" value="${dataLocalISO()}"></div><button class="btn" type="submit">Registrar despesa</button></form>`);
-  document.getElementById('form-despesa').addEventListener('submit', async e => { e.preventDefault(); try { await api('lancarFinanceiro', { tipo: 'DESPESA', descricao: document.getElementById('de-desc').value, categoria: document.getElementById('de-cat').value, valor: document.getElementById('de-valor').value, fornecedor: document.getElementById('de-fornecedor').value, formaPagamento: document.getElementById('de-forma').value, data: document.getElementById('de-data').value }); toast('Despesa registrada'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
+async function abrirNovaDespesa() {
+  const produtosTodos = ESTADO.cache.produtos.length ? ESTADO.cache.produtos : await api('listarProdutos');
+  ESTADO.cache.produtos = produtosTodos;
+  const produtos = produtosTodos.filter(p => p.Tipo === 'DESPESA');
+  const produtoOpts = '<option value="">Sem produto pré-cadastrado</option>' + produtos.map(p => `<option value="${escAttr(p.ID_Produto)}">${esc(p.Nome)} · ${formatarMoeda(p.Preco)}/${esc(p.Unidade || 'un')}</option>`).join('');
+  abrirModal('Nova despesa', `<form id="form-despesa"><div class="campo"><label>Produto comprado (opcional)</label><select id="de-produto">${produtoOpts}</select></div><div class="campo"><label>Categoria</label><select id="de-cat">${opcoesCategoriasDespesas_()}</select></div><div class="campo hidden" id="de-outro-wrap"><label>Outra categoria</label><input id="de-outro" placeholder="Digite a categoria"></div><div class="campo"><label>Descrição</label><input id="de-desc" required placeholder="Ex: Sabão em pó 5 kg"></div><div class="linha-2"><div class="campo"><label>Quantidade</label><input type="number" step="0.01" min="0.01" id="de-qtd" required value="1"></div><div class="campo"><label>Unidade</label><input id="de-unidade" value="un" placeholder="kg, caixa, un"></div></div><div class="linha-2"><div class="campo"><label>Preço unitário (R$)</label><input type="number" step="0.01" min="0.01" id="de-unit" required></div><div class="campo"><label>Total (R$)</label><input type="number" step="0.01" id="de-valor" required></div></div><div class="campo"><label>Fornecedor</label><input id="de-fornecedor"></div><div class="campo"><label>Forma de pagamento</label><select id="de-forma"><option>Dinheiro</option><option>PIX</option><option>Cartão</option><option>Transferência</option></select></div><div class="campo"><label>Data</label><input type="date" id="de-data" value="${dataLocalISO()}"></div><button class="btn" type="submit">Registrar despesa</button></form>`);
+  const produtoEl = document.getElementById('de-produto'); const catEl = document.getElementById('de-cat'); const outroWrap = document.getElementById('de-outro-wrap'); const qtdEl = document.getElementById('de-qtd'); const unitEl = document.getElementById('de-unit'); const totalEl = document.getElementById('de-valor');
+  const recalcular = () => { totalEl.value = ((Number(qtdEl.value) || 0) * (Number(unitEl.value) || 0)).toFixed(2); };
+  catEl.addEventListener('change', () => outroWrap.classList.toggle('hidden', catEl.value !== 'Outros'));
+  produtoEl.addEventListener('change', () => { const p = produtos.find(x => String(x.ID_Produto) === String(produtoEl.value)); if (p) { document.getElementById('de-desc').value = p.Nome; catEl.value = p.Categoria_Despesa || 'Outros'; document.getElementById('de-unidade').value = p.Unidade || 'un'; unitEl.value = Number(p.Preco || 0).toFixed(2); outroWrap.classList.toggle('hidden', catEl.value !== 'Outros'); recalcular(); } });
+  qtdEl.addEventListener('input', recalcular); unitEl.addEventListener('input', recalcular);
+  document.getElementById('form-despesa').addEventListener('submit', async e => { e.preventDefault(); try { const categoria = catEl.value === 'Outros' ? document.getElementById('de-outro').value.trim() : catEl.value; await api('lancarFinanceiro', { tipo: 'DESPESA', idProdutoDespesa: produtoEl.value, descricao: document.getElementById('de-desc').value, categoria: categoria, quantidade: qtdEl.value, unidade: document.getElementById('de-unidade').value, precoUnitario: unitEl.value, valor: totalEl.value, fornecedor: document.getElementById('de-fornecedor').value, formaPagamento: document.getElementById('de-forma').value, data: document.getElementById('de-data').value }); toast('Despesa registrada'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
 }
 
 function abrirEditarLancamento(id) {
   const l = ESTADO.cache.financeiro.find(x => String(x.ID_Lancamento) === String(id));
   if (!l) return;
-  abrirModal('Editar lançamento', `<form id="form-editar-lancamento"><div class="campo"><label>Tipo</label><select id="el-tipo"><option value="RECEITA" ${l.Tipo === 'RECEITA' ? 'selected' : ''}>Receita</option><option value="DESPESA" ${l.Tipo === 'DESPESA' ? 'selected' : ''}>Despesa</option></select></div><div class="campo"><label>Descrição</label><input id="el-desc" required value="${escAttr(l.Descricao)}"></div><div class="linha-2"><div class="campo"><label>Categoria</label><input id="el-cat" value="${escAttr(l.Categoria || '')}"></div><div class="campo"><label>Valor</label><input type="number" step="0.01" id="el-valor" required value="${escAttr(l.Valor)}"></div></div><div class="campo"><label>Fornecedor</label><input id="el-fornecedor" value="${escAttr(l.Fornecedor || '')}"></div><div class="campo"><label>Forma de pagamento</label><input id="el-forma" value="${escAttr(l.Forma_Pagamento || '')}"></div><div class="campo"><label>Data</label><input type="date" id="el-data" value="${dataLocalISO(l.Data)}"></div>${l.Tipo === 'RECEITA' ? `<div class="campo"><label>ID do cliente</label><input id="el-cliente" value="${escAttr(l.ID_Cliente_Relacionado || '')}"></div><div class="campo"><label>Peças liberadas nesta receita</label><input type="number" min="0" id="el-pecas" value="${escAttr(l.Qtd_Pecas_Liberadas || 0)}"></div>` : ''}<button class="btn" type="submit">Salvar lançamento</button></form>`);
-  document.getElementById('form-editar-lancamento').addEventListener('submit', async e => { e.preventDefault(); try { await api('editarFinanceiro', { idLancamento: id, tipo: document.getElementById('el-tipo').value, descricao: document.getElementById('el-desc').value, categoria: document.getElementById('el-cat').value, valor: document.getElementById('el-valor').value, fornecedor: document.getElementById('el-fornecedor').value, formaPagamento: document.getElementById('el-forma').value, data: document.getElementById('el-data').value, idCliente: document.getElementById('el-cliente')?.value || '', qtdPecas: document.getElementById('el-pecas')?.value || 0 }); toast('Lançamento atualizado'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
+  const produtos = (ESTADO.cache.produtos || []).filter(p => p.Tipo === 'DESPESA');
+  const produtoOpts = '<option value="">Sem produto</option>' + produtos.map(p => `<option value="${escAttr(p.ID_Produto)}" ${String(p.ID_Produto) === String(l.ID_Produto_Despesa || '') ? 'selected' : ''}>${esc(p.Nome)}</option>`).join('');
+  abrirModal('Editar lançamento', `<form id="form-editar-lancamento"><div class="campo"><label>Tipo</label><select id="el-tipo"><option value="RECEITA" ${l.Tipo === 'RECEITA' ? 'selected' : ''}>Receita</option><option value="DESPESA" ${l.Tipo === 'DESPESA' ? 'selected' : ''}>Despesa</option></select></div><div class="campo"><label>Produto de despesa</label><select id="el-produto">${produtoOpts}</select></div><div class="campo"><label>Descrição</label><input id="el-desc" required value="${escAttr(l.Descricao)}"></div><div class="linha-2"><div class="campo"><label>Categoria</label><input id="el-cat" value="${escAttr(l.Categoria || '')}"></div><div class="campo"><label>Fornecedor</label><input id="el-fornecedor" value="${escAttr(l.Fornecedor || '')}"></div></div><div class="linha-2"><div class="campo"><label>Quantidade</label><input type="number" step="0.01" min="0.01" id="el-qtd" value="${escAttr(l.Quantidade || 1)}"></div><div class="campo"><label>Unidade</label><input id="el-unidade" value="${escAttr(l.Unidade || 'un')}"></div></div><div class="linha-2"><div class="campo"><label>Preço unitário</label><input type="number" step="0.01" id="el-unit" value="${escAttr(l.Preco_Unitario || l.Valor || '')}"></div><div class="campo"><label>Total</label><input type="number" step="0.01" id="el-valor" required value="${escAttr(l.Valor)}"></div></div><div class="campo"><label>Forma de pagamento</label><input id="el-forma" value="${escAttr(l.Forma_Pagamento || '')}"></div><div class="campo"><label>Data</label><input type="date" id="el-data" value="${dataLocalISO(l.Data)}"></div>${l.Tipo === 'RECEITA' ? `<div class="campo"><label>ID do cliente</label><input id="el-cliente" value="${escAttr(l.ID_Cliente_Relacionado || '')}"></div><div class="campo"><label>Peças liberadas nesta receita</label><input type="number" min="0" id="el-pecas" value="${escAttr(l.Qtd_Pecas_Liberadas || 0)}"></div>` : ''}<button class="btn" type="submit">Salvar lançamento</button></form>`);
+  const qtdEl = document.getElementById('el-qtd'); const unitEl = document.getElementById('el-unit'); const valorEl = document.getElementById('el-valor');
+  const recalc = () => { if (l.Tipo === 'DESPESA') valorEl.value = ((Number(qtdEl.value) || 0) * (Number(unitEl.value) || 0)).toFixed(2); };
+  qtdEl.addEventListener('input', recalc); unitEl.addEventListener('input', recalc);
+  document.getElementById('form-editar-lancamento').addEventListener('submit', async e => { e.preventDefault(); try { await api('editarFinanceiro', { idLancamento: id, tipo: document.getElementById('el-tipo').value, descricao: document.getElementById('el-desc').value, categoria: document.getElementById('el-cat').value, valor: document.getElementById('el-valor').value, fornecedor: document.getElementById('el-fornecedor').value, formaPagamento: document.getElementById('el-forma').value, data: document.getElementById('el-data').value, idCliente: document.getElementById('el-cliente')?.value || '', qtdPecas: document.getElementById('el-pecas')?.value || 0, quantidade: document.getElementById('el-qtd').value, unidade: document.getElementById('el-unidade').value, precoUnitario: document.getElementById('el-unit').value, idProdutoDespesa: document.getElementById('el-produto').value }); toast('Lançamento atualizado'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
 }
 
 /* ===================================================================
