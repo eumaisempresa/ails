@@ -116,8 +116,12 @@ a{color:inherit;}
 .secao-titulo h2{font-size:20px;}
 .eyebrow{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--primary);}
 
+.dashboard-filtros{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.dashboard-filtros select{max-width:160px;}
 .grid-stats{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;}
 .stat-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px;}
+.cliente-painel{padding:14px;}
+@media (min-width:720px){.cliente-painel{display:inline-block;vertical-align:top;width:calc(50% - 8px);margin-right:8px;}.dashboard-filtros select{max-width:220px;}}
 .stat-card .num{font-family:var(--font-display); font-size:26px; font-weight:600; color:var(--primary-dark);}
 .stat-card .lbl{font-size:12px; color:var(--ink-soft); margin-top:2px;}
 .stat-card.laranja .num{color:var(--accent);}
@@ -272,7 +276,8 @@ const ESTADO = {
   token: localStorage.getItem('lav_token') || null,
   usuario: usuarioSalvo,
   telaAtual: 'dashboard',
-  cache: { clientes: [], produtos: [], producao: [] }
+  dashboardMes: dataLocalISO().slice(0, 7),
+  cache: { clientes: [], produtos: [], producao: [], financeiro: [], clientesPainel: [] }
 };
 
 /* ===================================================================
@@ -520,48 +525,44 @@ function carregando() { document.getElementById('conteudo').innerHTML = `<div cl
 /* ===================================================================
    DASHBOARD
 =================================================================== */
-async function telaDashboard() {
+async function telaDashboard(mes) {
+  if (mes) ESTADO.dashboardMes = mes;
   carregando();
   try {
-    const d = await api('dashboard');
+    const d = await api('dashboard', { mes: ESTADO.dashboardMes });
+    ESTADO.cache.clientesPainel = d.clientesPainel || [];
     const STATUS_LABEL = { Recebido: 'Recebido', Em_Lavagem: 'Lavagem', Em_Passagem: 'Passagem', Pronto: 'Pronto', Retirado: 'Retirado' };
-    let statsHtml = Object.keys(d.pedidosPorStatus).map(s => `
+    const statsHtml = Object.keys(d.pedidosPorStatus).map(s => `
       <div class="stat-card ${s === 'Pronto' ? 'laranja' : ''}">
-        <div class="num">${d.pedidosPorStatus[s]}</div>
+        <div class="num">${esc(d.pedidosPorStatus[s])}</div>
         <div class="lbl">Peças · ${STATUS_LABEL[s]}</div>
       </div>`).join('');
-
-    let financeiroHtml = '';
-    if (d.financeiroMes) {
-      financeiroHtml = `
-        <div class="eyebrow" style="margin-bottom:10px;">Financeiro do mês</div>
-        <div class="grid-stats">
-          <div class="stat-card"><div class="num" style="color:var(--success)">${formatarMoeda(d.financeiroMes.receitas)}</div><div class="lbl">Receitas</div></div>
-          <div class="stat-card"><div class="num" style="color:var(--danger)">${formatarMoeda(d.financeiroMes.despesas)}</div><div class="lbl">Despesas</div></div>
+    const meses = (d.mesesDisponiveis || [ESTADO.dashboardMes]).map(m => `<option value="${escAttr(m)}" ${m === ESTADO.dashboardMes ? 'selected' : ''}>${esc(m)}</option>`).join('');
+    const clientesHtml = (d.clientesPainel || []).map(c => {
+      const ultimo = c.Ultimo_Pagamento;
+      const roupas = c.Status_Roupas || 'Sem pedidos';
+      return `<div class="cartao cliente-painel">
+        <div class="cartao-linha"><div><h3>${esc(c.Nome)}</h3><div class="meta">${esc(c.WhatsApp || 'Sem WhatsApp')} · ${esc(c.Email || 'Sem e-mail')}</div></div><span class="badge ${statusPlanoClasse(c.Status_Plano)}">${esc(c.Status_Plano || 'Inativo')}</span></div>
+        <div class="item-linha"><span class="k">Último pagamento</span><span class="v">${ultimo ? formatarMoeda(ultimo.valor) : '—'}</span></div>
+        <div class="item-linha"><span class="k">Data do pagamento</span><span class="v">${ultimo ? formatarData(ultimo.data) : '—'}</span></div>
+        <div class="item-linha"><span class="k">Saldo de peças</span><span class="v">${esc(c.Saldo_Disponivel)} disponíveis · ${esc(c.Saldo_Em_Producao)} em produção</span></div>
+        <div class="item-linha"><span class="k">Status das roupas</span><span class="v">${esc(roupas)}</span></div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+          ${c.WhatsApp ? `<a class="btn pequeno secundario" href="${linkWhats(c.WhatsApp, 'Olá ' + c.Nome + '! Tudo bem?')}" target="_blank">WhatsApp</a>` : ''}
+          <button class="btn pequeno" onclick="abrirDetalheCliente(${c.ID_Cliente})">Detalhes</button>
         </div>
-        <div class="cartao" style="text-align:center;">
-          <div class="meta">Saldo do mês</div>
-          <div style="font-family:var(--font-display); font-size:24px; font-weight:600; color:${d.financeiroMes.saldo >= 0 ? 'var(--primary-dark)' : 'var(--danger)'}">${formatarMoeda(d.financeiroMes.saldo)}</div>
-        </div>`;
-    }
-
-    let saldoBaixoHtml = '<div class="vazio"><p>Nenhum cliente com saldo baixo no momento 🎉</p></div>';
-    if (d.clientesSaldoBaixo.length) {
-      saldoBaixoHtml = d.clientesSaldoBaixo.map(c => `
-        <div class="cartao cartao-linha">
-          <div><h3>${c.nome}</h3><div class="meta">${c.saldo} peça(s) restante(s)</div></div>
-          <a class="btn pequeno secundario" href="${linkWhats(c.whatsapp, 'Oi ' + c.nome + '! Seu saldo de peças na lavanderia está acabando 🧺 Quer renovar seu pacote?')}" target="_blank">Avisar</a>
-        </div>`).join('');
-    }
-
-    conteudo(`
-      <div class="eyebrow" style="margin-bottom:10px;">Produção · ${d.pedidosEmAberto} pedido(s) em aberto</div>
-      <div class="grid-stats">${statsHtml}</div>
-      ${financeiroHtml}
-      <div class="secao-titulo"><h2 style="font-size:16px;">Saldo baixo</h2></div>
-      ${saldoBaixoHtml}
-    `);
-  } catch (err) { conteudo(`<div class="vazio"><h3>Não foi possível carregar</h3><p>${err.message}</p></div>`); }
+      </div>`;
+    }).join('') || '<div class="vazio"><p>Nenhum cliente cadastrado.</p></div>';
+    const financeiroHtml = `<div class="eyebrow" style="margin:18px 0 10px;">Financeiro de ${esc(ESTADO.dashboardMes)}</div>
+      <div class="grid-stats"><div class="stat-card"><div class="num" style="color:var(--success)">${formatarMoeda(d.financeiroMes.receitas)}</div><div class="lbl">Receitas</div></div><div class="stat-card"><div class="num" style="color:var(--danger)">${formatarMoeda(d.financeiroMes.despesas)}</div><div class="lbl">Despesas</div></div></div>
+      <div class="cartao" style="text-align:center;"><div class="meta">Saldo do mês</div><div style="font-family:var(--font-display);font-size:24px;font-weight:600;color:${d.financeiroMes.saldo >= 0 ? 'var(--primary-dark)' : 'var(--danger)'}">${formatarMoeda(d.financeiroMes.saldo)}</div></div>`;
+    conteudo(`<div class="dashboard-filtros"><label class="eyebrow">Competência</label><select id="dashboard-mes">${meses}</select></div>
+      <div class="eyebrow" style="margin-bottom:10px;">Produção · ${esc(d.pedidosEmAberto)} pedido(s) em aberto</div>
+      <div class="grid-stats"><div class="stat-card"><div class="num">${esc(d.clientesAtivos)}</div><div class="lbl">Clientes ativos</div></div><div class="stat-card"><div class="num">${esc(d.clientesInativos)}</div><div class="lbl">Clientes inativos</div></div><div class="stat-card"><div class="num" style="color:var(--danger)">${formatarMoeda(d.saldoTotalEmAberto)}</div><div class="lbl">Saldo total em aberto</div></div><div class="stat-card"><div class="num">${esc(d.saldoTotalPecas)}</div><div class="lbl">Saldo total de peças</div></div></div>
+      <div class="grid-stats">${statsHtml}</div>${financeiroHtml}
+      <div class="secao-titulo"><h2 style="font-size:16px;">Todos os clientes</h2></div><div>${clientesHtml}</div>`);
+    document.getElementById('dashboard-mes').addEventListener('change', e => telaDashboard(e.target.value));
+  } catch (err) { conteudo(`<div class="vazio"><h3>Não foi possível carregar</h3><p>${esc(err.message)}</p></div>`); }
 }
 
 /* ===================================================================
@@ -592,16 +593,14 @@ function renderListaClientes(lista) {
   if (!lista.length) return `<div class="vazio"><h3>Nenhum cliente ainda</h3><p>Toque em "+" para cadastrar o primeiro.</p></div>`;
   return lista.map(c => `
     <div class="cartao" onclick="abrirDetalheCliente(${c.ID_Cliente})">
-      <div class="cartao-linha">
-        <div>
-          <h3>${esc(c.Nome)}</h3><div class="meta">${esc(c.WhatsApp || 'sem WhatsApp')}</div>
-        </div>
-        <span class="badge ${statusPlanoClasse(c.Status_Plano)}">${esc(c.Status_Plano)}</span>
+      <div class="cartao-linha"><div><h3>${esc(c.Nome)}</h3><div class="meta">${esc(c.WhatsApp || 'sem WhatsApp')} · ${esc(c.Email || 'sem e-mail')}</div></div><span class="badge ${statusPlanoClasse(c.Status_Plano)}">${esc(c.Status_Plano || 'Inativo')}</span></div>
+      <div class="item-linha" style="margin-top:8px;"><span class="k">Saldo disponível</span><span class="v">${esc(c.Saldo_Disponivel)} peças</span></div>
+      <div class="item-linha"><span class="k">Em produção</span><span class="v">${esc(c.Saldo_Em_Producao)} peças</span></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;" onclick="event.stopPropagation()">
+        <button class="btn pequeno" onclick="abrirDetalheCliente(${c.ID_Cliente})">Editar</button>
+        <button class="btn pequeno secundario" onclick="abrirHistoricoCliente(${c.ID_Cliente})">Histórico</button>
+        ${c.WhatsApp ? `<a class="btn pequeno secundario" href="${linkWhats(c.WhatsApp, 'Olá ' + c.Nome + '! Tudo bem?')}" target="_blank">WhatsApp</a>` : ''}
       </div>
-      <div class="item-linha" style="margin-top:8px;">
-        <span class="k">Saldo disponível</span><span class="v">${c.Saldo_Disponivel} peças</span>
-      </div>
-      <div class="item-linha"><span class="k">Em produção</span><span class="v">${c.Saldo_Em_Producao} peças</span></div>
     </div>`).join('');
 }
 
@@ -637,44 +636,55 @@ function abrirNovoCliente() {
 }
 
 async function abrirDetalheCliente(id) {
-  const c = ESTADO.cache.clientes.find(x => x.ID_Cliente === id);
+  const c = ESTADO.cache.clientes.find(x => String(x.ID_Cliente) === String(id));
   if (!c) return;
   let produtosOpts = '<option value="">— nenhum —</option>';
   try {
     const produtos = await api('listarProdutos');
     ESTADO.cache.produtos = produtos;
-    produtosOpts += produtos.map(p => `<option value="${p.ID_Produto}" ${String(c.ID_Produto_Plano) === String(p.ID_Produto) ? 'selected' : ''}>${p.Nome} (${p.Qtd_Pecas} pçs)</option>`).join('');
+    produtosOpts += produtos.map(p => `<option value="${escAttr(p.ID_Produto)}" ${String(c.ID_Produto_Plano) === String(p.ID_Produto) ? 'selected' : ''}>${esc(p.Nome)} (${esc(p.Qtd_Pecas)} pçs)</option>`).join('');
   } catch (e) {}
-
-  abrirModal(c.Nome, `
-<div class="item-linha"><span class="k">WhatsApp</span><span class="v">${esc(c.WhatsApp || '—')}</span></div>
-    <div class="item-linha"><span class="k">E-mail</span><span class="v">${esc(c.Email || '—')}</span></div>
-    <div class="item-linha"><span class="k">Cadastro</span><span class="v">${formatarData(c.Data_Cadastro)}</span></div>
-    <div class="item-linha"><span class="k">Saldo disponível</span><span class="v">${c.Saldo_Disponivel} peças</span></div>
-    <div class="item-linha"><span class="k">Em produção</span><span class="v">${c.Saldo_Em_Producao} peças</span></div>
-    ${c.WhatsApp ? `<a class="btn secundario" style="margin-top:14px;" href="${linkWhats(c.WhatsApp, 'Oi ' + c.Nome + '!')}" target="_blank">Chamar no WhatsApp</a>` : ''}
-
-    <hr style="border:none; border-top:1px solid var(--line); margin:18px 0;">
+  const status = ['Pago', 'A vencer', 'Atrasado', 'Inativo'];
+  abrirModal(esc(c.Nome), `
+    <form id="form-editar-cliente">
+      <div class="campo"><label>Nome</label><input id="ec-nome" required value="${escAttr(c.Nome)}"></div>
+      <div class="campo"><label>WhatsApp</label><input id="ec-whats" required value="${escAttr(c.WhatsApp || '')}"></div>
+      <div class="campo"><label>E-mail</label><input type="email" id="ec-email" value="${escAttr(c.Email || '')}"></div>
+      <div class="campo"><label>Status do plano</label><select id="ec-status">${status.map(s => `<option value="${escAttr(s)}" ${c.Status_Plano === s ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select></div>
+      <div class="campo"><label>Observações</label><textarea id="ec-obs" rows="2">${esc(c.Observacoes || '')}</textarea></div>
+      <button class="btn" type="submit">Salvar dados do cliente</button>
+    </form>
+    <div style="display:flex;gap:8px;margin-top:10px;"><button class="btn secundario" type="button" onclick="abrirHistoricoCliente(${c.ID_Cliente})">Histórico de pagamentos e peças</button>${c.WhatsApp ? `<a class="btn secundario" href="${linkWhats(c.WhatsApp, 'Olá ' + c.Nome + '! Tudo bem?')}" target="_blank">WhatsApp</a>` : ''}</div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:18px 0;">
     <div class="eyebrow" style="margin-bottom:10px;">Renovar / recarregar pacote</div>
     <form id="form-recarga">
       <div class="campo"><label>Plano/produto</label><select id="rec-produto">${produtosOpts}</select></div>
       <div class="campo"><label>Peças a adicionar</label><input type="number" id="rec-pecas" min="1" required></div>
       <button class="btn" type="submit">Aplicar recarga</button>
-    </form>
-  `);
-  document.getElementById('form-recarga').addEventListener('submit', async (e) => {
+    </form>`);
+  document.getElementById('form-editar-cliente').addEventListener('submit', async e => {
     e.preventDefault();
     try {
-      await api('editarCliente', {
-        idCliente: c.ID_Cliente,
-        idProdutoPlano: document.getElementById('rec-produto').value,
-        recargaPecas: Number(document.getElementById('rec-pecas').value)
-      });
-      toast('Pacote recarregado');
-      fecharModal();
-      telaClientes();
+      await api('editarCliente', { idCliente: c.ID_Cliente, Nome: document.getElementById('ec-nome').value, WhatsApp: document.getElementById('ec-whats').value, Email: document.getElementById('ec-email').value, Status_Plano: document.getElementById('ec-status').value, Observacoes: document.getElementById('ec-obs').value });
+      toast('Cliente atualizado'); fecharModal(); telaClientes();
     } catch (err) { toast(err.message, 'erro'); }
   });
+  document.getElementById('form-recarga').addEventListener('submit', async e => {
+    e.preventDefault();
+    try {
+      await api('editarCliente', { idCliente: c.ID_Cliente, idProdutoPlano: document.getElementById('rec-produto').value, recargaPecas: Number(document.getElementById('rec-pecas').value) });
+      toast('Pacote recarregado'); fecharModal(); telaClientes();
+    } catch (err) { toast(err.message, 'erro'); }
+  });
+}
+
+async function abrirHistoricoCliente(id) {
+  try {
+    const h = await api('historicoCliente', { idCliente: id });
+    const pagamentos = h.pagamentos.length ? h.pagamentos.map(l => `<div class="cartao cartao-linha"><div><h3>${esc(l.Descricao)}</h3><div class="meta">${formatarData(l.Data)} · ${esc(l.Forma_Pagamento || 'Forma não informada')}</div></div><strong style="color:var(--success)">${formatarMoeda(l.Valor)}</strong></div>`).join('') : '<div class="vazio"><p>Nenhum pagamento encontrado.</p></div>';
+    const pecas = h.pecas.length ? h.pecas.map(p => `<div class="item-linha"><span class="k">#${esc(p.ID_Pedido)} · ${formatarData(p.Data_Recebido)}</span><span class="v">${esc(p.Qtd_Pecas)} peças · ${esc(p.Status)}</span></div>`).join('') : '<div class="vazio"><p>Nenhum pedido encontrado.</p></div>';
+    abrirModal('Histórico do cliente', `<div class="eyebrow">Pagamentos</div>${pagamentos}<div class="eyebrow" style="margin-top:18px;">Peças e produção</div><div class="cartao">${pecas}</div>`);
+  } catch (err) { toast(err.message, 'erro'); }
 }
 
 /* ===================================================================
@@ -720,11 +730,10 @@ function renderListaProducao(lista) {
           <span class="badge ${p.Status === 'Cancelado' ? 'cancelado' : classeBadge}">${p.Status === 'Cancelado' ? 'Cancelado' : rotulos[p.Status]}</span>
         </div>
         ${p.Status !== 'Cancelado' ? `<div class="varal"><div class="varal-corda"></div><div class="varal-etapas">${varal}</div></div>` : ''}
-        ${p.Status !== 'Retirado' && p.Status !== 'Cancelado' ? `
-          <div style="display:flex; gap:8px; margin-top:10px;">
-            ${idxAtual < ordem.length - 1 ? `<button class="btn pequeno" onclick="avancarStatus(${p.ID_Pedido}, '${ordem[idxAtual+1]}')">Avançar → ${rotulos[ordem[idxAtual+1]]}</button>` : ''}
-            <button class="btn pequeno secundario" onclick="cancelarPedido(${p.ID_Pedido})">Cancelar</button>
-          </div>` : ''}
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+          ${p.Status !== 'Cancelado' ? `<button class="btn pequeno secundario" onclick="abrirEditarPedido(${p.ID_Pedido})">Editar lançamento</button>` : ''}
+          ${p.Status !== 'Retirado' && p.Status !== 'Cancelado' ? `${idxAtual < ordem.length - 1 ? `<button class="btn pequeno" onclick="avancarStatus(${p.ID_Pedido}, '${ordem[idxAtual+1]}')">Avançar → ${rotulos[ordem[idxAtual+1]]}</button>` : ''}<button class="btn pequeno secundario" onclick="cancelarPedido(${p.ID_Pedido})">Cancelar</button>` : ''}
+        </div>
       </div>`;
   }).join('');
 }
@@ -746,55 +755,34 @@ async function cancelarPedido(id) {
   } catch (err) { toast(err.message, 'erro'); }
 }
 
+async function carregarClientesOpts_(selecionado) {
+  const clientes = ESTADO.cache.clientes.length ? ESTADO.cache.clientes : await api('listarClientes');
+  ESTADO.cache.clientes = clientes;
+  return '<option value="">Selecione...</option>' + clientes.map(c => `<option value="${escAttr(c.ID_Cliente)}" ${String(c.ID_Cliente) === String(selecionado || '') ? 'selected' : ''}>${esc(c.Nome)} (saldo: ${esc(c.Saldo_Disponivel)})</option>`).join('');
+}
+
 async function abrirNovoPedido() {
   let clientesOpts = '<option value="">Selecione...</option>';
-  try {
-    const clientes = ESTADO.cache.clientes.length ? ESTADO.cache.clientes : await api('listarClientes');
-    ESTADO.cache.clientes = clientes;
-    clientesOpts += clientes.map(c => `<option value="${c.ID_Cliente}">${c.Nome} (saldo: ${c.Saldo_Disponivel})</option>`).join('');
-  } catch (e) {}
-
-  abrirModal('Novo pedido', `
-    <form id="form-novo-pedido">
-      <div class="campo"><label>Cliente</label><select id="np-cliente" required>${clientesOpts}</select></div>
-      <div class="campo"><label>Quantidade de peças</label><input type="number" id="np-qtd" min="1" required></div>
-      <div class="campo">
-        <label>Origem</label>
-        <select id="np-origem">
-          <option value="PLANO">Desconta do plano</option>
-          <option value="AVULSO">Avulso (fora do plano)</option>
-        </select>
-      </div>
-      <div id="np-avulso-wrap" class="hidden">
-        <div class="linha-2">
-          <div class="campo"><label>Valor (R$)</label><input type="number" step="0.01" id="np-valor"></div>
-          <div class="campo"><label>Pago agora?</label><select id="np-pago"><option value="1">Sim</option><option value="0">Não</option></select></div>
-        </div>
-      </div>
-      <div class="campo"><label>Observações</label><textarea id="np-obs" rows="2"></textarea></div>
-      <button class="btn" type="submit">Registrar pedido</button>
-    </form>
-  `);
-
-  document.getElementById('np-origem').addEventListener('change', (e) => {
-    document.getElementById('np-avulso-wrap').classList.toggle('hidden', e.target.value !== 'AVULSO');
-  });
-
-  document.getElementById('form-novo-pedido').addEventListener('submit', async (e) => {
+  try { clientesOpts = await carregarClientesOpts_(); } catch (e) {}
+  abrirModal('Novo pedido', `<form id="form-novo-pedido"><div class="campo"><label>Cliente</label><select id="np-cliente" required>${clientesOpts}</select></div><div class="campo"><label>Quantidade de peças</label><input type="number" id="np-qtd" min="1" required></div><div class="campo"><label>Origem</label><select id="np-origem"><option value="PLANO">Desconta do plano</option><option value="AVULSO">Avulso (fora do plano)</option></select></div><div id="np-avulso-wrap" class="hidden"><div class="linha-2"><div class="campo"><label>Valor (R$)</label><input type="number" step="0.01" id="np-valor"></div><div class="campo"><label>Pago agora?</label><select id="np-pago"><option value="1">Sim</option><option value="0">Não</option></select></div></div></div><div class="campo"><label>Observações</label><textarea id="np-obs" rows="2"></textarea></div><button class="btn" type="submit">Registrar pedido</button></form>`);
+  document.getElementById('np-origem').addEventListener('change', e => document.getElementById('np-avulso-wrap').classList.toggle('hidden', e.target.value !== 'AVULSO'));
+  document.getElementById('form-novo-pedido').addEventListener('submit', async e => {
     e.preventDefault();
-    try {
-      await api('criarPedido', {
-        idCliente: document.getElementById('np-cliente').value,
-        qtdPecas: document.getElementById('np-qtd').value,
-        origem: document.getElementById('np-origem').value,
-        valorAvulso: document.getElementById('np-valor').value,
-        pago: document.getElementById('np-pago').value === '1',
-        observacoes: document.getElementById('np-obs').value
-      });
-      toast('Pedido registrado');
-      fecharModal();
-      telaProducao('');
-    } catch (err) { toast(err.message, 'erro'); }
+    try { await api('criarPedido', { idCliente: document.getElementById('np-cliente').value, qtdPecas: document.getElementById('np-qtd').value, origem: document.getElementById('np-origem').value, valorAvulso: document.getElementById('np-valor').value, pago: document.getElementById('np-pago').value === '1', observacoes: document.getElementById('np-obs').value }); toast('Pedido registrado'); fecharModal(); telaProducao(''); } catch (err) { toast(err.message, 'erro'); }
+  });
+}
+
+async function abrirEditarPedido(id) {
+  const p = ESTADO.cache.producao.find(x => String(x.ID_Pedido) === String(id));
+  if (!p) return;
+  let clientesOpts = '<option value="">Selecione...</option>';
+  try { clientesOpts = await carregarClientesOpts_(p.ID_Cliente); } catch (e) {}
+  const statusOpts = ['Recebido', 'Em_Lavagem', 'Em_Passagem', 'Pronto', 'Retirado'].map(s => `<option value="${s}" ${p.Status === s ? 'selected' : ''}>${s.replace('Em_Lavagem','Lavagem').replace('Em_Passagem','Passagem')}</option>`).join('');
+  abrirModal('Editar pedido #' + esc(p.ID_Pedido), `<form id="form-editar-pedido"><div class="campo"><label>Cliente</label><select id="ep-cliente" required>${clientesOpts}</select></div><div class="campo"><label>Quantidade de peças</label><input type="number" id="ep-qtd" min="1" required value="${escAttr(p.Qtd_Pecas)}"></div><div class="campo"><label>Origem</label><select id="ep-origem"><option value="PLANO" ${p.Origem === 'PLANO' ? 'selected' : ''}>Plano</option><option value="AVULSO" ${p.Origem === 'AVULSO' ? 'selected' : ''}>Avulso</option></select></div><div id="ep-avulso-wrap" class="${p.Origem === 'AVULSO' ? '' : 'hidden'}"><div class="linha-2"><div class="campo"><label>Valor avulso</label><input type="number" step="0.01" id="ep-valor" value="${escAttr(p.Valor_Avulso || '')}"></div><div class="campo"><label>Pago?</label><select id="ep-pago"><option value="1" ${p.Pago === 'SIM' ? 'selected' : ''}>Sim</option><option value="0" ${p.Pago !== 'SIM' ? 'selected' : ''}>Não</option></select></div></div></div><div class="campo"><label>Status das roupas</label><select id="ep-status">${statusOpts}</select></div><div class="campo"><label>Observações</label><textarea id="ep-obs" rows="2">${esc(p.Observacoes || '')}</textarea></div><button class="btn" type="submit">Salvar alterações</button></form>`);
+  document.getElementById('ep-origem').addEventListener('change', e => document.getElementById('ep-avulso-wrap').classList.toggle('hidden', e.target.value !== 'AVULSO'));
+  document.getElementById('form-editar-pedido').addEventListener('submit', async e => {
+    e.preventDefault();
+    try { await api('atualizarPedido', { idPedido: id, idCliente: document.getElementById('ep-cliente').value, qtdPecas: document.getElementById('ep-qtd').value, origem: document.getElementById('ep-origem').value, valorAvulso: document.getElementById('ep-valor').value, pago: document.getElementById('ep-pago').value === '1', status: document.getElementById('ep-status').value, observacoes: document.getElementById('ep-obs').value }); toast('Pedido atualizado'); fecharModal(); telaProducao(); } catch (err) { toast(err.message, 'erro'); }
   });
 }
 
@@ -885,81 +873,54 @@ function abrirEditarProduto(id) {
    FINANCEIRO (somente Dono)
 =================================================================== */
 let financeiroFiltro = '';
-async function telaFinanceiro(tipo) {
+let financeiroMesAtual = dataLocalISO().slice(0, 7);
+async function telaFinanceiro(tipo, mes) {
   financeiroFiltro = tipo !== undefined ? tipo : financeiroFiltro;
+  financeiroMesAtual = mes || financeiroMesAtual;
   carregando();
   try {
-    const mesAtual = dataLocalISO().slice(0,7);
-    const lista = await api('listarFinanceiro', Object.assign({ mes: mesAtual }, financeiroFiltro ? { tipo: financeiroFiltro } : {}));
+    const meses = await api('mesesDisponiveis');
+    const lista = await api('listarFinanceiro', Object.assign({ mes: financeiroMesAtual }, financeiroFiltro ? { tipo: financeiroFiltro } : {}));
+    ESTADO.cache.financeiro = lista;
     const receitas = lista.filter(l => l.Tipo === 'RECEITA').reduce((a,l) => a + Number(l.Valor), 0);
     const despesas = lista.filter(l => l.Tipo === 'DESPESA').reduce((a,l) => a + Number(l.Valor), 0);
-    conteudo(`
-      <div class="grid-stats">
-        <div class="stat-card"><div class="num" style="color:var(--success)">${formatarMoeda(receitas)}</div><div class="lbl">Receitas do mês</div></div>
-        <div class="stat-card"><div class="num" style="color:var(--danger)">${formatarMoeda(despesas)}</div><div class="lbl">Despesas do mês</div></div>
-      </div>
-      <div class="tabs-topo">
-        <button class="tab-topo ${financeiroFiltro==='' ? 'ativo':''}" onclick="telaFinanceiro('')">Tudo</button>
-        <button class="tab-topo ${financeiroFiltro==='RECEITA' ? 'ativo':''}" onclick="telaFinanceiro('RECEITA')">Receitas</button>
-        <button class="tab-topo ${financeiroFiltro==='DESPESA' ? 'ativo':''}" onclick="telaFinanceiro('DESPESA')">Despesas</button>
-      </div>
-      <div id="lista-financeiro">${renderListaFinanceiro(lista)}</div>
-    `);
-    document.getElementById('conteudo').insertAdjacentHTML('beforeend', `<button class="fab" onclick="abrirNovoLancamento()">+</button>`);
-  } catch (err) { conteudo(`<div class="vazio"><h3>Erro</h3><p>${err.message}</p></div>`); }
+    const mesOpts = meses.map(m => `<option value="${escAttr(m)}" ${m === financeiroMesAtual ? 'selected' : ''}>${esc(m)}</option>`).join('');
+    conteudo(`<div class="dashboard-filtros"><label class="eyebrow">Competência</label><select id="financeiro-mes">${mesOpts}</select></div><div class="grid-stats"><div class="stat-card"><div class="num" style="color:var(--success)">${formatarMoeda(receitas)}</div><div class="lbl">Receitas de ${esc(financeiroMesAtual)}</div></div><div class="stat-card"><div class="num" style="color:var(--danger)">${formatarMoeda(despesas)}</div><div class="lbl">Despesas de ${esc(financeiroMesAtual)}</div></div></div><div class="tabs-topo"><button class="tab-topo ${financeiroFiltro === '' ? 'ativo' : ''}" onclick="telaFinanceiro('', financeiroMesAtual)">Tudo</button><button class="tab-topo ${financeiroFiltro === 'RECEITA' ? 'ativo' : ''}" onclick="telaFinanceiro('RECEITA', financeiroMesAtual)">Receitas</button><button class="tab-topo ${financeiroFiltro === 'DESPESA' ? 'ativo' : ''}" onclick="telaFinanceiro('DESPESA', financeiroMesAtual)">Despesas</button></div><div id="lista-financeiro">${renderListaFinanceiro(lista)}</div>`);
+    document.getElementById('financeiro-mes').addEventListener('change', e => telaFinanceiro(financeiroFiltro, e.target.value));
+    document.getElementById('conteudo').insertAdjacentHTML('beforeend', `<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;"><button class="btn" onclick="abrirNovaReceita()">+ Receita de cliente</button><button class="btn secundario" onclick="abrirNovaDespesa()">+ Despesa</button></div>`);
+  } catch (err) { conteudo(`<div class="vazio"><h3>Erro</h3><p>${esc(err.message)}</p></div>`); }
 }
 
 function renderListaFinanceiro(lista) {
-  if (!lista.length) return `<div class="vazio"><h3>Nada lançado neste mês</h3><p>Toque em "+" para lançar uma receita ou despesa.</p></div>`;
-  return lista.slice().reverse().map(l => `
-    <div class="cartao cartao-linha">
-      <div><h3>${esc(l.Descricao)}</h3><div class="meta">${esc(l.Categoria)} ${l.Fornecedor ? '· ' + esc(l.Fornecedor) : ''} · ${formatarData(l.Data)}</div></div>
-      <div style="font-family:var(--font-display); font-weight:600; color:${l.Tipo === 'RECEITA' ? 'var(--success)' : 'var(--danger)'}">
-        ${l.Tipo === 'RECEITA' ? '+' : '−'} ${formatarMoeda(l.Valor)}
-      </div>
-    </div>`).join('');
+  if (!lista.length) return `<div class="vazio"><h3>Nada lançado neste mês</h3><p>Use os botões para registrar uma receita de cliente ou uma despesa.</p></div>`;
+  return lista.slice().reverse().map(l => `<div class="cartao cartao-linha" onclick="abrirEditarLancamento(${l.ID_Lancamento})"><div><h3>${esc(l.Descricao)}</h3><div class="meta">${esc(l.Categoria)} ${l.Fornecedor ? '· ' + esc(l.Fornecedor) : ''} · ${formatarData(l.Data)}${l.ID_Cliente_Relacionado ? ' · Cliente #' + esc(l.ID_Cliente_Relacionado) : ''}</div>${Number(l.Qtd_Pecas_Liberadas) ? `<div class="meta" style="color:var(--success)">+${esc(l.Qtd_Pecas_Liberadas)} peças liberadas</div>` : ''}</div><div style="font-family:var(--font-display);font-weight:600;color:${l.Tipo === 'RECEITA' ? 'var(--success)' : 'var(--danger)'}">${l.Tipo === 'RECEITA' ? '+' : '−'} ${formatarMoeda(l.Valor)}<div class="meta" style="text-align:right;">Editar</div></div></div>`).join('');
 }
 
-function abrirNovoLancamento() {
-  abrirModal('Novo lançamento', `
-    <form id="form-lancamento">
-      <div class="campo">
-        <label>Tipo</label>
-        <select id="ln-tipo">
-          <option value="RECEITA">Receita</option>
-          <option value="DESPESA">Despesa</option>
-        </select>
-      </div>
-      <div class="campo"><label>Descrição</label><input id="ln-desc" required placeholder="Ex: Sabão líquido 5L"></div>
-      <div class="linha-2">
-        <div class="campo"><label>Categoria</label><input id="ln-cat" placeholder="Insumos, energia..."></div>
-        <div class="campo"><label>Valor (R$)</label><input type="number" step="0.01" id="ln-valor" required></div>
-      </div>
-      <div class="campo"><label>Fornecedor / onde comprou (opcional)</label><input id="ln-fornecedor"></div>
-      <div class="campo"><label>Forma de pagamento</label>
-        <select id="ln-forma"><option value="Dinheiro">Dinheiro</option><option value="PIX">PIX</option><option value="Cartão">Cartão</option></select>
-      </div>
-      <div class="campo"><label>Data</label><input type="date" id="ln-data" value="${dataLocalISO()}"></div>
-      <button class="btn" type="submit">Lançar</button>
-    </form>
-  `);
-  document.getElementById('form-lancamento').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    try {
-      await api('lancarFinanceiro', {
-        tipo: document.getElementById('ln-tipo').value,
-        descricao: document.getElementById('ln-desc').value,
-        categoria: document.getElementById('ln-cat').value,
-        valor: document.getElementById('ln-valor').value,
-        fornecedor: document.getElementById('ln-fornecedor').value,
-        formaPagamento: document.getElementById('ln-forma').value,
-        data: document.getElementById('ln-data').value
-      });
-      toast('Lançamento registrado');
-      fecharModal();
-      telaFinanceiro();
-    } catch (err) { toast(err.message, 'erro'); }
-  });
+async function opcoesClientesProdutos_(clienteSelecionado, produtoSelecionado) {
+  const clientes = ESTADO.cache.clientes.length ? ESTADO.cache.clientes : await api('listarClientes');
+  const produtos = ESTADO.cache.produtos.length ? ESTADO.cache.produtos : await api('listarProdutos');
+  ESTADO.cache.clientes = clientes; ESTADO.cache.produtos = produtos;
+  return { clientes: '<option value="">Selecione...</option>' + clientes.map(c => `<option value="${escAttr(c.ID_Cliente)}" ${String(c.ID_Cliente) === String(clienteSelecionado || '') ? 'selected' : ''}>${esc(c.Nome)} · saldo ${esc(c.Saldo_Disponivel)} peças</option>`).join(''), produtos: '<option value="">Sem plano específico</option>' + produtos.map(p => `<option value="${escAttr(p.ID_Produto)}" ${String(p.ID_Produto) === String(produtoSelecionado || '') ? 'selected' : ''}>${esc(p.Nome)} (${esc(p.Qtd_Pecas)} peças)</option>`).join('') };
+}
+
+async function abrirNovaReceita() {
+  try {
+    const op = await opcoesClientesProdutos_();
+    abrirModal('Receita de cliente', `<form id="form-receita-cliente"><div class="campo"><label>Cliente que pagou</label><select id="rc-cliente" required>${op.clientes}</select></div><div class="campo"><label>Plano/produto</label><select id="rc-produto">${op.produtos}</select></div><div class="linha-2"><div class="campo"><label>Valor pago (R$)</label><input type="number" step="0.01" id="rc-valor" required></div><div class="campo"><label>Peças liberadas</label><input type="number" min="1" id="rc-pecas" required></div></div><div class="campo"><label>Forma de pagamento</label><select id="rc-forma"><option>PIX</option><option>Dinheiro</option><option>Cartão</option><option>Transferência</option></select></div><div class="campo"><label>Data</label><input type="date" id="rc-data" value="${dataLocalISO()}"></div><div class="campo"><label>Descrição</label><input id="rc-desc" value="Pagamento de plano"></div><button class="btn" type="submit">Registrar pagamento e liberar peças</button></form>`);
+    document.getElementById('form-receita-cliente').addEventListener('submit', async e => { e.preventDefault(); try { await api('lancarReceitaCliente', { idCliente: document.getElementById('rc-cliente').value, idProdutoPlano: document.getElementById('rc-produto').value, valor: document.getElementById('rc-valor').value, qtdPecas: document.getElementById('rc-pecas').value, formaPagamento: document.getElementById('rc-forma').value, data: document.getElementById('rc-data').value, descricao: document.getElementById('rc-desc').value }); toast('Receita registrada e saldo liberado'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
+  } catch (err) { toast(err.message, 'erro'); }
+}
+
+function abrirNovaDespesa() {
+  abrirModal('Nova despesa', `<form id="form-despesa"><div class="campo"><label>Descrição</label><input id="de-desc" required placeholder="Ex: Sabão líquido 5L"></div><div class="linha-2"><div class="campo"><label>Categoria</label><input id="de-cat" placeholder="Insumos, energia..."></div><div class="campo"><label>Valor (R$)</label><input type="number" step="0.01" id="de-valor" required></div></div><div class="campo"><label>Fornecedor</label><input id="de-fornecedor"></div><div class="campo"><label>Forma de pagamento</label><select id="de-forma"><option>Dinheiro</option><option>PIX</option><option>Cartão</option></select></div><div class="campo"><label>Data</label><input type="date" id="de-data" value="${dataLocalISO()}"></div><button class="btn" type="submit">Registrar despesa</button></form>`);
+  document.getElementById('form-despesa').addEventListener('submit', async e => { e.preventDefault(); try { await api('lancarFinanceiro', { tipo: 'DESPESA', descricao: document.getElementById('de-desc').value, categoria: document.getElementById('de-cat').value, valor: document.getElementById('de-valor').value, fornecedor: document.getElementById('de-fornecedor').value, formaPagamento: document.getElementById('de-forma').value, data: document.getElementById('de-data').value }); toast('Despesa registrada'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
+}
+
+function abrirEditarLancamento(id) {
+  const l = ESTADO.cache.financeiro.find(x => String(x.ID_Lancamento) === String(id));
+  if (!l) return;
+  abrirModal('Editar lançamento', `<form id="form-editar-lancamento"><div class="campo"><label>Tipo</label><select id="el-tipo"><option value="RECEITA" ${l.Tipo === 'RECEITA' ? 'selected' : ''}>Receita</option><option value="DESPESA" ${l.Tipo === 'DESPESA' ? 'selected' : ''}>Despesa</option></select></div><div class="campo"><label>Descrição</label><input id="el-desc" required value="${escAttr(l.Descricao)}"></div><div class="linha-2"><div class="campo"><label>Categoria</label><input id="el-cat" value="${escAttr(l.Categoria || '')}"></div><div class="campo"><label>Valor</label><input type="number" step="0.01" id="el-valor" required value="${escAttr(l.Valor)}"></div></div><div class="campo"><label>Fornecedor</label><input id="el-fornecedor" value="${escAttr(l.Fornecedor || '')}"></div><div class="campo"><label>Forma de pagamento</label><input id="el-forma" value="${escAttr(l.Forma_Pagamento || '')}"></div><div class="campo"><label>Data</label><input type="date" id="el-data" value="${dataLocalISO(l.Data)}"></div>${l.Tipo === 'RECEITA' ? `<div class="campo"><label>ID do cliente</label><input id="el-cliente" value="${escAttr(l.ID_Cliente_Relacionado || '')}"></div><div class="campo"><label>Peças liberadas nesta receita</label><input type="number" min="0" id="el-pecas" value="${escAttr(l.Qtd_Pecas_Liberadas || 0)}"></div>` : ''}<button class="btn" type="submit">Salvar lançamento</button></form>`);
+  document.getElementById('form-editar-lancamento').addEventListener('submit', async e => { e.preventDefault(); try { await api('editarFinanceiro', { idLancamento: id, tipo: document.getElementById('el-tipo').value, descricao: document.getElementById('el-desc').value, categoria: document.getElementById('el-cat').value, valor: document.getElementById('el-valor').value, fornecedor: document.getElementById('el-fornecedor').value, formaPagamento: document.getElementById('el-forma').value, data: document.getElementById('el-data').value, idCliente: document.getElementById('el-cliente')?.value || '', qtdPecas: document.getElementById('el-pecas')?.value || 0 }); toast('Lançamento atualizado'); fecharModal(); telaFinanceiro(financeiroFiltro, financeiroMesAtual); } catch (err) { toast(err.message, 'erro'); } });
 }
 
 /* ===================================================================
