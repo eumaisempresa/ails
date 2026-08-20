@@ -92,8 +92,17 @@ a{color:inherit;}
 }
 .topo-titulo{font-family:var(--font-display); font-size:18px; font-weight:600;}
 .topo-titulo span{display:block; font-family:var(--font-body); font-size:11px; font-weight:500; color:rgba(255,255,255,.72); text-transform:capitalize;}
+.topo-marca{display:flex;align-items:center;gap:9px;min-width:0;}
+.topo-marca-link{display:inline-flex;align-items:center;padding:5px 9px;border-radius:8px;background:#151515;color:#f1dfae;text-decoration:none;font-family:var(--font-display);font-size:13px;font-weight:600;letter-spacing:.01em;white-space:nowrap;}
+.topo-marca-link span{color:#c9a85e;margin-right:2px;}
+.topo-marca-link:hover{background:#242424;color:#fff4cf;}
 .avatar-btn{width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.16); border:none; color:#fff; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center;}
 .linha-datas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 10px;margin-top:10px;color:var(--ink-soft);font-size:11px;}
+@media print{
+  body.imprimindo-producao #conteudo > .tela > :not(.relatorio-producao),
+  body.imprimindo-producao #conteudo > :not(.tela){display:none!important;}
+  body.imprimindo-producao .relatorio-producao{display:block!important;}
+}
 .linha-datas span{padding:5px 7px;background:var(--surface-soft);border-radius:8px;}
 .comparacao-despesas{margin-top:16px;}
 .comparacao-despesas .tabela-scroll{overflow-x:auto;}
@@ -225,7 +234,7 @@ a{color:inherit;}
         <path d="M14 24c0-6 4-10 10-10s10 4 10 10-4 10-10 10" stroke="#DCEEEC" stroke-width="2.6" stroke-linecap="round" fill="none"/>
         <circle cx="24" cy="24" r="4.2" fill="#E4622F"/>
       </svg>
-      <div class="marca-texto">Lavanderia<span>Painel de gestão</span></div>
+      <div class="marca-texto">EU+ Negócio<span>Lavanderia · Painel de gestão</span></div>
     </div>
 
     <div class="card-login">
@@ -266,7 +275,7 @@ a{color:inherit;}
   <!-- ================= APP ================= -->
   <div id="app-shell" class="hidden">
     <header class="topo sem-impressao">
-      <div class="topo-titulo" id="topo-titulo">Painel<span id="topo-sub">—</span></div>
+      <div class="topo-marca"><a class="topo-marca-link" href="https://eumaisempresa.com.br/plataformas/negocio/" target="_blank" rel="noopener noreferrer" title="Conheça o Eu+ Negócio"><span>EU+</span> Negócio</a><div class="topo-titulo" id="topo-titulo">Painel<span id="topo-sub">—</span></div></div>
       <button class="avatar-btn" onclick="abrirPerfil()" id="avatar-iniciais">–</button>
     </header>
 
@@ -688,11 +697,11 @@ function abrirNovoCliente() {
 async function abrirDetalheCliente(id) {
   const c = ESTADO.cache.clientes.find(x => String(x.ID_Cliente) === String(id));
   if (!c) return;
-  let produtosOpts = '<option value="">— nenhum —</option>';
+  let produtosOpts = '<option value="">Selecione um plano...</option>';
   try {
     const produtos = await api('listarProdutos');
     ESTADO.cache.produtos = produtos;
-    produtosOpts += produtos.map(p => `<option value="${escAttr(p.ID_Produto)}" ${String(c.ID_Produto_Plano) === String(p.ID_Produto) ? 'selected' : ''}>${esc(p.Nome)} (${esc(p.Qtd_Pecas)} pçs)</option>`).join('');
+    produtosOpts += produtos.filter(p => p.Tipo !== 'DESPESA').map(p => `<option value="${escAttr(p.ID_Produto)}" ${String(c.ID_Produto_Plano) === String(p.ID_Produto) ? 'selected' : ''}>${esc(p.Nome)} · ${esc(p.Qtd_Pecas)} peças · ${formatarMoeda(p.Preco)}</option>`).join('');
   } catch (e) {}
   const status = ['Pago', 'A vencer', 'Atrasado', 'Inativo'];
   abrirModal(esc(c.Nome), `
@@ -708,9 +717,14 @@ async function abrirDetalheCliente(id) {
     <hr style="border:none;border-top:1px solid var(--line);margin:18px 0;">
     <div class="eyebrow" style="margin-bottom:10px;">Renovar / recarregar pacote</div>
     <form id="form-recarga">
-      <div class="campo"><label>Plano/produto</label><select id="rec-produto">${produtosOpts}</select></div>
-      <div class="campo"><label>Peças a adicionar</label><input type="number" id="rec-pecas" min="1" required></div>
-      <button class="btn" type="submit">Aplicar recarga</button>
+      <div class="campo"><label>Plano</label><select id="rec-produto" required>${produtosOpts}</select></div>
+      <div class="linha-2"><div class="campo"><label>Valor de tabela (R$)</label><input type="number" step="0.01" id="rec-tabela" readonly required></div><div class="campo"><label>Peças do plano</label><input type="number" id="rec-pecas" min="1" readonly required></div></div>
+      <div class="linha-2"><div class="campo"><label>Desconto (%)</label><input type="number" id="rec-desconto-pct" min="0" max="99.99" step="0.01" value="0"></div><div class="campo"><label>Desconto (R$)</label><input type="number" id="rec-desconto-valor" min="0" step="0.01" value="0"></div></div>
+      <div class="campo"><label>Valor a receber (R$)</label><input type="number" step="0.01" id="rec-valor" readonly required></div>
+      <div class="campo"><label>Forma de pagamento</label><select id="rec-forma"><option>PIX</option><option>Dinheiro</option><option>Cartão</option><option>Transferência</option></select></div>
+      <div class="campo"><label>Data do pagamento</label><input type="date" id="rec-data" value="${dataLocalISO()}"></div>
+      <div class="campo"><label>Descrição</label><input id="rec-desc" value="Pagamento de plano"></div>
+      <button class="btn" type="submit">Registrar pagamento e liberar peças</button>
     </form>`);
   document.getElementById('form-editar-cliente').addEventListener('submit', async e => {
     e.preventDefault();
@@ -719,11 +733,31 @@ async function abrirDetalheCliente(id) {
       toast('Cliente atualizado'); fecharModal(); telaClientes();
     } catch (err) { toast(err.message, 'erro'); }
   });
+  const produtoEl = document.getElementById('rec-produto');
+  const tabelaEl = document.getElementById('rec-tabela');
+  const pecasEl = document.getElementById('rec-pecas');
+  const pctEl = document.getElementById('rec-desconto-pct');
+  const descontoEl = document.getElementById('rec-desconto-valor');
+  const valorEl = document.getElementById('rec-valor');
+  const preencherRecarga = () => {
+    const p = ESTADO.cache.produtos.find(x => String(x.ID_Produto) === String(produtoEl.value) && x.Tipo !== 'DESPESA');
+    const tabela = p ? Number(p.Preco) || 0 : 0;
+    tabelaEl.value = tabela ? tabela.toFixed(2) : '';
+    pecasEl.value = p && Number(p.Qtd_Pecas) ? p.Qtd_Pecas : '';
+    const pct = Number(pctEl.value) || 0;
+    const desconto = Number(descontoEl.value) || 0;
+    valorEl.value = tabela ? Math.max(0, tabela - (pct > 0 ? tabela * pct / 100 : desconto)).toFixed(2) : '';
+    if (p) document.getElementById('rec-desc').value = 'Pagamento de ' + p.Nome;
+  };
+  produtoEl.addEventListener('change', preencherRecarga);
+  pctEl.addEventListener('input', () => { if (Number(pctEl.value) > 0) descontoEl.value = '0'; preencherRecarga(); });
+  descontoEl.addEventListener('input', () => { if (Number(descontoEl.value) > 0) pctEl.value = '0'; preencherRecarga(); });
+  preencherRecarga();
   document.getElementById('form-recarga').addEventListener('submit', async e => {
     e.preventDefault();
     try {
-      await api('editarCliente', { idCliente: c.ID_Cliente, idProdutoPlano: document.getElementById('rec-produto').value, recargaPecas: Number(document.getElementById('rec-pecas').value) });
-      toast('Pacote recarregado'); fecharModal(); telaClientes();
+      await api('editarCliente', { idCliente: c.ID_Cliente, idProdutoPlano: produtoEl.value, recargaPecas: pecasEl.value, recargaValorTabela: tabelaEl.value, recargaDescontoPercentual: pctEl.value, recargaDescontoValor: descontoEl.value, recargaValor: valorEl.value, recargaFormaPagamento: document.getElementById('rec-forma').value, recargaData: document.getElementById('rec-data').value, recargaDescricao: document.getElementById('rec-desc').value });
+      toast('Pagamento registrado, saldo liberado e Financeiro atualizado'); fecharModal(); telaClientes();
     } catch (err) { toast(err.message, 'erro'); }
   });
 }
@@ -752,11 +786,15 @@ async function telaProducao(filtro) {
   try {
     const lista = await api('listarProducao', filtroProducaoAtual ? { status: filtroProducaoAtual } : {});
     ESTADO.cache.producao = lista;
-    conteudo(`
-      <div class="filtros-chip">
-        ${STATUS_FILTROS.map(f => `<button class="chip ${filtroProducaoAtual === f.id ? 'ativo' : ''}" onclick="telaProducao('${f.id}')">${f.label}</button>`).join('')}
+      conteudo(`
+      <div class="relatorio-producao">
+        <div class="secao-titulo"><div><div class="eyebrow">Controle de etapas</div><h2>Produção</h2></div><button class="btn pequeno secundario sem-impressao" onclick="baixarRelatorioProducao()">Baixar relatório</button></div>
+        <div class="filtros-chip sem-impressao">
+          ${STATUS_FILTROS.map(f => `<button class="chip ${filtroProducaoAtual === f.id ? 'ativo' : ''}" onclick="telaProducao('${f.id}')">${f.label}</button>`).join('')}
+        </div>
+        <div class="meta" style="margin:10px 0 14px;">Gerado em ${formatarData(new Date())} · Filtro: ${esc(filtroProducaoAtual || 'Todos')}</div>
+        <div id="lista-producao">${renderListaProducao(lista)}</div>
       </div>
-      <div id="lista-producao">${renderListaProducao(lista)}</div>
     `);
     document.getElementById('conteudo').insertAdjacentHTML('beforeend', `<button class="fab" onclick="abrirNovoPedido()">+</button>`);
   } catch (err) { conteudo(`<div class="vazio"><h3>Erro</h3><p>${err.message}</p></div>`); }
@@ -787,6 +825,14 @@ function renderListaProducao(lista) {
         </div>
       </div>`;
   }).join('');
+}
+
+function baixarRelatorioProducao() {
+  const tituloOriginal = document.title;
+  document.title = 'Relatorio_Producao_' + dataLocalISO();
+  document.body.classList.add('imprimindo-producao');
+  window.print();
+  setTimeout(() => { document.body.classList.remove('imprimindo-producao'); document.title = tituloOriginal; }, 1000);
 }
 
 async function avancarStatus(id, novoStatus) {
@@ -870,7 +916,7 @@ function formularioProduto(p) {
     <div class="campo"><label>Nome</label><input id="pr-nome" required value="${escAttr(p?.Nome || '')}" placeholder="Ex: Plano mensal 30 peças ou Sabão em pó 5 kg"></div>
     <div class="linha-2"><div class="campo"><label>Tipo</label><select id="pr-tipo"><option value="PACOTE" ${tipo === 'PACOTE' ? 'selected' : ''}>Plano / pacote</option><option value="AVULSO" ${tipo === 'AVULSO' ? 'selected' : ''}>Serviço avulso</option><option value="DESPESA" ${tipo === 'DESPESA' ? 'selected' : ''}>Produto de despesa</option></select></div><div class="campo" id="pr-qtd-wrap"><label>Qtd. peças</label><input type="number" id="pr-qtd" min="1" value="${p?.Qtd_Pecas || 1}"></div></div>
     <div class="linha-2"><div class="campo"><label>Preço padrão (R$)</label><input type="number" step="0.01" id="pr-preco" required value="${p?.Preco || ''}"></div><div class="campo" id="pr-unidade-wrap"><label>Unidade</label><input id="pr-unidade" value="${escAttr(p?.Unidade || (despesa ? 'un' : 'peças'))}" placeholder="kg, caixa, un"></div></div>
-    <div class="campo" id="pr-cat-wrap"><label>Categoria da despesa</label><input id="pr-categoria" value="${escAttr(p?.Categoria_Despesa || '')}" placeholder="Ex: Sabão em pó"></div>
+    <div class="campo" id="pr-cat-wrap"><label>Categoria da despesa</label><select id="pr-categoria">${opcoesCategoriasDespesas_(p?.Categoria_Despesa || '')}</select></div>
     <div class="campo"><label>Observação / promoção</label><input id="pr-promo" value="${escAttr(p?.Promocao || '')}" placeholder="Opcional"></div>
     <button class="btn" type="submit">${p ? 'Salvar alterações' : 'Cadastrar item'}</button></form>`;
 }
@@ -939,7 +985,7 @@ async function opcoesClientesProdutos_(clienteSelecionado, produtoSelecionado) {
 }
 
 function opcoesCategoriasDespesas_(selecionada) {
-  const categorias = ['Sabão em pó','Sabão líquido','Amaciante','Alvejante','Água','Energia elétrica','Gás','Salários','Aluguel','Embalagens','Manutenção','Transporte','Impostos','Outros'];
+  const categorias = ['Salários','Luz','Água','Equipamentos','Cabides','Sabão em pó','Sabão líquido','Amaciante','Alvejante','Gás','Aluguel','Embalagens','Manutenção','Transporte','Impostos','Outros'];
   return '<option value="">Selecione...</option>' + categorias.map(c => `<option value="${escAttr(c)}" ${c === selecionada ? 'selected' : ''}>${esc(c)}</option>`).join('');
 }
 
