@@ -20,7 +20,6 @@
         body { background: var(--bg-dark); color: var(--texto); font-family: 'DM Sans', sans-serif; padding: 20px; }
         .container { max-width: 1000px; margin: 0 auto; }
 
-        /* Login Screen */
         #login-screen { max-width: 400px; margin: 100px auto; background: var(--card-bg); border: 1px solid var(--bordas); padding: 30px; border-radius: 8px; text-align: center; }
         #login-screen h2 { font-family: 'Cormorant Garamond', serif; color: var(--dourado); margin-bottom: 20px; font-size: 28px; }
 
@@ -34,13 +33,11 @@
         .content-section { display: none; }
         .content-section.active { display: block; }
 
-        /* Lista de Artigos */
         .artigo-item { background: var(--card-bg); border: 1px solid var(--bordas); border-radius: 6px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .artigo-title { font-size: 18px; color: #fff; font-weight: 500; }
         .artigo-meta { font-size: 12px; color: var(--texto-sec); margin-top: 5px; }
         .btn-view { background: transparent; border: 1px solid var(--dourado); color: var(--dourado); padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: bold; }
 
-        /* Form */
         .block-card { background: var(--card-bg); border: 1px solid var(--bordas); border-radius: 6px; padding: 25px; margin-bottom: 20px; }
         .block-title { font-size: 14px; text-transform: uppercase; color: var(--dourado); letter-spacing: 1px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px dashed var(--bordas); padding-bottom: 8px; }
 
@@ -60,7 +57,6 @@
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
     <div id="login-screen">
         <h2>Acesso do Gestor</h2>
         <div class="form-group">
@@ -69,7 +65,6 @@
         <button class="btn-action" onclick="autenticar()">Entrar no Painel</button>
     </div>
 
-    <!-- PAINEL PRINCIPAL (ESCONDIDO POR PADRÃO) -->
     <div class="container" id="main-panel" style="display: none;">
         <header>
             <h1>Gestão & Futuro⁺ — Gestor Editorial</h1>
@@ -84,13 +79,11 @@
             <button class="tab-btn" onclick="switchTab('novo')">+ Nova Publicação</button>
         </div>
 
-        <!-- ABA 1: LISTA -->
         <section id="sec-lista" class="content-section active">
             <div id="loading-artigos" style="color: var(--texto-sec);">Carregando artigos salvos...</div>
             <div id="lista-artigos"></div>
         </section>
 
-        <!-- ABA 2: FORMULÁRIO -->
         <section id="sec-novo" class="content-section">
             <form id="formPublicacao" onsubmit="salvarPublicacao(event)">
                 
@@ -98,12 +91,12 @@
                     <div class="block-title">1. Identificação da Matéria</div>
                     <div class="form-group">
                         <label>Tema / Título Principal (Máx 120 Chars)</label>
-                        <input type="text" id="tema" required maxlength="120" oninput="validarLimites('tema', 120, 'c-tema')">
+                        <input type="text" id="tema" required maxlength="120" oninput="atualizarGeral('tema', 120, 'c-tema', 'chars')">
                         <div class="counter" id="c-tema">0 / 120 caracteres</div>
                     </div>
                     <div class="form-group">
                         <label>Chamada / Linha Fina (Máx 250 Chars)</label>
-                        <textarea id="chamada" rows="2" required maxlength="250" oninput="validarLimites('chamada', 250, 'c-chamada')"></textarea>
+                        <textarea id="chamada" rows="2" required maxlength="250" oninput="atualizarGeral('chamada', 250, 'c-chamada', 'chars')"></textarea>
                         <div class="counter" id="c-chamada">0 / 250 caracteres</div>
                     </div>
                     <div class="form-group">
@@ -111,21 +104,21 @@
                         <input type="text" id="autor" value="Bruno Rodrigo dos Santos Vieira (CRA-ES 28692)" required>
                     </div>
                     <div class="form-group">
-                        <label>Tempo de Leitura Estimado</label>
-                        <input type="text" id="tempo_leitura" value="6 min" required>
+                        <label>Tempo de Leitura Estimado (Calculado Automaticamente)</label>
+                        <input type="text" id="tempo_leitura" value="1 min" readonly style="background: #060E18; color: var(--dourado); font-weight: bold;">
                     </div>
                 </div>
 
                 <div class="block-card">
-                    <div class="block-title">2. Box Reflexão e Desafios</div>
+                    <div class="block-title">2. Box Reflexão e Desafios (Escuro)</div>
                     <div class="form-group">
                         <label>Título do Box (Máx 10 palavras)</label>
-                        <input type="text" id="box_reflexao_titulo" value="Reflexão e Desafios" oninput="validarPalavras('box_reflexao_titulo', 10, 'c-ref-t')">
+                        <input type="text" id="box_reflexao_titulo" value="Reflexão e Desafios" oninput="atualizarGeral('box_reflexao_titulo', 10, 'c-ref-t', 'words')">
                         <div class="counter" id="c-ref-t">0 / 10 palavras</div>
                     </div>
                     <div class="form-group">
                         <label>Conteúdo (Máx 250 Chars)</label>
-                        <textarea id="box_reflexao_texto" rows="2" maxlength="250" oninput="validarLimites('box_reflexao_texto', 250, 'c-ref-c')"></textarea>
+                        <textarea id="box_reflexao_texto" rows="2" maxlength="250" oninput="atualizarGeral('box_reflexao_texto', 250, 'c-ref-c', 'chars')"></textarea>
                         <div class="counter" id="c-ref-c">0 / 250 caracteres</div>
                     </div>
                 </div>
@@ -133,40 +126,53 @@
                 <div class="block-card">
                     <div class="block-title">3. Resumo Executivo & Parágrafo Inicial</div>
                     <div class="form-group">
-                        <label>Título Seção 1</label>
-                        <input type="text" id="resumo_executivo_titulo" value="1. Resumo Executivo">
+                        <label>Título Seção 1 (Máx 20 palavras)</label>
+                        <input type="text" id="resumo_executivo_titulo" value="1. Resumo Executivo" oninput="atualizarGeral('resumo_executivo_titulo', 20, 'c-res-t', 'words')">
+                        <div class="counter" id="c-res-t">0 / 20 palavras</div>
                     </div>
                     <div class="form-group">
-                        <label>Corpo Resumo Executivo (Máx 500 Chars)</label>
-                        <textarea id="resumo_executivo_corpo" rows="4" maxlength="500" oninput="validarLimites('resumo_executivo_corpo', 500, 'c-res-c')"></textarea>
-                        <div class="counter" id="c-res-c">0 / 500 caracteres</div>
+                        <label>Corpo Resumo Executivo (Máx 800 Palavras)</label>
+                        <textarea id="resumo_executivo_corpo" rows="6" oninput="atualizarGeral('resumo_executivo_corpo', 800, 'c-res-c', 'words')"></textarea>
+                        <div class="counter" id="c-res-c">0 / 800 palavras</div>
                     </div>
                     <div class="form-group">
-                        <label>Título Seção 2</label>
-                        <input type="text" id="conteudo_titulo" value="2. Conteúdo da Matéria">
+                        <label>Título Seção 2 (Máx 20 palavras)</label>
+                        <input type="text" id="conteudo_titulo" value="2. Conteúdo da Matéria" oninput="atualizarGeral('conteudo_titulo', 20, 'c-cnt-t', 'words')">
+                        <div class="counter" id="c-cnt-t">0 / 20 palavras</div>
                     </div>
                     <div class="form-group">
-                        <label>Inicial do Corpo (Máx 500 Chars)</label>
-                        <textarea id="conteudo_intro" rows="4" maxlength="500" oninput="validarLimites('conteudo_intro', 500, 'c-intro')"></textarea>
-                        <div class="counter" id="c-intro">0 / 500 caracteres</div>
+                        <label>Inicial do Corpo (Máx 800 Palavras)</label>
+                        <textarea id="conteudo_intro" rows="6" oninput="atualizarGeral('conteudo_intro', 800, 'c-intro', 'words')"></textarea>
+                        <div class="counter" id="c-intro">0 / 800 palavras</div>
                     </div>
                 </div>
 
                 <div class="block-card">
-                    <div class="block-title">4. Destaque Central & Continuação</div>
+                    <div class="block-title">4. Destaque Central & Continuação do Texto</div>
                     <div class="form-group">
-                        <label>Frase em Destaque Central (Máx 180 Chars)</label>
-                        <textarea id="destaque_central_texto" rows="2" maxlength="180" oninput="validarLimites('destaque_central_texto', 180, 'c-dest-t')"></textarea>
-                        <div class="counter" id="c-dest-t">0 / 180 caracteres</div>
+                        <label>Frase em Destaque Central (Máx 200 Chars)</label>
+                        <textarea id="destaque_central_texto" rows="2" maxlength="200" oninput="atualizarGeral('destaque_central_texto', 200, 'c-dest-t', 'chars')"></textarea>
+                        <div class="counter" id="c-dest-t">0 / 200 caracteres</div>
                     </div>
                     <div class="form-group">
                         <label>Referência do Destaque (Máx 10 palavras)</label>
-                        <input type="text" id="destaque_central_ref" value="— ENTREVISTA EXCLUSIVA • REVISTA GESTÃO E FUTURO⁺" oninput="validarPalavras('destaque_central_ref', 10, 'c-dest-r')">
+                        <input type="text" id="destaque_central_ref" value="— ENTREVISTA EXCLUSIVA • REVISTA GESTÃO E FUTURO⁺" oninput="atualizarGeral('destaque_central_ref', 10, 'c-dest-r', 'words')">
                         <div class="counter" id="c-dest-r">0 / 10 palavras</div>
                     </div>
                     <div class="form-group">
-                        <label>Continuação do Corpo (Blocos adicionais)</label>
-                        <textarea id="conteudo_blocos" rows="6"></textarea>
+                        <label>Bloco 1 de Continuação (Obrigatório - Máx 800 Palavras)</label>
+                        <textarea id="conteudo_bloco1" rows="5" oninput="atualizarGeral('conteudo_bloco1', 800, 'c-b1', 'words')"></textarea>
+                        <div class="counter" id="c-b1">0 / 800 palavras</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Bloco 2 de Continuação (Opcional - Máx 800 Palavras)</label>
+                        <textarea id="conteudo_bloco2" rows="5" oninput="atualizarGeral('conteudo_bloco2', 800, 'c-b2', 'words')"></textarea>
+                        <div class="counter" id="c-b2">0 / 800 palavras</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Bloco 3 de Continuação (Opcional - Máx 800 Palavras)</label>
+                        <textarea id="conteudo_bloco3" rows="5" oninput="atualizarGeral('conteudo_bloco3', 800, 'c-b3', 'words')"></textarea>
+                        <div class="counter" id="c-b3">0 / 800 palavras</div>
                     </div>
                 </div>
 
@@ -174,12 +180,12 @@
                     <div class="block-title">5. Box Nota do Editor</div>
                     <div class="form-group">
                         <label>Título da Nota (Máx 10 palavras)</label>
-                        <input type="text" id="nota_editor_titulo" value="📌 Nota do Editor (Anotação Pessoal):" oninput="validarPalavras('nota_editor_titulo', 10, 'c-nota-t')">
+                        <input type="text" id="nota_editor_titulo" value="📌 Nota do Editor (Anotação Pessoal):" oninput="atualizarGeral('nota_editor_titulo', 10, 'c-nota-t', 'words')">
                         <div class="counter" id="c-nota-t">0 / 10 palavras</div>
                     </div>
                     <div class="form-group">
                         <label>Texto da Nota (Máx 250 Chars)</label>
-                        <textarea id="nota_editor_texto" rows="2" maxlength="250" oninput="validarLimites('nota_editor_texto', 250, 'c-nota-c')"></textarea>
+                        <textarea id="nota_editor_texto" rows="2" maxlength="250" oninput="atualizarGeral('nota_editor_texto', 250, 'c-nota-c', 'chars')"></textarea>
                         <div class="counter" id="c-nota-c">0 / 250 caracteres</div>
                     </div>
                 </div>
@@ -187,21 +193,23 @@
                 <div class="block-card">
                     <div class="block-title">6. Aprendizados & Práticas</div>
                     <div class="form-group">
-                        <label>Principais Aprendizados (Um por linha)</label>
-                        <textarea id="aprendizados_itens" rows="5"></textarea>
+                        <label>Principais Aprendizados (Um por linha - Máx 1000 palavras)</label>
+                        <textarea id="aprendizados_itens" rows="6" oninput="atualizarGeral('aprendizados_itens', 1000, 'c-apr', 'words')"></textarea>
+                        <div class="counter" id="c-apr">0 / 1000 palavras</div>
                     </div>
                     <div class="form-group">
-                        <label>Práticas Potenciais de Impacto (Um por linha)</label>
-                        <textarea id="praticas_itens" rows="5"></textarea>
+                        <label>Práticas Potenciais de Impacto (Um por linha - Máx 1000 palavras)</label>
+                        <textarea id="praticas_itens" rows="6" oninput="atualizarGeral('praticas_itens', 1000, 'c-pra', 'words')"></textarea>
+                        <div class="counter" id="c-pra">0 / 1000 palavras</div>
                     </div>
                 </div>
 
                 <div class="block-card ai-box">
-                    <div class="block-title">7. Inteligência Artificial (Gemini)</div>
+                    <div class="block-title">7. Inteligência Artificial (Análise e Meta-dados)</div>
                     <button type="button" class="btn-ai" onclick="gerarTagsEAnaliseIA()">🤖 Analisar Publicação com IA</button>
                     
                     <div class="form-group">
-                        <label>Análise Crítica Executiva</label>
+                        <label>Análise Crítica Executiva (Gerada pela IA)</label>
                         <textarea id="analise_ia" rows="3" readonly></textarea>
                     </div>
                     <div class="form-group">
@@ -209,7 +217,7 @@
                         <input type="text" id="tags">
                     </div>
                     <div class="form-group">
-                        <label>Hashtags</label>
+                        <label>Hashtags de Presença Digital</label>
                         <input type="text" id="hashtags">
                     </div>
                 </div>
@@ -222,12 +230,9 @@
     <script>
         const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkzGw0ltxz2O4INiSCbyEP25CK8mytcJmu2hnG6tUlq3JMhNT9etOxDhoAfU5HLt3D/exec';
 
-        // Verifica autenticação na inicialização
         document.addEventListener('DOMContentLoaded', () => {
             const token = sessionStorage.getItem('gestor_token');
-            if (token === 'autenticado') {
-                mostrarPainel();
-            }
+            if (token === 'autenticado') mostrarPainel();
         });
 
         async function autenticar() {
@@ -249,7 +254,7 @@
                     alert(data.msg || 'Senha incorreta!');
                 }
             } catch (e) {
-                alert('Erro ao conectar ao servidor.');
+                alert('Erro na conexão com o servidor.');
             }
         }
 
@@ -278,21 +283,40 @@
             }
         }
 
-        function validarLimites(idInput, max, idCounter) {
+        // Função unificada de validação e cálculo automático de tempo de leitura
+        function atualizarGeral(idInput, max, idCounter, tipo) {
             const val = document.getElementById(idInput).value;
             const elCounter = document.getElementById(idCounter);
-            elCounter.innerText = `${val.length} / ${max} caracteres`;
-            if (val.length >= max) elCounter.classList.add('limit-exceeded');
-            else elCounter.classList.remove('limit-exceeded');
+
+            if (tipo === 'chars') {
+                elCounter.innerText = `${val.length} / ${max} caracteres`;
+                if (val.length >= max) elCounter.classList.add('limit-exceeded');
+                else elCounter.classList.remove('limit-exceeded');
+            } else {
+                const palavras = val.trim() ? val.trim().split(/\s+/).length : 0;
+                elCounter.innerText = `${palavras} / ${max} palavras`;
+                if (palavras > max) elCounter.classList.add('limit-exceeded');
+                else elCounter.classList.remove('limit-exceeded');
+            }
+
+            calcularTempoLeitura();
         }
 
-        function validarPalavras(idInput, maxPalavras, idCounter) {
-            const val = document.getElementById(idInput).value.trim();
-            const palavras = val ? val.split(/\s+/).length : 0;
-            const elCounter = document.getElementById(idCounter);
-            elCounter.innerText = `${palavras} / ${maxPalavras} palavras`;
-            if (palavras > maxPalavras) elCounter.classList.add('limit-exceeded');
-            else elCounter.classList.remove('limit-exceeded');
+        function calcularTempoLeitura() {
+            const campos = [
+                'resumo_executivo_corpo', 'conteudo_intro',
+                'conteudo_bloco1', 'conteudo_bloco2', 'conteudo_bloco3',
+                'aprendizados_itens', 'praticas_itens'
+            ];
+
+            let totalPalavras = 0;
+            campos.forEach(id => {
+                const txt = document.getElementById(id).value.trim();
+                if (txt) totalPalavras += txt.split(/\s+/).length;
+            });
+
+            const minutos = Math.max(1, Math.ceil(totalPalavras / 200));
+            document.getElementById('tempo_leitura').value = `${minutos} min`;
         }
 
         async function carregarArtigos() {
@@ -324,7 +348,7 @@
                     container.appendChild(item);
                 });
             } catch (err) {
-                loading.innerText = 'Erro ao carregar lista de artigos.';
+                loading.innerText = 'Erro ao carregar artigos.';
             }
         }
 
@@ -336,9 +360,9 @@
             const textoCompleto = `
                 Título: ${document.getElementById('tema').value}
                 Chamada: ${document.getElementById('chamada').value}
-                Resumo Executivo: ${document.getElementById('resumo_executivo_corpo').value}
-                Conteúdo: ${document.getElementById('conteudo_intro').value}
-                Destaque: ${document.getElementById('destaque_central_texto').value}
+                Resumo: ${document.getElementById('resumo_executivo_corpo').value}
+                Conteúdo Intro: ${document.getElementById('conteudo_intro').value}
+                Bloco 1: ${document.getElementById('conteudo_bloco1').value}
             `;
 
             try {
@@ -353,10 +377,10 @@
                 const result = await res.json();
 
                 if (result.analise_critica) document.getElementById('analise_ia').value = result.analise_critica;
-                if (result.tags) document.getElementById('tags').value = Array.isArray(result.tags) ? result.tags.join(', ') : result.tags;
-                if (result.hashtags) document.getElementById('hashtags').value = Array.isArray(result.hashtags) ? result.hashtags.join(' ') : result.hashtags;
+                if (result.tags) document.getElementById('tags').value = result.tags;
+                if (result.hashtags) document.getElementById('hashtags').value = result.hashtags;
             } catch (e) {
-                alert('Erro na chamada da IA.');
+                alert('Erro ao conectar com a IA no Apps Script.');
             } finally {
                 btn.innerText = '🤖 Analisar Publicação com IA';
                 btn.disabled = false;
@@ -384,13 +408,16 @@
                 conteudo_intro: document.getElementById('conteudo_intro').value,
                 destaque_central_texto: document.getElementById('destaque_central_texto').value,
                 destaque_central_ref: document.getElementById('destaque_central_ref').value,
-                conteudo_blocos: document.getElementById('conteudo_blocos').value,
+                conteudo_bloco1: document.getElementById('conteudo_bloco1').value,
+                conteudo_bloco2: document.getElementById('conteudo_bloco2').value,
+                conteudo_bloco3: document.getElementById('conteudo_bloco3').value,
                 nota_editor_titulo: document.getElementById('nota_editor_titulo').value,
                 nota_editor_texto: document.getElementById('nota_editor_texto').value,
                 aprendizados_itens: document.getElementById('aprendizados_itens').value.split('\n').filter(i => i.trim() !== ''),
                 praticas_itens: document.getElementById('praticas_itens').value.split('\n').filter(i => i.trim() !== ''),
                 tags: document.getElementById('tags').value,
-                hashtags: document.getElementById('hashtags').value
+                hashtags: document.getElementById('hashtags').value,
+                analise_ia: document.getElementById('analise_ia').value
             };
 
             try {
@@ -404,7 +431,7 @@
                     alert(result.msg || 'Erro ao publicar.');
                 }
             } catch (err) {
-                alert('Erro ao enviar requisição.');
+                alert('Erro no envio da requisição.');
             } finally {
                 btn.innerText = '🚀 Publicar Matéria na Revista';
                 btn.disabled = false;
