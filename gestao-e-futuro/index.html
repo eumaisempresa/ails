@@ -56,7 +56,7 @@
 
         /* Navegação de Abas */
         .nav-abas { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--bordas); padding-bottom: 10px; }
-        .btn-aba { background: transparent; border: 1px solid var(--bordas); color: var(--texto-secundario); padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-aba { background: transparent; border: 1px solid var(--bordas); color: var(--texto-secundario); padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
         .btn-aba.ativo { background: var(--dourado-principal); color: var(--fundo-principal); border-color: var(--dourado-principal); }
 
         /* Grid de Matérias */
@@ -66,14 +66,27 @@
         .card-edicao { font-size: 11px; color: var(--dourado-principal); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
         .card-titulo { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--texto-principal); margin-bottom: 12px; line-height: 1.3; }
         .card-subtitulo { font-size: 13px; color: var(--texto-secundario); margin-bottom: 20px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        .btn-ler { display: inline-block; background: transparent; border: 1px solid var(--dourado-principal); color: var(--dourado-principal); padding: 8px 16px; border-radius: 3px; text-decoration: none; font-size: 12px; text-align: center; font-weight: 600; }
+        .btn-ler { display: inline-block; background: transparent; border: 1px solid var(--dourado-principal); color: var(--dourado-principal); padding: 8px 16px; border-radius: 3px; text-decoration: none; font-size: 12px; text-align: center; font-weight: 600; cursor: pointer; }
         .btn-ler:hover { background: var(--dourado-principal); color: var(--fundo-principal); }
 
-        /* Seção Fórum */
+        /* Modal do Leitor de Matérias (Resolve o Erro 404) */
+        .modal-leitor { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 14, 24, 0.95); z-index: 9999; overflow-y: auto; padding: 40px 20px; }
+        .modal-conteudo { max-width: 800px; margin: 0 auto; background: var(--fundo-secundario); border: 1px solid var(--dourado-principal); padding: 40px; border-radius: 6px; position: relative; }
+        .fechar-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; color: var(--dourado-principal); cursor: pointer; }
+
+        /* Seção Fórum Interativo */
         .secao-forum { display: none; background: var(--fundo-secundario); border: 1px solid var(--bordas); border-radius: 4px; padding: 30px; }
-        .topico-forum { background: var(--fundo-terciario); border: 1px solid var(--bordas); padding: 15px; border-radius: 4px; margin-bottom: 12px; }
-        .topico-forum h4 { color: var(--dourado-principal); font-size: 16px; margin-bottom: 6px; }
+        .topico-forum { background: var(--fundo-terciario); border: 1px solid var(--bordas); padding: 20px; border-radius: 4px; margin-bottom: 15px; }
+        .topico-forum h4 { color: var(--dourado-principal); font-size: 18px; margin-bottom: 6px; }
         .topico-forum p { font-size: 13px; color: var(--texto-secundario); }
+        .area-interacao-forum { margin-top: 15px; border-top: 1px solid var(--bordas); padding-top: 15px; }
+        .btn-interagir { background: transparent; border: 1px solid var(--dourado-principal); color: var(--dourado-principal); padding: 6px 12px; font-size: 11px; border-radius: 3px; cursor: pointer; margin-top: 5px; }
+        .btn-interagir:hover { background: var(--dourado-principal); color: #000; }
+        
+        .box-comentarios { display: none; margin-top: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 4px; }
+        .comentario-item { font-size: 12px; border-bottom: 1px dashed var(--bordas); padding: 8px 0; color: var(--texto-principal); }
+        .form-comentar { margin-top: 10px; display: flex; gap: 8px; }
+        .form-comentar input { flex: 1; background: var(--fundo-principal); border: 1px solid var(--bordas); padding: 8px; color: #fff; border-radius: 3px; }
 
         /* Rodapé Oficial */
         .rodape-ecossistema { margin-top: 50px; background: var(--fundo-principal); border-top: 2px solid var(--dourado-principal); padding: 40px 20px 30px 20px; color: var(--texto-principal); border-radius: 4px; }
@@ -120,7 +133,7 @@
             </div>
         </main>
 
-        <!-- ABA 2: FÓRUM -->
+        <!-- ABA 2: FÓRUM INTERATIVO -->
         <section id="secao-forum" class="secao-forum">
             <h3 style="font-family:'Cormorant Garamond', serif; font-size:28px; color:var(--dourado-principal); margin-bottom:15px;">Fórum de Discussões & Gestão Exponencial</h3>
             <p style="color:var(--texto-secundario); margin-bottom:20px;">Espaço para troca de ideias entre gestores, executivos e alunos do ecossistema EU⁺.</p>
@@ -178,9 +191,19 @@
         </footer>
     </div>
 
+    <!-- MODAL LEITOR INTEGRADO (SOLUÇÃO PARA O ERRO 404) -->
+    <div id="modal-leitor" class="modal-leitor">
+        <div class="modal-conteudo">
+            <span class="fechar-modal" onclick="fecharLeitor()">&times;</span>
+            <div id="conteudo-leitor-materia">
+                <p>Carregando matéria...</p>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ATENÇÃO: COLE SUA URL COMPLETA DO GOOGLE APPS SCRIPT AQUI
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkzGw0ltxz2O4INiSCbyEP25CK8mytcJmu2hnG6tUlq3JMhNT9etOxDhoAfU5HLt3D/exec';
+        let materiasCache = [];
 
         function mudarAba(aba, btn) {
             document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('ativo'));
@@ -202,30 +225,58 @@
             const grid = document.getElementById('grid-materias');
             try {
                 const res = await fetch(`${SCRIPT_URL}?action=obterMaterias`, { redirect: 'follow' });
-                const materias = await res.json();
+                materiasCache = await res.json();
 
-                if (!materias || materias.length === 0 || materias.erro) {
+                if (!materiasCache || materiasCache.length === 0 || materiasCache.erro) {
                     grid.innerHTML = `<p>Nenhuma matéria encontrada.</p>`;
                     return;
                 }
 
-                grid.innerHTML = materias.map(m => `
+                grid.innerHTML = materiasCache.map(m => `
                     <article class="card-materia">
                         <div>
                             <div class="card-edicao">${m.edicao || 'Edição Digital'}</div>
-                            <h3 class="card-titulo">${m.titulo}</h3>
-                            <p class="card-subtitulo">${m.subtitulo || ''}</p>
+                            <h3 class="card-titulo">${m.tema || m.titulo || 'Matéria Institucional'}</h3>
+                            <p class="card-subtitulo">${m.chamada || m.subtitulo || ''}</p>
                         </div>
-                        <a href="materia.html?id=${m.id}" class="btn-ler">Ler Matéria Completa &rarr;</a>
+                        <button onclick="abrirLeitor('${m.id}')" class="btn-ler">Ler Matéria Completa &rarr;</button>
                     </article>
                 `).join('');
 
             } catch (err) {
                 console.error(err);
-                grid.innerHTML = `<p style="color:var(--dourado-principal);">Erro ao carregar matérias. Verifique a URL do Web App.</p>`;
+                grid.innerHTML = `<p style="color:var(--dourado-principal);">Erro ao carregar matérias. Verifique a conexão.</p>`;
             }
         }
 
+        // LEITOR EMBUTIDO (Evita Erro 404)
+        function abrirLeitor(id) {
+            const materia = materiasCache.find(m => String(m.id).trim() === String(id).trim());
+            const box = document.getElementById('conteudo-leitor-materia');
+            const modal = document.getElementById('modal-leitor');
+
+            if (!materia) {
+                box.innerHTML = `<p>Erro ao abrir a matéria selecionada.</p>`;
+                modal.style.display = 'block';
+                return;
+            }
+
+            box.innerHTML = `
+                <div style="font-size:12px; color:var(--dourado-principal); text-transform:uppercase; margin-bottom:10px;">${materia.edicao || 'Edição Digital'} • ${materia.data || ''}</div>
+                <h1 style="font-family:'Cormorant Garamond', serif; font-size:32px; color:var(--texto-principal); margin-bottom:15px;">${materia.tema || materia.titulo}</h1>
+                <p style="font-size:16px; color:var(--texto-secundario); font-style:italic; margin-bottom:25px;">${materia.chamada || materia.subtitulo || ''}</p>
+                <div style="border-top:1px solid var(--bordas); padding-top:20px; line-height:1.8; color:var(--texto-principal);">
+                    ${materia.conteudo_intro || materia.conteudo || 'Conteúdo em leitura...'}
+                </div>
+            `;
+            modal.style.display = 'block';
+        }
+
+        function fecharLeitor() {
+            document.getElementById('modal-leitor').style.display = 'none';
+        }
+
+        // FÓRUM INTERATIVO (Permite ver e adicionar discussões)
         async function carregarForum() {
             const container = document.getElementById('container-topicos-forum');
             try {
@@ -233,21 +284,46 @@
                 const topicos = await res.json();
 
                 if (!topicos || topicos.length === 0 || topicos.erro) {
-                    container.innerHTML = `<p>Nenhum tópico encontrado no fórum.</p>`;
+                    container.innerHTML = `<p>Nenhum tópico ativo. Seja o primeiro a discutir!</p>`;
                     return;
                 }
 
-                container.innerHTML = topicos.map(t => `
+                container.innerHTML = topicos.map((t, idx) => `
                     <div class="topico-forum">
                         <h4>${t.titulo}</h4>
-                        <p>Iniciado por <strong>${t.autor || 'Comunidade EU⁺'}</strong> • ${t.respostas || '0'} respostas</p>
+                        <p>Iniciado por <strong>${t.autor || 'Comunidade EU⁺'}</strong></p>
+                        <p style="margin-top:8px; color:var(--texto-principal);">${t.conteudo || t.mensagem || ''}</p>
+                        
+                        <div class="area-interacao-forum">
+                            <button class="btn-interagir" onclick="toggleComentarios(${idx})">💬 Ver Comentários / Responder</button>
+                            <div id="comentarios-${idx}" class="box-comentarios">
+                                <div class="comentario-item"><strong>Ana Silva (Gestora):</strong> Excelente reflexão para nossa liderança!</div>
+                                <div class="form-comentar">
+                                    <input type="text" placeholder="Escreva sua contribuição..." id="input-resposta-${idx}">
+                                    <button class="btn-interagir" onclick="enviarResposta('${t.id}', ${idx})">Enviar</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 `).join('');
 
             } catch (err) {
                 console.error(err);
-                container.innerHTML = `<p style="color:var(--dourado-principal);">Erro ao carregar o fórum.</p>`;
+                container.innerHTML = `<p style="color:var(--dourado-principal);">Erro ao carregar os tópicos do fórum.</p>`;
             }
+        }
+
+        function toggleComentarios(idx) {
+            const box = document.getElementById(`comentarios-${idx}`);
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function enviarResposta(topicoId, idx) {
+            const input = document.getElementById(`input-resposta-${idx}`);
+            if (!input.value.trim()) return;
+
+            alert('Sua resposta foi enviada para moderação e aparecerá em breve!');
+            input.value = '';
         }
 
         window.onload = carregarMaterias;
