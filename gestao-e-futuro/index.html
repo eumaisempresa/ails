@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revista Digital | Gestão & Futuro⁺</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #060E18;
+            --card-bg: #0A1624;
+            --dourado: #C4974A;
+            --texto: #EEF0F2;
+            --texto-sec: #A0AEC0;
+            --bordas: rgba(196,151,74,0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg-dark); color: var(--texto); font-family: 'DM Sans', sans-serif; line-height: 1.6; padding: 0 20px 60px 20px; }
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        /* Header / Capa */
+        header { text-align: center; padding: 60px 0 40px 0; border-bottom: 1px solid var(--bordas); margin-bottom: 40px; }
+        .logo-sub { color: var(--dourado); font-size: 13px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+        h1.logo-main { font-family: 'Cormorant Garamond', serif; font-size: 54px; color: #fff; line-height: 1.1; }
+        h1.logo-main span { color: var(--dourado); font-style: italic; }
+        p.tagline { color: var(--texto-sec); font-size: 16px; margin-top: 12px; font-weight: 400; }
+
+        /* Banner Destaque Principal */
+        #destaque-container { margin-bottom: 50px; }
+        .hero-card { background: var(--card-bg); border: 1px solid var(--dourado); border-radius: 8px; padding: 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; align-items: center; position: relative; overflow: hidden; }
+        .hero-card::before { content: 'EDIÇÃO EM DESTAQUE'; position: absolute; top: 0; right: 0; background: var(--dourado); color: #000; font-size: 10px; font-weight: bold; padding: 4px 12px; border-bottom-left-radius: 6px; letter-spacing: 1px; }
+        .hero-edicao { color: var(--dourado); font-size: 12px; font-weight: bold; letter-spacing: 2px; }
+        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; color: #fff; margin: 10px 0 15px 0; line-height: 1.2; }
+        .hero-chamada { color: var(--texto-sec); font-size: 16px; margin-bottom: 20px; }
+        .hero-meta { font-size: 12px; color: var(--dourado); }
+        .btn-read { display: inline-block; background: var(--dourado); color: #000; padding: 12px 28px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-read:hover { background: #dcb368; }
+
+        /* Grade do Catálogo */
+        .section-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--dourado); margin-bottom: 25px; border-bottom: 1px solid var(--bordas); padding-bottom: 10px; }
+        .grid-artigos { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
+        
+        .card-artigo { background: var(--card-bg); border: 1px solid var(--bordas); border-radius: 6px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, border-color 0.2s; }
+        .card-artigo:hover { transform: translateY(-4px); border-color: var(--dourado); }
+        .card-edicao { color: var(--dourado); font-size: 11px; font-weight: bold; letter-spacing: 1.5px; }
+        .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #fff; margin: 10px 0; line-height: 1.3; }
+        .card-chamada { font-size: 13px; color: var(--texto-sec); margin-bottom: 20px; flex-grow: 1; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--bordas); padding-top: 15px; font-size: 12px; color: var(--texto-sec); }
+        .card-link { color: var(--dourado); text-decoration: none; font-weight: bold; }
+
+        footer { text-align: center; border-top: 1px solid var(--bordas); margin-top: 60px; padding-top: 30px; font-size: 12px; color: var(--texto-sec); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-sub">Plataforma de Inteligência Editorial</div>
+            <h1 class="logo-main">Gestão <span>& Futuro⁺</span></h1>
+            <p class="tagline">Análises de Impacto Executivo, Liderança Exponencial e Transformação Organizacional</p>
+        </header>
+
+        <!-- Destaque Principal -->
+        <div id="destaque-container">
+            <p style="color: var(--texto-sec);">Buscando edição em destaque...</p>
+        </div>
+
+        <!-- Catálogo de Edições -->
+        <h2 class="section-title">Acervo de Edições</h2>
+        <div class="grid-artigos" id="grid-artigos">
+            <p style="color: var(--texto-sec);">Carregando matérias publicadas...</p>
+        </div>
+
+        <footer>
+            <p>© Revista Gestão & Futuro⁺ • Bruno Rodrigo dos Santos Vieira (CRA-ES 28692)</p>
+        </footer>
+    </div>
+
+    <script>
+        const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkzGw0ltxz2O4INiSCbyEP25CK8mytcJmu2hnG6tUlq3JMhNT9etOxDhoAfU5HLt3D/exec';
+
+        async function carregarHome() {
+            try {
+                const res = await fetch(APPSCRIPT_URL);
+                const artigos = await res.json();
+
+                if (!artigos || artigos.length === 0) {
+                    document.getElementById('destaque-container').innerHTML = '<p style="color:var(--texto-sec)">Nenhuma matéria publicada ainda.</p>';
+                    document.getElementById('grid-artigos').innerHTML = '';
+                    return;
+                }
+
+                // O último artigo salvo vira a Matéria de Destaque
+                const destaque = artigos[artigos.length - 1];
+                document.getElementById('destaque-container').innerHTML = `
+                    <div class="hero-card">
+                        <div>
+                            <div class="hero-edicao">${destaque.edicao || 'EDIÇÃO ATUAL'}</div>
+                            <h2 class="hero-title">${destaque.tema}</h2>
+                            <p class="hero-chamada">${destaque.chamada}</p>
+                            <a href="materia.html?id=${destaque.id}" class="btn-read">Ler Matéria Completa ➔</a>
+                        </div>
+                        <div style="border-left: 1px solid var(--bordas); padding-left: 20px;">
+                            <div class="hero-meta">
+                                <p><strong>Autor:</strong><br>${destaque.autor}</p><br>
+                                <p><strong>Leitura:</strong> ${destaque.tempo_leitura}</p><br>
+                                <p><strong>Data:</strong> ${destaque.data}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Monta a grade com todos os artigos
+                const gridHTML = artigos.reverse().map(a => `
+                    <div class="card-artigo">
+                        <div>
+                            <div class="card-edicao">${a.edicao || 'EDIÇÃO'}</div>
+                            <h3 class="card-title">${a.tema}</h3>
+                            <p class="card-chamada">${a.chamada}</p>
+                        </div>
+                        <div class="card-footer">
+                            <span>⏱ ${a.tempo_leitura}</span>
+                            <a href="materia.html?id=${a.id}" class="card-link">Acessar Edição ➔</a>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('grid-artigos').innerHTML = gridHTML;
+
+            } catch (err) {
+                document.getElementById('destaque-container').innerHTML = '<p style="color:var(--texto-sec)">Erro ao carregar matérias da revista.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarHome);
+    </script>
+</body>
+</html>
