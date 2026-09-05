@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Gestor | Criar Publicação</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #060E18;
+            --card-bg: #0A1624;
+            --dourado: #C4974A;
+            --texto: #EEF0F2;
+            --bordas: rgba(196,151,74,0.3);
+        }
+        body { background: var(--bg); color: var(--texto); font-family: 'DM Sans', sans-serif; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--bordas); }
+        h1 { color: var(--dourado); margin-bottom: 20px; font-size: 24px; text-transform: uppercase; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-size: 12px; color: var(--dourado); text-transform: uppercase; margin-bottom: 6px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 12px; background: #0E1E30; border: 1px solid var(--bordas); color: #fff; border-radius: 4px; font-family: inherit; }
+        .btn-submit { background: var(--dourado); color: var(--bg); padding: 14px; border: none; border-radius: 4px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 14px; margin-top: 10px; }
+        .btn-submit:hover { opacity: 0.9; }
+        .hint { font-size: 11px; color: #7A8FA3; margin-top: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Painel do Gestor — Publicar Edição</h1>
+        <form id="formGestor" onsubmit="publicarMateria(event)">
+            <div class="form-group">
+                <label>Título da Publicação</label>
+                <input type="text" id="titulo" required placeholder="Ex: O Impacto da IA na Liderança Executiva">
+            </div>
+            <div class="form-group">
+                <label>Subtítulo / Chamada Secundária</label>
+                <input type="text" id="subtitulo" required placeholder="Ex: Como gestores estão adaptando suas equipes...">
+            </div>
+            <div class="form-group">
+                <label>Autor</label>
+                <input type="text" id="autor" value="Redação EU⁺ Gestor" required>
+            </div>
+            <div class="form-group">
+                <label>Tags (separadas por vírgula)</label>
+                <input type="text" id="tags" placeholder="Ex: Liderança, Inteligência Artificial">
+            </div>
+            <div class="form-group">
+                <label>Resumo do Card (Máx 180 caracteres)</label>
+                <textarea id="resumo" maxlength="180" rows="2" required placeholder="Texto que vai aparecer no card da página inicial..."></textarea>
+                <div class="hint">Aparece no catálogo do site.</div>
+            </div>
+            <div class="form-group">
+                <label>Box de Destaque / Citação</label>
+                <textarea id="box_destaque" rows="2" placeholder="Frase em destaque que ficará em uma caixa especial no artigo..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Corpo da Matéria (Texto Completo)</label>
+                <textarea id="corpo" rows="10" required placeholder="Escreva o artigo completo aqui. Dica: Pule linhas para criar parágrafos."></textarea>
+            </div>
+            <button type="submit" class="btn-submit" id="btnSalvar">Publicar Matéria Instantaneamente</button>
+        </form>
+    </div>
+
+    <script>
+        const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbwqiY8Qa7TZ3ikm-NjRSZ6ejRQNoUVitzbayhi_TEGCdXvzPG8mSQina-D5ejT3qrMw/exec';
+
+        async function publicarMateria(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSalvar');
+            btn.innerText = 'Publicando...';
+            btn.disabled = true;
+
+            const dados = {
+                type: 'nova_materia',
+                titulo: document.getElementById('titulo').value,
+                subtitulo: document.getElementById('subtitulo').value,
+                autor: document.getElementById('autor').value,
+                tags: document.getElementById('tags').value,
+                resumo: document.getElementById('resumo').value,
+                box_destaque: document.getElementById('box_destaque').value,
+                corpo: document.getElementById('corpo').value
+            };
+
+            try {
+                const res = await fetch(APPSCRIPT_URL, { method: 'POST', body: JSON.stringify(dados) });
+                const result = await res.json();
+                alert('Publicação lançada com sucesso!');
+                window.location.href = 'index.html';
+            } catch (err) {
+                alert('Erro ao publicar. Verifique o Script.');
+                btn.innerText = 'Publicar Matéria Instantaneamente';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
