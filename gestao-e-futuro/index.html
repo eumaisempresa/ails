@@ -3,137 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revista Digital | Gestão & Futuro⁺</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Gestão e Futuro⁺ | Portal Oficial</title>
+    
+    <!-- Fontes Oficiais -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-dark: #060E18;
-            --card-bg: #0A1624;
-            --dourado: #C4974A;
-            --texto: #EEF0F2;
-            --texto-sec: #A0AEC0;
-            --bordas: rgba(196,151,74,0.3);
+            --fundo-principal: #060E18;
+            --fundo-secundario: #0A1624;
+            --fundo-terciario: #0E1E30;
+            --dourado-principal: #C4974A;
+            --dourado-secundario: #D4AA62;
+            --texto-principal: #EEF0F2;
+            --texto-secundario: #7A8FA3;
+            --bordas: rgba(196,151,74,0.18);
+            
+            --eu-vida: #4A9BC4;
+            --eu-negocio: #C4A265;
+            --eu-empreender: #E8720C;
+            --eu-missao: #7AAD66;
+            --eu-executivo: #C4974A;
+            --eu-gestor-azul: #1A5276;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg-dark); color: var(--texto); font-family: 'DM Sans', sans-serif; line-height: 1.6; padding: 0 20px 60px 20px; }
-        .container { max-width: 1100px; margin: 0 auto; }
+        body { background-color: var(--fundo-principal); color: var(--texto-principal); font-family: 'DM Sans', sans-serif; line-height: 1.6; padding: 20px 10px; }
+        .container { max-width: 1024px; margin: 0 auto; }
 
-        /* Header / Capa */
-        header { text-align: center; padding: 60px 0 40px 0; border-bottom: 1px solid var(--bordas); margin-bottom: 40px; }
-        .logo-sub { color: var(--dourado); font-size: 13px; font-weight: bold; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
-        h1.logo-main { font-family: 'Cormorant Garamond', serif; font-size: 54px; color: #fff; line-height: 1.1; }
-        h1.logo-main span { color: var(--dourado); font-style: italic; }
-        p.tagline { color: var(--texto-sec); font-size: 16px; margin-top: 12px; font-weight: 400; }
+        /* Topo Institucional (Igual da Matéria) */
+        .topo-hierarquia {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--fundo-secundario); padding: 12px 24px;
+            border-bottom: 1px solid var(--bordas); border-radius: 4px 4px 0 0;
+            font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+        }
+        .topo-hierarquia .plataforma { color: var(--texto-secundario); }
+        .topo-hierarquia .produto { color: var(--dourado-principal); font-weight: 500; }
 
-        /* Banner Destaque Principal */
-        #destaque-container { margin-bottom: 50px; }
-        .hero-card { background: var(--card-bg); border: 1px solid var(--dourado); border-radius: 8px; padding: 40px; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; align-items: center; position: relative; overflow: hidden; }
-        .hero-card::before { content: 'EDIÇÃO EM DESTAQUE'; position: absolute; top: 0; right: 0; background: var(--dourado); color: #000; font-size: 10px; font-weight: bold; padding: 4px 12px; border-bottom-left-radius: 6px; letter-spacing: 1px; }
-        .hero-edicao { color: var(--dourado); font-size: 12px; font-weight: bold; letter-spacing: 2px; }
-        .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; color: #fff; margin: 10px 0 15px 0; line-height: 1.2; }
-        .hero-chamada { color: var(--texto-sec); font-size: 16px; margin-bottom: 20px; }
-        .hero-meta { font-size: 12px; color: var(--dourado); }
-        .btn-read { display: inline-block; background: var(--dourado); color: #000; padding: 12px 28px; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
-        .btn-read:hover { background: #dcb368; }
+        /* Header da Revista */
+        .header-revista {
+            text-align: center; padding: 40px 20px;
+            background: radial-gradient(circle at center, var(--fundo-terciario) 0%, var(--fundo-principal) 100%);
+            border: 1px solid var(--bordas); border-top: none; border-radius: 0 0 4px 4px; margin-bottom: 30px;
+        }
+        .logo-revista { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 600; color: var(--texto-principal); letter-spacing: 2px; }
+        .simbolo-sobrescrito { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--dourado-principal); vertical-align: super; margin-left: 2px; }
+        .slogan-revista { font-size: 12px; color: var(--dourado-principal); text-transform: uppercase; letter-spacing: 3px; margin-top: 8px; }
+        .divisor-dourado { width: 80px; height: 1px; background: var(--dourado-principal); margin: 16px auto 0 auto; }
 
-        /* Grade do Catálogo */
-        .section-title { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--dourado); margin-bottom: 25px; border-bottom: 1px solid var(--bordas); padding-bottom: 10px; }
-        .grid-artigos { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; }
-        
-        .card-artigo { background: var(--card-bg); border: 1px solid var(--bordas); border-radius: 6px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, border-color 0.2s; }
-        .card-artigo:hover { transform: translateY(-4px); border-color: var(--dourado); }
-        .card-edicao { color: var(--dourado); font-size: 11px; font-weight: bold; letter-spacing: 1.5px; }
-        .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #fff; margin: 10px 0; line-height: 1.3; }
-        .card-chamada { font-size: 13px; color: var(--texto-sec); margin-bottom: 20px; flex-grow: 1; }
-        .card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--bordas); padding-top: 15px; font-size: 12px; color: var(--texto-sec); }
-        .card-link { color: var(--dourado); text-decoration: none; font-weight: bold; }
+        /* Navegação */
+        .nav-abas { display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--bordas); padding-bottom: 10px; }
+        .btn-aba { background: transparent; border: 1px solid var(--bordas); color: var(--texto-secundario); padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-aba.ativo { background: var(--dourado-principal); color: var(--fundo-principal); border-color: var(--dourado-principal); }
 
-        footer { text-align: center; border-top: 1px solid var(--bordas); margin-top: 60px; padding-top: 30px; font-size: 12px; color: var(--texto-sec); }
+        /* Grid de Matérias */
+        .grid-materias { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card-materia { background: var(--fundo-secundario); border: 1px solid var(--bordas); border-radius: 4px; padding: 25px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
+        .card-materia:hover { transform: translateY(-3px); border-color: var(--dourado-principal); }
+        .card-edicao { font-size: 11px; color: var(--dourado-principal); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .card-titulo { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: var(--texto-principal); margin-bottom: 12px; line-height: 1.3; }
+        .card-subtitulo { font-size: 13px; color: var(--texto-secundario); margin-bottom: 20px; flex-grow: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .btn-ler { display: inline-block; background: transparent; border: 1px solid var(--dourado-principal); color: var(--dourado-principal); padding: 8px 16px; border-radius: 3px; text-decoration: none; font-size: 12px; text-align: center; font-weight: 600; }
+        .btn-ler:hover { background: var(--dourado-principal); color: var(--fundo-principal); }
+
+        /* Painel Publicação com IA */
+        .painel-ia { background: var(--fundo-secundario); border: 1px solid var(--bordas); border-radius: 4px; padding: 30px; margin-bottom: 30px; display: none; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 12px; color: var(--dourado-principal); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
+        .form-control { width: 100%; padding: 12px; background: var(--fundo-terciario); border: 1px solid var(--bordas); color: var(--texto-principal); border-radius: 4px; font-family: inherit; font-size: 14px; }
+        textarea.form-control { resize: vertical; min-height: 100px; }
+        .btn-gerar { background: var(--dourado-principal); color: var(--fundo-principal); border: none; padding: 14px 28px; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; width: 100%; margin-top: 10px; }
+        .btn-gerar:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Seção Fórum */
+        .secao-forum { display: none; background: var(--fundo-secundario); border: 1px solid var(--bordas); border-radius: 4px; padding: 30px; }
+        .topico-forum { background: var(--fundo-terciario); border: 1px solid var(--bordas); padding: 15px; border-radius: 4px; margin-bottom: 12px; }
+        .topico-forum h4 { color: var(--dourado-principal); font-size: 16px; margin-bottom: 6px; }
+        .topico-forum p { font-size: 13px; color: var(--texto-secundario); }
+
+        /* Rodapé Oficial (Igual da Matéria) */
+        .rodape-ecossistema { margin-top: 50px; background: var(--fundo-principal); border-top: 2px solid var(--dourado-principal); padding: 40px 20px 30px 20px; color: var(--texto-principal); border-radius: 4px; }
+        .slogan-ecossistema { text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; color: var(--dourado-principal); margin-bottom: 30px; }
+        .grid-plataformas { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 30px; text-align: center; }
+        @media (max-width: 900px) { .grid-plataformas { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
+        @media (max-width: 600px) { .grid-plataformas { grid-template-columns: 1fr; } }
+        .item-plataforma .nome { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+        .item-plataforma .desc { font-size: 10.5px; color: var(--texto-secundario); line-height: 1.3; margin-bottom: 6px; }
+        .item-plataforma a { font-size: 10px; color: var(--dourado-principal); text-decoration: none; }
+        .p-vida { color: var(--eu-vida); } .p-negocio { color: var(--eu-negocio); } .p-empreender { color: var(--eu-empreender); }
+        .p-missao { color: var(--eu-missao); } .p-executivo { color: var(--eu-executivo); } .p-gestor { color: var(--dourado-secundario); }
+        .assinatura-hierarquia { text-align: center; padding-top: 25px; border-top: 1px solid var(--bordas); font-size: 12px; color: var(--texto-secundario); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <header>
-            <div class="logo-sub">Plataforma de Inteligência Editorial</div>
-            <h1 class="logo-main">Gestão <span>& Futuro⁺</span></h1>
-            <p class="tagline">Análises de Impacto Executivo, Liderança Exponencial e Transformação Organizacional</p>
+        <!-- Topo da Hierarquia -->
+        <div class="topo-hierarquia">
+            <span class="plataforma">Ecossistema EU⁺ &gt; EU⁺ Gestor &gt; Portal de Conteúdo</span>
+            <span class="produto">REVISTA GESTÃO E FUTURO</span>
+        </div>
+
+        <!-- Header da Revista -->
+        <header class="header-revista">
+            <div class="logo-revista">
+                Gestão & Futuro<span class="simbolo-sobrescrito">⁺</span>
+            </div>
+            <div class="slogan-revista">Liderança, Inteligência Artificial e Emancipação Organizacional</div>
+            <div class="divisor-dourado"></div>
         </header>
 
-        <!-- Destaque Principal -->
-        <div id="destaque-container">
-            <p style="color: var(--texto-sec);">Buscando edição em destaque...</p>
+        <!-- Navegação de Abas -->
+        <div class="nav-abas">
+            <button class="btn-aba ativo" onclick="mudarAba('materias', this)">Edições & Matérias</button>
+            <button class="btn-aba" onclick="mudarAba('forum', this)">Fórum de Liderança</button>
+            <button class="btn-aba" onclick="mudarAba('publicar', this)">+ Publicar Matéria (IA)</button>
         </div>
 
-        <!-- Catálogo de Edições -->
-        <h2 class="section-title">Acervo de Edições</h2>
-        <div class="grid-artigos" id="grid-artigos">
-            <p style="color: var(--texto-sec);">Carregando matérias publicadas...</p>
-        </div>
+        <!-- ABA 1: MATÉRIAS -->
+        <main id="secao-materias">
+            <div class="grid-materias" id="grid-materias">
+                <p>Carregando edições...</p>
+            </div>
+        </main>
 
-        <footer>
-            <p>© Revista Gestão & Futuro⁺ • Bruno Rodrigo dos Santos Vieira (CRA-ES 28692)</p>
+        <!-- ABA 2: FÓRUM -->
+        <section id="secao-forum" class="secao-forum">
+            <h3 style="font-family:'Cormorant Garamond', serif; font-size:28px; color:var(--dourado-principal); margin-bottom:15px;">Fórum de Discussões & Gestão Exponencial</h3>
+            <p style="color:var(--texto-secundario); margin-bottom:20px;">Espaço para troca de ideias entre gestores, executivos e alunos do ecossistema EU⁺.</p>
+
+            <div class="topico-forum">
+                <h4>Como conciliar a automação de IA com a cultura humana na empresa?</h4>
+                <p>Iniciado por <strong>Bruno Vieira</strong> • 14 respostas</p>
+            </div>
+            <div class="topico-forum">
+                <h4>Quais os melhores frameworks para Curadoria de Conhecimento em 2026?</h4>
+                <p>Iniciado por <strong>Comunidade EU⁺ Gestor</strong> • 8 respostas</p>
+            </div>
+        </section>
+
+        <!-- ABA 3: GERADOR COM IA -->
+        <section id="secao-publicar" class="painel-ia">
+            <h3 style="font-family:'Cormorant Garamond', serif; font-size:26px; color:var(--dourado-principal); margin-bottom:15px;">Publicador Assistido por Inteligência Artificial</h3>
+            
+            <div class="form-group">
+                <label>Chave API Gemini (OpenAI ou Google AI Studio)</label>
+                <input type="password" id="api-key" class="form-control" placeholder="Cole sua API Key aqui">
+            </div>
+
+            <div class="form-group">
+                <label>Tema / Provocação Central da Matéria</label>
+                <textarea id="prompt-tema" class="form-control" placeholder="Ex: O impacto do agente autonômo de IA na rotina de médias empresas..."></textarea>
+            </div>
+
+            <button id="btn-ia" class="btn-gerar" onclick="gerarEMataria()">Gerar Matéria e Publicar na Planilha</button>
+            <div id="status-ia" style="margin-top:15px; font-size:13px; color:var(--dourado-principal);"></div>
+        </section>
+
+        <!-- RODAPÉ DO ECOSSISTEMA EU+ -->
+        <footer class="rodape-ecossistema">
+            <div class="slogan-ecossistema">
+                "Você é o EU. Nós somos o ⁺ que soma com você."
+            </div>
+
+            <div class="grid-plataformas">
+                <div class="item-plataforma">
+                    <div class="nome p-vida">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Vida</div>
+                    <div class="desc">Organize sua vida antes que a vida organize você.</div>
+                    <a href="https://instagram.com/eumaisvida" target="_blank">@eumaisvida</a>
+                </div>
+                <div class="item-plataforma">
+                    <div class="nome p-negocio">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Negócio</div>
+                    <div class="desc">Mais controle. Mais clareza. Mais gestão.</div>
+                    <a href="https://instagram.com/eumaisnegocio" target="_blank">@eumaisnegocio</a>
+                </div>
+                <div class="item-plataforma">
+                    <div class="nome p-empreender">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Empreender</div>
+                    <div class="desc">Transformando ideias em operações reais.</div>
+                    <a href="https://instagram.com/eumaisempreender" target="_blank">@eumaisempreender</a>
+                </div>
+                <div class="item-plataforma">
+                    <div class="nome p-missao">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Missão</div>
+                    <div class="desc">Propósito também precisa de estrutura.</div>
+                    <a href="https://instagram.com/eumaismissao" target="_blank">@eumaismissao</a>
+                </div>
+                <div class="item-plataforma">
+                    <div class="nome p-executivo">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Executivo</div>
+                    <div class="desc">Estrutura para quem lidera.</div>
+                    <a href="https://instagram.com/eumaisexecutivo" target="_blank">@eumaisexecutivo</a>
+                </div>
+                <div class="item-plataforma">
+                    <div class="nome p-gestor">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Gestor</div>
+                    <div class="desc">Liderar é transformar direção em resultado.</div>
+                    <a href="https://instagram.com/eumaisgestor" target="_blank">@eumaisgestor</a>
+                </div>
+            </div>
+
+            <div class="assinatura-hierarquia">
+                Ecossistema EU⁺ &gt; <strong>EU⁺ Empresa</strong> &gt; EU⁺ Gestor &gt; Revista Gestão e Futuro⁺<br>
+                <span style="font-size: 11px; color: var(--texto-secundario); margin-top: 6px; display: inline-block;">
+                    www.institucional.eumaisempresa.com.br • eumaisempresa@gmail.com • Serra, Espírito Santo
+                </span>
+            </div>
         </footer>
     </div>
 
     <script>
-        const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkzGw0ltxz2O4INiSCbyEP25CK8mytcJmu2hnG6tUlq3JMhNT9etOxDhoAfU5HLt3D/exec';
+        // COLE SUA URL DO GOOGLE APPS SCRIPT AQUI
+        const SCRIPT_URL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID_AQUI/exec';
 
-        async function carregarHome() {
+        function mudarAba(aba, btn) {
+            document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('ativo'));
+            btn.classList.add('ativo');
+
+            document.getElementById('secao-materias').style.display = 'none';
+            document.getElementById('secao-forum').style.display = 'none';
+            document.getElementById('secao-publicar').style.display = 'none';
+
+            if (aba === 'materias') document.getElementById('secao-materias').style.display = 'block';
+            if (aba === 'forum') document.getElementById('secao-forum').style.display = 'block';
+            if (aba === 'publicar') document.getElementById('secao-publicar').style.display = 'block';
+        }
+
+        async function carregarMaterias() {
+            const grid = document.getElementById('grid-materias');
             try {
-                const res = await fetch(APPSCRIPT_URL);
-                const artigos = await res.json();
+                const res = await fetch(SCRIPT_URL);
+                const materias = await res.json();
 
-                if (!artigos || artigos.length === 0) {
-                    document.getElementById('destaque-container').innerHTML = '<p style="color:var(--texto-sec)">Nenhuma matéria publicada ainda.</p>';
-                    document.getElementById('grid-artigos').innerHTML = '';
+                if (!materias || materias.length === 0) {
+                    grid.innerHTML = `<p>Nenhuma matéria encontrada.</p>`;
                     return;
                 }
 
-                // O último artigo salvo vira a Matéria de Destaque
-                const destaque = artigos[artigos.length - 1];
-                document.getElementById('destaque-container').innerHTML = `
-                    <div class="hero-card">
+                grid.innerHTML = materias.map(m => `
+                    <article class="card-materia">
                         <div>
-                            <div class="hero-edicao">${destaque.edicao || 'EDIÇÃO ATUAL'}</div>
-                            <h2 class="hero-title">${destaque.tema}</h2>
-                            <p class="hero-chamada">${destaque.chamada}</p>
-                            <a href="materia.html?id=${destaque.id}" class="btn-read">Ler Matéria Completa ➔</a>
+                            <div class="card-edicao">${m.edicao || 'Edição Digital'}</div>
+                            <h3 class="card-titulo">${m.titulo}</h3>
+                            <p class="card-subtitulo">${m.subtitulo || ''}</p>
                         </div>
-                        <div style="border-left: 1px solid var(--bordas); padding-left: 20px;">
-                            <div class="hero-meta">
-                                <p><strong>Autor:</strong><br>${destaque.autor}</p><br>
-                                <p><strong>Leitura:</strong> ${destaque.tempo_leitura}</p><br>
-                                <p><strong>Data:</strong> ${destaque.data}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                // Monta a grade com todos os artigos
-                const gridHTML = artigos.reverse().map(a => `
-                    <div class="card-artigo">
-                        <div>
-                            <div class="card-edicao">${a.edicao || 'EDIÇÃO'}</div>
-                            <h3 class="card-title">${a.tema}</h3>
-                            <p class="card-chamada">${a.chamada}</p>
-                        </div>
-                        <div class="card-footer">
-                            <span>⏱ ${a.tempo_leitura}</span>
-                            <a href="materia.html?id=${a.id}" class="card-link">Acessar Edição ➔</a>
-                        </div>
-                    </div>
+                        <a href="materia.html?id=${m.id}" class="btn-ler">Ler Matéria Completa &rarr;</a>
+                    </article>
                 `).join('');
 
-                document.getElementById('grid-artigos').innerHTML = gridHTML;
-
             } catch (err) {
-                document.getElementById('destaque-container').innerHTML = '<p style="color:var(--texto-sec)">Erro ao carregar matérias da revista.</p>';
+                grid.innerHTML = `<p style="color:var(--dourado-principal);">Erro ao carregar matérias. Verifique a URL do Web App.</p>`;
             }
         }
 
-        document.addEventListener('DOMContentLoaded', carregarHome);
+        async function gerarEMataria() {
+            const apiKey = document.getElementById('api-key').value;
+            const tema = document.getElementById('prompt-tema').value;
+            const btn = document.getElementById('btn-ia');
+            const status = document.getElementById('status-ia');
+
+            if (!apiKey || !tema) {
+                alert('Preencha a API Key e o Tema.');
+                return;
+            }
+
+            btn.disabled = true;
+            status.innerText = 'Engrenando Inteligência Artificial... Aguarde.';
+
+            const promptFormatado = `Você é o editor sênior da Revista Gestão e Futuro⁺ do Ecossistema EU⁺. 
+Crie uma matéria completa no formato JSON estrito sobre: "${tema}".
+JSON com as seguintes chaves:
+{
+  "edicao": "Matéria de Capa • Edição Especial",
+  "titulo": "Título Curto e Impactante",
+  "subtitulo": "Subtítulo analítico e envolvente",
+  "autor": "Bruno Rodrigo dos Santos Vieira (CRA-ES 28692)",
+  "tempoLeitura": "6 min",
+  "data": "${new Date().toLocaleDateString('pt-BR')}",
+  "reflexao": "Texto curto reflexivo estilo bússola/navegação.",
+  "resumo": "Resumo executivo completo com formatação HTML simples (bold/italic).",
+  "conteudo": ["Parágrafo 1...", "Parágrafo 2...", "Parágrafo 3..."],
+  "citacao": { "texto": "Frase de efeito", "autor": "Revista Gestão e Futuro⁺" },
+  "notaEditor": "Anotação manuscrita estratégica",
+  "aprendizados": ["Aprendizado 1", "Aprendizado 2"],
+  "praticas": ["Prática 1", "Prática 2"],
+  "tags": ["Administração", "IA", "Liderança"],
+  "hashtags": ["#GestaoEFuturo", "#EuMaisGestor"]
+}
+Retorne APENAS o JSON puro. Sem comentários, sem formatação markdown extra.`;
+
+            try {
+                // Chamada API Gemini
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptFormatado }] }]
+                    })
+                });
+
+                const rawData = await response.json();
+                let textoGerado = rawData.candidates[0].content.parts[0].text;
+                
+                // Limpeza estrita de blocos ```json ... ```
+                textoGerado = textoGerado.replace(/```json/g, '').replace(/```/g, '').trim();
+                const materiaObj = JSON.parse(textoGerado);
+
+                status.innerText = 'Matéria gerada com sucesso! Salvando na planilha...';
+
+                // Envio para o Google Apps Script
+                const postRes = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(materiaObj)
+                });
+
+                const result = await postRes.json();
+
+                if (result.status === "success") {
+                    status.innerText = "Publicado com sucesso! Redirecionando...";
+                    setTimeout(() => {
+                        window.location.href = `materia.html?id=${result.id}`;
+                    }, 1000);
+                } else {
+                    throw new Error("Erro ao gravar na planilha.");
+                }
+
+            } catch (e) {
+                console.error(e);
+                status.innerText = 'Erro ao processar com a IA ou ao salvar na planilha. Tente novamente.';
+                btn.disabled = false;
+            }
+        }
+
+        window.onload = carregarMaterias;
     </script>
 </body>
 </html>
