@@ -3,95 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Gestor | Criar Publicação</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Painel do Gestor | Revista Gestão & Futuro⁺</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #060E18;
+            --bg-dark: #060E18;
             --card-bg: #0A1624;
             --dourado: #C4974A;
             --texto: #EEF0F2;
+            --texto-sec: #7A8FA3;
             --bordas: rgba(196,151,74,0.3);
+            --alerta: #E53E3E;
         }
-        body { background: var(--bg); color: var(--texto); font-family: 'DM Sans', sans-serif; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--bordas); }
-        h1 { color: var(--dourado); margin-bottom: 20px; font-size: 24px; text-transform: uppercase; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; font-size: 12px; color: var(--dourado); text-transform: uppercase; margin-bottom: 6px; font-weight: bold; }
-        input, textarea { width: 100%; padding: 12px; background: #0E1E30; border: 1px solid var(--bordas); color: #fff; border-radius: 4px; font-family: inherit; }
-        .btn-submit { background: var(--dourado); color: var(--bg); padding: 14px; border: none; border-radius: 4px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 14px; margin-top: 10px; }
-        .btn-submit:hover { opacity: 0.9; }
-        .hint { font-size: 11px; color: #7A8FA3; margin-top: 4px; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg-dark); color: var(--texto); font-family: 'DM Sans', sans-serif; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--bordas); margin-bottom: 25px; }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 32px; color: var(--dourado); }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 25px; }
+        .tab-btn { background: var(--card-bg); color: var(--texto-sec); border: 1px solid var(--bordas); padding: 12px 24px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .tab-btn.active { background: var(--dourado); color: #000; border-color: var(--dourado); }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        /* Lista de Artigos */
+        .artigo-item { background: var(--card-bg); border: 1px solid var(--bordas); border-radius: 6px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .artigo-title { font-size: 18px; color: #fff; font-weight: 500; }
+        .artigo-meta { font-size: 12px; color: var(--texto-sec); margin-top: 5px; }
+        .btn-view { background: transparent; border: 1px solid var(--dourado); color: var(--dourado); padding: 8px 16px; border-radius: 4px; text-decoration: none; font-size: 12px; font-weight: bold; }
+
+        /* Formulário de Blocos */
+        .block-card { background: var(--card-bg); border: 1px solid var(--bordas); border-radius: 6px; padding: 25px; margin-bottom: 20px; }
+        .block-title { font-size: 14px; text-transform: uppercase; color: var(--dourado); letter-spacing: 1px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px dashed var(--bordas); padding-bottom: 8px; }
+
+        .form-group { margin-bottom: 15px; position: relative; }
+        label { display: block; font-size: 12px; color: var(--texto-sec); margin-bottom: 6px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 12px; background: #0E1E30; border: 1px solid var(--bordas); color: #fff; border-radius: 4px; font-family: inherit; font-size: 14px; }
+        textarea { resize: vertical; }
+
+        .counter { font-size: 11px; color: var(--texto-sec); text-align: right; margin-top: 4px; }
+        .counter.limit-exceeded { color: var(--alerta); font-weight: bold; }
+
+        .ai-box { background: rgba(196,151,74,0.08); border: 1px solid var(--dourado); padding: 20px; border-radius: 6px; margin-top: 20px; }
+
+        .btn-action { background: var(--dourado); color: #000; padding: 16px; border: none; border-radius: 4px; font-weight: bold; width: 100%; cursor: pointer; text-transform: uppercase; font-size: 15px; letter-spacing: 1px; }
+        .btn-ai { background: #2B6CB0; color: #fff; padding: 12px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 15px; text-transform: uppercase; font-size: 13px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Painel do Gestor — Publicar Edição</h1>
-        <form id="formGestor" onsubmit="publicarMateria(event)">
-            <div class="form-group">
-                <label>Título da Publicação</label>
-                <input type="text" id="titulo" required placeholder="Ex: O Impacto da IA na Liderança Executiva">
-            </div>
-            <div class="form-group">
-                <label>Subtítulo / Chamada Secundária</label>
-                <input type="text" id="subtitulo" required placeholder="Ex: Como gestores estão adaptando suas equipes...">
-            </div>
-            <div class="form-group">
-                <label>Autor</label>
-                <input type="text" id="autor" value="Redação EU⁺ Gestor" required>
-            </div>
-            <div class="form-group">
-                <label>Tags (separadas por vírgula)</label>
-                <input type="text" id="tags" placeholder="Ex: Liderança, Inteligência Artificial">
-            </div>
-            <div class="form-group">
-                <label>Resumo do Card (Máx 180 caracteres)</label>
-                <textarea id="resumo" maxlength="180" rows="2" required placeholder="Texto que vai aparecer no card da página inicial..."></textarea>
-                <div class="hint">Aparece no catálogo do site.</div>
-            </div>
-            <div class="form-group">
-                <label>Box de Destaque / Citação</label>
-                <textarea id="box_destaque" rows="2" placeholder="Frase em destaque que ficará em uma caixa especial no artigo..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Corpo da Matéria (Texto Completo)</label>
-                <textarea id="corpo" rows="10" required placeholder="Escreva o artigo completo aqui. Dica: Pule linhas para criar parágrafos."></textarea>
-            </div>
-            <button type="submit" class="btn-submit" id="btnSalvar">Publicar Matéria Instantaneamente</button>
-        </form>
+        <header>
+            <h1>Gestão & Futuro⁺ — Gestor Editorial</h1>
+            <a href="index.html" class="btn-view" target="_blank">Ver Site Público ↗</a>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('lista')">Meus Artigos Publicados</button>
+            <button class="tab-btn" onclick="switchTab('novo')">+ Nova Publicação</button>
+        </div>
+
+        <!-- ABA 1: LISTA DE ARTIGOS -->
+        <section id="sec-lista" class="content-section active">
+            <div id="loading-artigos" style="color: var(--texto-sec);">Carregando artigos salvos...</div>
+            <div id="lista-artigos"></div>
+        </section>
+
+        <!-- ABA 2: FORMULÁRIO DE NOVA PUBLICAÇÃO -->
+        <section id="sec-novo" class="content-section">
+            <form id="formPublicacao" onsubmit="salvarPublicacao(event)">
+                
+                <!-- BLOCO 1: CABEÇALHO -->
+                <div class="block-card">
+                    <div class="block-title">1. Identificação da Matéria</div>
+                    <div class="form-group">
+                        <label>Tema / Título Principal (Máx 2 linhas / ~120 Chars)</label>
+                        <input type="text" id="tema" required maxlength="120" oninput="validarLimites('tema', 120, 'c-tema')" placeholder="Ex: Todos Deveriam Fazer Administração de Empresas">
+                        <div class="counter" id="c-tema">0 / 120 caracteres</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Chamada / Linha Fina (Máx 3 linhas / ~250 Chars)</label>
+                        <textarea id="chamada" rows="2" required maxlength="250" oninput="validarLimites('chamada', 250, 'c-chamada')" placeholder="Ex: Por que a aceleração exponencial da IA não elimina as competências clássicas..."></textarea>
+                        <div class="counter" id="c-chamada">0 / 250 caracteres</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Autor</label>
+                        <input type="text" id="autor" value="Bruno Rodrigo dos Santos Vieira (CRA-ES 28692)" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tempo de Leitura Estimado</label>
+                        <input type="text" id="tempo_leitura" value="6 min" required>
+                    </div>
+                </div>
+
+                <!-- BLOCO 2: BOX REFLEXÃO -->
+                <div class="block-card">
+                    <div class="block-title">2. Box Reflexão e Desafios (Escuro Superior)</div>
+                    <div class="form-group">
+                        <label>Título do Box (Máx 10 palavras)</label>
+                        <input type="text" id="box_reflexao_titulo" value="Reflexão e Desafios" oninput="validarPalavras('box_reflexao_titulo', 10, 'c-ref-t')">
+                        <div class="counter" id="c-ref-t">0 / 10 palavras</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Conteúdo (Máx 3 linhas / ~250 Chars)</label>
+                        <textarea id="box_reflexao_texto" rows="2" maxlength="250" oninput="validarLimites('box_reflexao_texto', 250, 'c-ref-c')"></textarea>
+                        <div class="counter" id="c-ref-c">0 / 250 caracteres</div>
+                    </div>
+                </div>
+
+                <!-- BLOCO 3: RESUMO E CONTEÚDO INICIAL -->
+                <div class="block-card">
+                    <div class="block-title">3. Resumo Executivo & Parágrafo Inicial</div>
+                    <div class="form-group">
+                        <label>Título Seção 1</label>
+                        <input type="text" id="resumo_executivo_titulo" value="1. Resumo Executivo">
+                    </div>
+                    <div class="form-group">
+                        <label>Corpo Resumo Executivo (Máx ~7 linhas / ~500 Chars)</label>
+                        <textarea id="resumo_executivo_corpo" rows="4" maxlength="500" oninput="validarLimites('resumo_executivo_corpo', 500, 'c-res-c')"></textarea>
+                        <div class="counter" id="c-res-c">0 / 500 caracteres</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Título Seção 2</label>
+                        <input type="text" id="conteudo_titulo" value="2. Conteúdo da Matéria">
+                    </div>
+                    <div class="form-group">
+                        <label>Inicial do Corpo (Máx ~7 linhas / ~500 Chars)</label>
+                        <textarea id="conteudo_intro" rows="4" maxlength="500" oninput="validarLimites('conteudo_intro', 500, 'c-intro')"></textarea>
+                        <div class="counter" id="c-intro">0 / 500 caracteres</div>
+                    </div>
+                </div>
+
+                <!-- BLOCO 4: DESTAQUE CENTRAL & CONTINUAÇÃO -->
+                <div class="block-card">
+                    <div class="block-title">4. Destaque Central & Continuação do Texto</div>
+                    <div class="form-group">
+                        <label>Frase em Destaque Central (Máx 2 linhas / ~180 Chars)</label>
+                        <textarea id="destaque_central_texto" rows="2" maxlength="180" oninput="validarLimites('destaque_central_texto', 180, 'c-dest-t')"></textarea>
+                        <div class="counter" id="c-dest-t">0 / 180 caracteres</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Referência do Destaque (Máx 10 palavras)</label>
+                        <input type="text" id="destaque_central_ref" value="— ENTREVISTA EXCLUSIVA • REVISTA GESTÃO E FUTURO⁺" oninput="validarPalavras('destaque_central_ref', 10, 'c-dest-r')">
+                        <div class="counter" id="c-dest-r">0 / 10 palavras</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Continuação do Corpo (Até 3 blocos / Pule linhas para parágrafos)</label>
+                        <textarea id="conteudo_blocos" rows="6" placeholder="Parágrafo 1...&#10;&#10;Parágrafo 2...&#10;&#10;Parágrafo 3..."></textarea>
+                    </div>
+                </div>
+
+                <!-- BLOCO 5: NOTA DO EDITOR -->
+                <div class="block-card">
+                    <div class="block-title">5. Box Nota do Editor</div>
+                    <div class="form-group">
+                        <label>Título da Nota (Máx 10 palavras)</label>
+                        <input type="text" id="nota_editor_titulo" value="📌 Nota do Editor (Anotação Pessoal):" oninput="validarPalavras('nota_editor_titulo', 10, 'c-nota-t')">
+                        <div class="counter" id="c-nota-t">0 / 10 palavras</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Texto da Nota (Máx 3 linhas / ~250 Chars)</label>
+                        <textarea id="nota_editor_texto" rows="2" maxlength="250" oninput="validarLimites('nota_editor_texto', 250, 'c-nota-c')"></textarea>
+                        <div class="counter" id="c-nota-c">0 / 250 caracteres</div>
+                    </div>
+                </div>
+
+                <!-- BLOCO 6: APRENDIZADOS E PRÁTICAS (2 COLUNAS) -->
+                <div class="block-card">
+                    <div class="block-title">6. Aprendizados & Práticas Potenciais</div>
+                    <div class="form-group">
+                        <label>Principais Aprendizados (Um por linha - Até 7 tópicos de até 3 linhas)</label>
+                        <textarea id="aprendizados_itens" rows="5" placeholder="Ex: Inversão de Gargalo: A velocidade de geração...&#10;Combate à Irrelevância: A embalagem foi..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Práticas Potenciais de Impacto (Um por linha - Até 7 tópicos de até 3 linhas)</label>
+                        <textarea id="praticas_itens" rows="5" placeholder="Ex: Arquitetura de Curadoria: Implementar rotinas...&#10;Autoliderança Operacional: Definir objetivos..."></textarea>
+                    </div>
+                </div>
+
+                <!-- BLOCO 7: INTELIGÊNCIA ARTIFICIAL (ANÁLISE, TAGS E HASHTAGS) -->
+                <div class="block-card ai-box">
+                    <div class="block-title" style="color: var(--dourado);">7. Análise Crítica e Tags por Inteligência Artificial</div>
+                    <button type="button" class="btn-ai" onclick="gerarTagsEAnaliseIA()">🤖 Analisar Publicação com IA</button>
+                    
+                    <div class="form-group">
+                        <label>Análise Crítica Executiva (Gerado pela IA)</label>
+                        <textarea id="analise_ia" rows="3" readonly placeholder="A análise da IA aparecerá aqui..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tags Institucionais (Separadas por vírgula)</label>
+                        <input type="text" id="tags" placeholder="Ex: Administração de Empresas, Inteligência Artificial, Liderança e Processos">
+                    </div>
+                    <div class="form-group">
+                        <label>Hashtags de Presença Digital (Separadas por espaço ou vírgula)</label>
+                        <input type="text" id="hashtags" placeholder="Ex: #GestaoEFuturo #EuMaisEmpresa #EuMaisGestor #LiderancaExponencial">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-action" id="btnSubmit">🚀 Publicar Matéria na Revista</button>
+            </form>
+        </section>
     </div>
 
     <script>
         const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkzGw0ltxz2O4INiSCbyEP25CK8mytcJmu2hnG6tUlq3JMhNT9etOxDhoAfU5HLt3D/exec';
 
-        async function publicarMateria(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnSalvar');
-            btn.innerText = 'Publicando...';
-            btn.disabled = true;
+        // Alternar Abas
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            
+            if (tab === 'lista') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('sec-lista').classList.add('active');
+                carregarArtigos();
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('sec-novo').classList.add('active');
+            }
+        }
 
-            const dados = {
-                type: 'nova_materia',
-                titulo: document.getElementById('titulo').value,
-                subtitulo: document.getElementById('subtitulo').value,
-                autor: document.getElementById('autor').value,
-                tags: document.getElementById('tags').value,
-                resumo: document.getElementById('resumo').value,
-                box_destaque: document.getElementById('box_destaque').value,
-                corpo: document.getElementById('corpo').value
-            };
+        // Validação de Limites de Caracteres
+        function validarLimites(idInput, max, idCounter) {
+            const val = document.getElementById(idInput).value;
+            const elCounter = document.getElementById(idCounter);
+            elCounter.innerText = `${val.length} / ${max} caracteres`;
+            if (val.length >= max) {
+                elCounter.classList.add('limit-exceeded');
+            } else {
+                elCounter.classList.remove('limit-exceeded');
+            }
+        }
+
+        // Validação de Limites de Palavras
+        function validarPalavras(idInput, maxPalavras, idCounter) {
+            const val = document.getElementById(idInput).value.trim();
+            const palavras = val ? val.split(/\s+/).length : 0;
+            const elCounter = document.getElementById(idCounter);
+            elCounter.innerText = `${palavras} / ${maxPalavras} palavras`;
+            if (palavras > maxPalavras) {
+                elCounter.classList.add('limit-exceeded');
+            } else {
+                elCounter.classList.remove('limit-exceeded');
+            }
+        }
+
+        // Carregar Artigos Publicados
+        async function carregarArtigos() {
+            const container = document.getElementById('lista-artigos');
+            const loading = document.getElementById('loading-artigos');
+            loading.style.display = 'block';
+            container.innerHTML = '';
 
             try {
-                const res = await fetch(APPSCRIPT_URL, { method: 'POST', body: JSON.stringify(dados) });
-                const result = await res.json();
-                alert('Publicação lançada com sucesso!');
-                window.location.href = 'index.html';
+                const res = await fetch(APPSCRIPT_URL);
+                const artigos = await res.json();
+                loading.style.display = 'none';
+
+                if (!artigos || artigos.length === 0) {
+                    container.innerHTML = '<p style="color:var(--texto-sec)">Nenhum artigo publicado ainda.</p>';
+                    return;
+                }
+
+                artigos.forEach(a => {
+                    const item = document.createElement('div');
+                    item.className = 'artigo-item';
+                    item.innerHTML = `
+                        <div>
+                            <div class="artigo-title">[${a.edicao || 'ED 01'}] ${a.tema || 'Sem Título'}</div>
+                            <div class="artigo-meta">Publicado em: ${a.data} • Autor: ${a.autor}</div>
+                        </div>
+                        <a href="materia.html?id=${a.id}" target="_blank" class="btn-view">Visualizar Ver ↗</a>
+                    `;
+                    container.appendChild(item);
+                });
             } catch (err) {
-                alert('Erro ao publicar. Verifique o Script.');
-                btn.innerText = 'Publicar Matéria Instantaneamente';
+                loading.innerText = 'Erro ao carregar lista de artigos.';
+            }
+        }
+
+        // Executar IA para Análise, Tags e Hashtags
+        async function gerarTagsEAnaliseIA() {
+            const btn = document.querySelector('.btn-ai');
+            const originalText = btn.innerText;
+            btn.innerText = '🔄 Processando Inteligência Artificial...';
+            btn.disabled = true;
+
+            const textoCompleto = `
+                Título: ${document.getElementById('tema').value}
+                Chamada: ${document.getElementById('chamada').value}
+                Resumo Executivo: ${document.getElementById('resumo_executivo_corpo').value}
+                Conteúdo: ${document.getElementById('conteudo_intro').value}
+                Destaque: ${document.getElementById('destaque_central_texto').value}
+                Nota Editor: ${document.getElementById('nota_editor_texto').value}
+            `;
+
+            try {
+                const res = await fetch(APPSCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ type: 'analisar_ia', textoCompleto: textoCompleto })
+                });
+                const result = await res.json();
+
+                if (result.analise_critica) {
+                    document.getElementById('analise_ia').value = result.analise_critica;
+                }
+                if (result.tags) {
+                    document.getElementById('tags').value = Array.isArray(result.tags) ? result.tags.join(', ') : result.tags;
+                }
+                if (result.hashtags) {
+                    document.getElementById('hashtags').value = Array.isArray(result.hashtags) ? result.hashtags.join(' ') : result.hashtags;
+                }
+            } catch (e) {
+                alert('Erro ao conectar com a IA no Apps Script.');
+            } finally {
+                btn.innerText = originalText;
                 btn.disabled = false;
             }
         }
+
+        // Salvar a Nova Publicação
+        async function salvarPublicacao(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmit');
+            btn.innerText = 'Salvando e Publicando...';
+            btn.disabled = true;
+
+            const aprendizadosArr = document.getElementById('aprendizados_itens').value.split('\n').filter(i => i.trim() !== '');
+            const praticasArr = document.getElementById('praticas_itens').value.split('\n').filter(i => i.trim() !== '');
+
+            const payload = {
+                type: 'nova_materia',
+                tema: document.getElementById('tema').value,
+                chamada: document.getElementById('chamada').value,
+                autor: document.getElementById('autor').value,
+                tempo_leitura: document.getElementById('tempo_leitura').value,
+                box_reflexao_titulo: document.getElementById('box_reflexao_titulo').value,
+                box_reflexao_texto: document.getElementById('box_reflexao_texto').value,
+                resumo_executivo_titulo: document.getElementById('resumo_executivo_titulo').value,
+                resumo_executivo_corpo: document.getElementById('resumo_executivo_corpo').value,
+                conteudo_titulo: document.getElementById('conteudo_titulo').value,
+                conteudo_intro: document.getElementById('conteudo_intro').value,
+                destaque_central_texto: document.getElementById('destaque_central_texto').value,
+                destaque_central_ref: document.getElementById('destaque_central_ref').value,
+                conteudo_blocos: document.getElementById('conteudo_blocos').value,
+                nota_editor_titulo: document.getElementById('nota_editor_titulo').value,
+                nota_editor_texto: document.getElementById('nota_editor_texto').value,
+                aprendizados_itens: aprendizadosArr,
+                praticas_itens: praticasArr,
+                tags: document.getElementById('tags').value,
+                hashtags: document.getElementById('hashtags').value
+            };
+
+            try {
+                const res = await fetch(APPSCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+                const result = await res.json();
+                if (result.status === 'sucesso') {
+                    alert(`Matéria publicada com sucesso! ID: ${result.id}`);
+                    switchTab('lista');
+                } else {
+                    alert('Erro ao publicar matéria.');
+                }
+            } catch (err) {
+                alert('Erro na requisição. Verifique o console.');
+            } finally {
+                btn.innerText = '🚀 Publicar Matéria na Revista';
+                btn.disabled = false;
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => carregarArtigos());
     </script>
 </body>
 </html>
