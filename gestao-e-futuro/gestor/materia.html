@@ -411,10 +411,10 @@
 
     <div class="container">
         <!-- Topo da Hierarquia -->
-        <div class="topo-hierarquia">
+        <nav class="topo-hierarquia" aria-label="Navegação de Hierarquia">
             <span class="plataforma">Ecossistema EU⁺ &gt; EU⁺ Gestor &gt; Edição Digital</span>
             <span class="produto">REVISTA GESTÃO E FUTURO</span>
-        </div>
+        </nav>
 
         <!-- Header da Revista -->
         <header class="header-revista">
@@ -426,7 +426,7 @@
         </header>
 
         <!-- CORPO DA MATÉRIA -->
-        <main class="corpo-materia">
+        <article class="corpo-materia">
             <span class="badge-categoria" id="edicao-badge">Matéria de Capa • Edição 01</span>
             
             <h1 class="titulo-materia" id="titulo-materia">Carregando título...</h1>
@@ -441,8 +441,8 @@
             </div>
 
             <!-- Card Reflexão e Desafios -->
-            <section class="card-direcao-arte">
-                <h3>Reflexão e Desafios</h3>
+            <section class="card-direcao-arte" aria-labelledby="reflexao-titulo">
+                <h3 id="reflexao-titulo">Reflexão e Desafios</h3>
                 <p id="reflexao-texto">
                     Em um mundo onde a especulação, medo e incerteza parecem dominar, devemos colocar as nossas vidas como um barco que se guia por meio de uma bússola, o vento bate, tira da direção, mas sempre temos apontando para o nosso destino.
                 </p>
@@ -510,7 +510,7 @@
                     <span class="hashtag-pill">#EuMaisGestor</span>
                 </div>
             </div>
-        </main>
+        </article>
 
         <!-- RODAPÉ DO ECOSSISTEMA EU+ -->
         <footer class="rodape-ecossistema">
@@ -522,32 +522,32 @@
                 <div class="item-plataforma">
                     <div class="nome p-vida">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Vida</div>
                     <div class="desc">Organize sua vida antes que a vida organize você.</div>
-                    <a href="https://instagram.com/eumaisvida" target="_blank">@eumaisvida</a>
+                    <a href="https://instagram.com/eumaisvida" target="_blank" rel="noopener noreferrer">@eumaisvida</a>
                 </div>
                 <div class="item-plataforma">
                     <div class="nome p-negocio">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Negócio</div>
                     <div class="desc">Mais controle. Mais clareza. Mais gestão.</div>
-                    <a href="https://instagram.com/eumaisnegocio" target="_blank">@eumaisnegocio</a>
+                    <a href="https://instagram.com/eumaisnegocio" target="_blank" rel="noopener noreferrer">@eumaisnegocio</a>
                 </div>
                 <div class="item-plataforma">
                     <div class="nome p-empreender">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Empreender</div>
                     <div class="desc">Transformando ideias em operações reais.</div>
-                    <a href="https://instagram.com/eumaisempreender" target="_blank">@eumaisempreender</a>
+                    <a href="https://instagram.com/eumaisempreender" target="_blank" rel="noopener noreferrer">@eumaisempreender</a>
                 </div>
                 <div class="item-plataforma">
                     <div class="nome p-missao">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Missão</div>
                     <div class="desc">Propósito também precisa de estrutura.</div>
-                    <a href="https://instagram.com/eumaismissao" target="_blank">@eumaismissao</a>
+                    <a href="https://instagram.com/eumaismissao" target="_blank" rel="noopener noreferrer">@eumaismissao</a>
                 </div>
                 <div class="item-plataforma">
                     <div class="nome p-executivo">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Executivo</div>
                     <div class="desc">Estrutura para quem lidera.</div>
-                    <a href="https://instagram.com/eumaisexecutivo" target="_blank">@eumaisexecutivo</a>
+                    <a href="https://instagram.com/eumaisexecutivo" target="_blank" rel="noopener noreferrer">@eumaisexecutivo</a>
                 </div>
                 <div class="item-plataforma">
                     <div class="nome p-gestor">EU<span class="simbolo-sobrescrito" style="font-size:10px;">⁺</span> Gestor</div>
                     <div class="desc">Liderar é transformar direção em resultado.</div>
-                    <a href="https://instagram.com/eumaisgestor" target="_blank">@eumaisgestor</a>
+                    <a href="https://instagram.com/eumaisgestor" target="_blank" rel="noopener noreferrer">@eumaisgestor</a>
                 </div>
             </div>
 
@@ -566,51 +566,49 @@
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id') || '1';
 
+            const dataFallback = {
+                edicao: "Matéria de Capa • Edição 01",
+                titulo: '"Todos Deveriam Fazer Administração de Empresas"',
+                subtitulo: "Por que a aceleração exponencial da Inteligência Artificial não elimina as competências clássicas de gestão, mas as eleva ao status de infraestrutura crítica para a sobrevivência e autonomia humana.",
+                autor: "Bruno Rodrigo dos Santos Vieira (CRA-ES 28692)",
+                tempoLeitura: "6 min",
+                data: "05/09/2026",
+                reflexao: "Em um mundo onde a especulação, medo e incerteza parecem dominar, devemos colocar as nossas vidas como um barco que se guia por meio de uma bússola, o vento bate, tira da direção, mas sempre temos apontando para o nosso destino.",
+                resumo: "A Inteligência Artificial resolveu o gargalo histórico da <strong>geração</strong> de conteúdo, dados e análises, mas criou um gargalo crítico na <strong>assimilação, organização e tomada de decisão</strong>. Longe de tornar a Ciência da Administração obsoleta, a era digital exponencial transforma competências como gestão do tempo, priorização, organização de processos e liderança em infraestrutura indispensável.",
+                conteudo: [
+                    'A provocação "Todos deveriam fazer Administração de Empresas" nasceu da vivência prática. Historicamente vista por muitos como um curso genérico de acesso facilitado, a Administração guarda em sua essência a única disciplina capaz de orientar a vida, a carreira e os recursos humanos. Como sintetizado no diálogo fundamental: <em>"A IA dará a todos a capacidade de nadar. Se a pessoa não souber nadar, ela se afoga; se souber nadar muito bem, mas não souber para onde vai, nadará com toda força na direção errada."</em>',
+                    'Vivemos a ruína do "personagem fictício", profissionais que dominavam a forma e a embalagem nas redes sociais, mas não possuíam lastro real. A IA democratizou a embalagem e a velocidade. Com isso, o profissional autêntico, que detém essência e conteúdo prático, agora ganha ferramentas para escalar e comunicar sua entrega.',
+                    'Mais do que isso, a IA funciona como a democratização da lendária "garagem de Steve Jobs". Ela elimina barreiras de linguagem, renda e localização. Hoje, com um celular acessível e conexão Wi-Fi, qualquer pessoa tem nas mãos o poder de erguer operações disruptivas.'
+                ],
+                citacao: {
+                    texto: '"Produzir dados isolados não gera vantagem competitiva. O diferencial real migrou para a capacidade de organizar melhor, preservar conhecimento, decidir com precisão e transformar inteligência disponível em capacidade organizacional real."',
+                    autor: 'Entrevista Exclusiva • Revista Gestão e Futuro⁺'
+                },
+                notaEditor: "A IA faz você produzir 100, mas sem gestão você só absorve 10 e joga 90 fora. O profissional do futuro é o 'Generalista Especializado', capaz de liderar a si mesmo antes de liderar ecossistemas.",
+                aprendizados: [
+                    '<strong>Inversão de Gargalo:</strong> A velocidade de geração pela IA exige filtros rigorosos de assimilação e decisão humana.',
+                    '<strong>Combate à Irrelevância:</strong> A embalagem foi democratizada; o diferencial voltou a ser a essência e o rastro real de transformação.',
+                    '<strong>O Generalista Especializado:</strong> A síntese de visão ampla estratégica com aprofundamento veloz proporcionado por agentes de IA.',
+                    '<strong>Fim da Burocracia:</strong> Gestão não é sobre cargos, é sobre gestão de vida, tempo, escolhas e recursos.'
+                ],
+                praticas: [
+                    '<strong>Arquitetura de Curadoria:</strong> Implementar rotinas diárias para catalogar e reter o conhecimento útil gerado por IA.',
+                    '<strong>Jornada do Cliente/Paciente:</strong> Médicos e especialistas devem evoluir de "detentores de diagnóstico" para "mentores da jornada".',
+                    '<strong>Autoliderança Operacional:</strong> Definir objetivos e prioridades claras antes de acionar qualquer ferramenta de automação.',
+                    '<strong>Emancipação Digital:</strong> Transformar simples dispositivos móveis em centros de inteligência e criação de negócios reais.'
+                ],
+                tags: ['Administração de Empresas', 'Inteligência Artificial', 'Liderança e Processos', 'Generalista Especializado', 'EU⁺ Gestor'],
+                hashtags: ['#GestaoEFuturo', '#EuMaisEmpresa', '#EuMaisGestor', '#LiderancaExponencial', '#Autolideranca']
+            };
+
             try {
-                // Tenta carregar da API ou banco dinâmico se existir
                 const response = await fetch(`https://ails.eumaisempresa.com.br/api/materias/${id}`);
-                
-                if (!response.ok) throw new Error('API indisponível, utilizando dados padrão.');
+                if (!response.ok) throw new Error('API indisponível');
                 
                 const data = await response.json();
                 renderizarDados(data);
             } catch (err) {
-                // Dados Fallback para garantir a exibição perfeita da Matéria 1
-                const dataFallback = {
-                    edicao: "Matéria de Capa • Edição 01",
-                    titulo: '"Todos Deveriam Fazer Administração de Empresas"',
-                    subtitulo: "Por que a aceleração exponencial da Inteligência Artificial não elimina as competências clássicas de gestão, mas as eleva ao status de infraestrutura crítica para a sobrevivência e autonomia humana.",
-                    autor: "Bruno Rodrigo dos Santos Vieira (CRA-ES 28692)",
-                    tempoLeitura: "6 min",
-                    data: "05/09/2026",
-                    reflexao: "Em um mundo onde a especulação, medo e incerteza parecem dominar, devemos colocar as nossas vidas como um barco que se guia por meio de uma bússola, o vento bate, tira da direção, mas sempre temos apontando para o nosso destino.",
-                    resumo: "A Inteligência Artificial resolveu o gargalo histórico da <strong>geração</strong> de conteúdo, dados e análises, mas criou um gargalo crítico na <strong>assimilação, organização e tomada de decisão</strong>. Longe de tornar a Ciência da Administração obsoleta, a era digital exponencial transforma competências como gestão do tempo, priorização, organização de processos e liderança em infraestrutura indispensável.",
-                    conteudo: [
-                        'A provocação "Todos deveriam fazer Administração de Empresas" nasceu da vivência prática. Historicamente vista por muitos como um curso genérico de acesso facilitado, a Administração guarda em sua essência a única disciplina capaz de orientar a vida, a carreira e os recursos humanos. Como sintetizado no diálogo fundamental: <em>"A IA dará a todos a capacidade de nadar. Se a pessoa não souber nadar, ela se afoga; se souber nadar muito bem, mas não souber para onde vai, nadará com toda força na direção errada."</em>',
-                        'Vivemos a ruína do "personagem fictício", profissionais que dominavam a forma e a embalagem nas redes sociais, mas não possuíam lastro real. A IA democratizou a embalagem e a velocidade. Com isso, o profissional autêntico, que detém essência e conteúdo prático, agora ganha ferramentas para escalar e comunicar sua entrega.',
-                        'Mais do que isso, a IA funciona como a democratização da lendária "garagem de Steve Jobs". Ela elimina barreiras de linguagem, renda e localização. Hoje, com um celular acessível e conexão Wi-Fi, qualquer pessoa tem nas mãos o poder de erguer operações disruptivas.'
-                    ],
-                    citacao: {
-                        texto: '"Produzir dados isolados não gera vantagem competitiva. O diferencial real migrou para a capacidade de organizar melhor, preservar conhecimento, decidir com precisão e transformar inteligência disponível em capacidade organizacional real."',
-                        autor: 'Entrevista Exclusiva • Revista Gestão e Futuro⁺'
-                    },
-                    notaEditor: "A IA faz você produzir 100, mas sem gestão você só absorve 10 e joga 90 fora. O profissional do futuro é o 'Generalista Especializado', capaz de liderar a si mesmo antes de liderar ecossistemas.",
-                    aprendizados: [
-                        '<strong>Inversão de Gargalo:</strong> A velocidade de geração pela IA exige filtros rigorosos de assimilação e decisão humana.',
-                        '<strong>Combate à Irrelevância:</strong> A embalagem foi democratizada; o diferencial voltou a ser a essência e o rastro real de transformação.',
-                        '<strong>O Generalista Especializado:</strong> A síntese de visão ampla estratégica com aprofundamento veloz proporcionado por agentes de IA.',
-                        '<strong>Fim da Burocracia:</strong> Gestão não é sobre cargos, é sobre gestão de vida, tempo, escolhas e recursos.'
-                    ],
-                    praticas: [
-                        '<strong>Arquitetura de Curadoria:</strong> Implementar rotinas diárias para catalogar e reter o conhecimento útil gerado por IA.',
-                        '<strong>Jornada do Cliente/Paciente:</strong> Médicos e especialistas devem evoluir de "detentores de diagnóstico" para "mentores da jornada".',
-                        '<strong>Autoliderança Operacional:</strong> Definir objetivos e prioridades claras antes de acionar qualquer ferramenta de automação.',
-                        '<strong>Emancipação Digital:</strong> Transformar simples dispositivos móveis em centros de inteligência e criação de negócios reais.'
-                    ],
-                    tags: ['Administração de Empresas', 'Inteligência Artificial', 'Liderança e Processos', 'Generalista Especializado', 'EU⁺ Gestor'],
-                    hashtags: ['#GestaoEFuturo', '#EuMaisEmpresa', '#EuMaisGestor', '#LiderancaExponencial', '#Autolideranca']
-                };
-
+                console.warn('Utilizando dados fallback da matéria:', err);
                 renderizarDados(dataFallback);
             }
         }
@@ -660,7 +658,7 @@
             }
         }
 
-        window.onload = carregarMateria;
+        document.addEventListener('DOMContentLoaded', carregarMateria);
     </script>
 </body>
 </html>
