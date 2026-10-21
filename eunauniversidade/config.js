@@ -1,7 +1,7 @@
 // Este é o único arquivo que deve receber uma URL pública.
 // Nunca coloque aqui API keys, senha, token, ID privado ou chave Gemini.
 window.EU_CONFIG = {
-  API_URL: 'COLE_AQUI_A_URL_DO_WEB_APP_APPS_SCRIPT',
-  TERMS_URL: 'COLE_AQUI_A_URL_PUBLICA_DOS_TERMOS',
-  PRIVACY_URL: 'COLE_AQUI_A_URL_PUBLICA_DA_PRIVACIDADE'
+  API_URL: 'https://script.google.com/macros/s/AKfycbwU3FQGOpn7-KDpbTgOTJBtoZR078POYTdtTZlnSETwqM0KyWc7Scpi1vRU7ZwMZG-Y/exec',
+  TERMS_URL: 'https://ails.eumaisempresa.com.br/eunauniversidade/termos-de-uso',
+  PRIVACY_URL: 'https://ails.eumaisempresa.com.br/eunauniversidade/privacidade'
 };
