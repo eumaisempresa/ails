@@ -1,1 +1,36 @@
-readme
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="RepresentaMais — operação comercial simples para representantes.">
+  <title>RepresentaMais | Operação comercial</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">R+</span><div><strong>RepresentaMais</strong><small>operação comercial</small></div></div>
+      <button class="new-order side-cta" data-action="new-order"><span>＋</span> Novo pedido</button>
+      <nav class="nav" aria-label="Navegação principal">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Visão geral</button>
+        <button class="nav-item" data-view="clients"><span>◉</span> Clientes</button>
+        <button class="nav-item" data-view="suppliers"><span>▦</span> Indústrias</button>
+        <button class="nav-item" data-view="products"><span>□</span> Catálogo</button>
+        <button class="nav-item" data-view="orders"><span>▤</span> Pedidos</button>
+        <button class="nav-item" data-view="commissions"><span>◈</span> Comissões</button>
+      </nav>
+      <div class="sidebar-foot"><span class="status-dot"></span><span id="connection-label">Modo demonstração</span><button class="icon-button" data-action="connection" aria-label="Configurar conexão">⚙</button></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><button class="menu-button" data-action="menu" aria-label="Abrir menu">☰</button><div class="breadcrumb" id="breadcrumb">Visão geral</div><div class="top-actions"><button class="quiet-button" data-action="connection">Conectar base</button><div class="avatar">AP</div></div></header>
+      <div class="content" id="content"></div>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="modal-backdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><button class="modal-close" data-action="close-modal">×</button><div id="modal-content"></div></section></div>
+  <div class="toast hidden" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
